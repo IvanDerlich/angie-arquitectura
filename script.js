@@ -305,14 +305,14 @@ document.querySelectorAll('.project-card').forEach(card => {
             const isVideo = /\.mp4$/i.test(src);
             if (isVideo) {
                 return `
-                    <button type="button" class="gallery-item" onclick="window.openLightbox(${JSON.stringify(project.gallery)}, '${project.title}', ${idx})">
+                    <button type="button" class="gallery-item" data-idx="${idx}">
                         <video src="${src}" class="gallery-thumbnail"></video>
                         <div class="gallery-play-icon">▶</div>
                     </button>
                 `;
             } else {
                 return `
-                    <button type="button" class="gallery-item" onclick="window.openLightbox(${JSON.stringify(project.gallery)}, '${project.title}', ${idx})">
+                    <button type="button" class="gallery-item" data-idx="${idx}">
                         <img src="${src}" alt="${project.title}" class="gallery-thumbnail">
                     </button>
                 `;
@@ -324,7 +324,7 @@ document.querySelectorAll('.project-card').forEach(card => {
         if (project.design && project.real) {
             const designItemsHTML = project.design.map((src, idx) => {
                 return `
-                    <button type="button" class="gallery-item" onclick="window.openLightbox(${JSON.stringify(project.design)}, '${project.title} - Diseño', ${idx})">
+                    <button type="button" class="gallery-item design-item" data-idx="${idx}">
                         <img src="${src}" alt="${project.title} - Diseño" class="gallery-thumbnail">
                     </button>
                 `;
@@ -332,7 +332,7 @@ document.querySelectorAll('.project-card').forEach(card => {
             
             const realItemsHTML = project.real.map((src, idx) => {
                 return `
-                    <button type="button" class="gallery-item" onclick="window.openLightbox(${JSON.stringify(project.real)}, '${project.title} - Resultado real', ${idx})">
+                    <button type="button" class="gallery-item real-item" data-idx="${idx}">
                         <img src="${src}" alt="${project.title} - Resultado real" class="gallery-thumbnail">
                     </button>
                 `;
@@ -384,6 +384,33 @@ document.querySelectorAll('.project-card').forEach(card => {
                 <a href="${backLink}" class="btn btn-secondary">${backText}</a>
             </div>
         `;
+        
+        // Add event listeners for gallery items
+        setTimeout(() => {
+            // Main gallery
+            document.querySelectorAll('.project-gallery .gallery-item:not(.design-item):not(.real-item)').forEach(item => {
+                item.addEventListener('click', () => {
+                    const idx = parseInt(item.dataset.idx);
+                    window.openLightbox(project.gallery, project.title, idx);
+                });
+            });
+            
+            // Design gallery
+            document.querySelectorAll('.project-gallery .gallery-item.design-item').forEach(item => {
+                item.addEventListener('click', () => {
+                    const idx = parseInt(item.dataset.idx);
+                    window.openLightbox(project.design, `${project.title} - Diseño`, idx);
+                });
+            });
+            
+            // Real photos gallery
+            document.querySelectorAll('.project-gallery .gallery-item.real-item').forEach(item => {
+                item.addEventListener('click', () => {
+                    const idx = parseInt(item.dataset.idx);
+                    window.openLightbox(project.real, `${project.title} - Resultado real`, idx);
+                });
+            });
+        }, 0);
         
         window.scrollTo(0, 0);
     };
