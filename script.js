@@ -183,8 +183,11 @@ document.querySelectorAll('.project-card').forEach(card => {
     
     // Navigate to full project page
     qvFullBtn.addEventListener('click', () => {
+        // Capture values before closing
+        const targetSlug = currentSlug;
+        const targetType = currentType;
         closeQuickView();
-        window.location.hash = `/${currentType}/${currentSlug}`;
+        window.location.hash = `/${targetType}/${targetSlug}`;
     });
     
     // Close handlers
