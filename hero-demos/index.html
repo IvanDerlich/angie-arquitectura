@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Propuestas de Hero - Ángeles Arquitectura</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: #F8F6F2;
+            color: #2F4A63;
+            padding: 40px 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            font-size: 36px;
+            font-weight: 600;
+            margin-bottom: 12px;
+            color: #2F4A63;
+        }
+
+        .subtitle {
+            font-size: 18px;
+            line-height: 1.6;
+            margin-bottom: 48px;
+            color: #2F4A63;
+            opacity: 0.7;
+        }
+
+        .demos-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 24px;
+            margin-bottom: 40px;
+        }
+
+        .demo-card {
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(47, 74, 99, 0.08);
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+        }
+
+        .demo-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 24px rgba(47, 74, 99, 0.12);
+            border-color: #7FA7C9;
+        }
+
+        .demo-card a {
+            text-decoration: none;
+            color: inherit;
+            display: block;
+        }
+
+        .demo-content {
+            padding: 28px;
+        }
+
+        .demo-number {
+            display: inline-block;
+            background: linear-gradient(135deg, #7FA7C9, #C9A98C);
+            color: white;
+            padding: 6px 16px;
+            border-radius: 24px;
+            font-size: 13px;
+            font-weight: 600;
+            margin-bottom: 16px;
+            letter-spacing: 0.5px;
+        }
+
+        .demo-title {
+            font-size: 22px;
+            font-weight: 600;
+            margin-bottom: 12px;
+            color: #2F4A63;
+        }
+
+        .demo-description {
+            font-size: 15px;
+            line-height: 1.6;
+            color: #2F4A63;
+            opacity: 0.65;
+        }
+
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: 24px;
+            color: #7FA7C9;
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 16px;
+        }
+
+        .back-link:hover {
+            text-decoration: underline;
+        }
+
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 28px;
+            }
+
+            .demos-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Propuestas de Sección Hero</h1>
+        <p class="subtitle">Seis opciones elegantes para la portada. Haz clic en cada una para ver la animación completa.</p>
+
+        <div class="demos-grid">
+            <div class="demo-card">
+                <a href="hero-1.html">
+                    <div class="demo-content">
+                        <span class="demo-number">Opción 1</span>
+                        <h2 class="demo-title">Blueprint Draw</h2>
+                        <p class="demo-description">Líneas arquitectónicas se dibujan animadas, luego la foto render aparece sobre ellas.</p>
+                    </div>
+                </a>
+            </div>
+
+            <div class="demo-card">
+                <a href="hero-2.html">
+                    <div class="demo-content">
+                        <span class="demo-number">Opción 2</span>
+                        <h2 class="demo-title">Render to Real</h2>
+                        <p class="demo-description">Slider antes/después deslizable revela la transformación de render a construcción real.</p>
+                    </div>
+                </a>
+            </div>
+
+            <div class="demo-card">
+                <a href="hero-3.html">
+                    <div class="demo-content">
+                        <span class="demo-number">Opción 3</span>
+                        <h2 class="demo-title">Paneles Arquitectónicos</h2>
+                        <p class="demo-description">Fotos de proyectos se separan como paneles inclinados en 3D, revelando el título.</p>
+                    </div>
+                </a>
+            </div>
+
+            <div class="demo-card">
+                <a href="hero-4.html">
+                    <div class="demo-content">
+                        <span class="demo-number">Opción 4</span>
+                        <h2 class="demo-title">Ken Burns Slideshow</h2>
+                        <p class="demo-description">Slideshow con zoom suave, texto con parallax y título animado letra por letra.</p>
+                    </div>
+                </a>
+            </div>
+
+            <div class="demo-card">
+                <a href="hero-5.html">
+                    <div class="demo-content">
+                        <span class="demo-number">Opción 5</span>
+                        <h2 class="demo-title">Scroll-Driven Zoom</h2>
+                        <p class="demo-description">La imagen se escala al hacer scroll, con el título fijo que se desvanece gradualmente.</p>
+                    </div>
+                </a>
+            </div>
+
+            <div class="demo-card">
+                <a href="hero-6.html">
+                    <div class="demo-content">
+                        <span class="demo-number">Opción 6</span>
+                        <h2 class="demo-title">Tipografía Minimalista</h2>
+                        <p class="demo-description">Título grande con reveal de texto enmascarado, gradiente animado y foto en arco arquitectónico.</p>
+                    </div>
+                </a>
+            </div>
+        </div>
+
+        <a href="../index.html" class="back-link">
+            <span>←</span>
+            <span>Volver al sitio</span>
+        </a>
+    </div>
+</body>
+</html>
