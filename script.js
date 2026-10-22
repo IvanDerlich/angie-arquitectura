@@ -107,27 +107,39 @@ document.addEventListener('DOMContentLoaded', () => {
             }, 50);
         });
     });
+    
+    // Initialize project system after DOM is loaded
+    initializeProjects();
 });
 
 // Project data store
 const projectsData = {};
 
-// Initialize project data from cards
-document.querySelectorAll('.project-card.project-open').forEach(card => {
-    const slug = card.dataset.slug;
-    const coverImg = card.querySelector('.project-image-wrapper img').src;
-    projectsData[slug] = {
-        slug,
-        title: card.dataset.title,
-        category: card.querySelector('.project-location').textContent,
-        description: card.querySelector('.project-description').textContent,
-        gallery: JSON.parse(card.dataset.gallery || '[]'),
-        coverImage: coverImg
-    };
-});
+function initializeProjects() {
+    // Initialize project data from cards
+    document.querySelectorAll('.project-card.project-open').forEach(card => {
+        const slug = card.dataset.slug;
+        const coverImg = card.querySelector('.project-image-wrapper img').src;
+        projectsData[slug] = {
+            slug,
+            title: card.dataset.title,
+            category: card.querySelector('.project-location').textContent,
+            description: card.querySelector('.project-description').textContent,
+            gallery: JSON.parse(card.dataset.gallery || '[]'),
+            coverImage: coverImg
+        };
+    });
+    
+    // Initialize quick view
+    initQuickView();
+    // Initialize lightbox
+    initLightbox();
+    // Initialize router
+    initRouter();
+}
 
 // Quick View Modal
-(() => {
+function initQuickView() {
     const quickView = document.getElementById('quick-view');
     if (!quickView) return;
     
@@ -191,10 +203,10 @@ document.querySelectorAll('.project-card.project-open').forEach(card => {
             closeQuickView();
         }
     });
-})();
+}
 
 // Project gallery lightbox
-(() => {
+function initLightbox() {
     const lb = document.getElementById('lightbox');
     if (!lb) return;
     const stage = lb.querySelector('.lightbox-stage');
@@ -265,10 +277,10 @@ document.querySelectorAll('.project-card.project-open').forEach(card => {
         if (e.key === 'ArrowLeft') step(-1);
         if (e.key === 'ArrowRight') step(1);
     });
-})();
+}
 
 // SPA Router for project pages
-(() => {
+function initRouter() {
     const mainSections = document.querySelectorAll('section, header, footer');
     const projectView = document.getElementById('project-view');
     const projectContent = projectView.querySelector('.project-view-content');
@@ -363,4 +375,4 @@ document.querySelectorAll('.project-card.project-open').forEach(card => {
     
     // Initial route
     route();
-})();
+}
