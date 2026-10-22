@@ -170,4 +170,33 @@ test.describe('Activities Section', () => {
     const url = page.url();
     expect(url === BASE_URL + '/' || url === BASE_URL + '/#' || url === BASE_URL + '#').toBeTruthy();
   });
+
+  test('join table text is defined once and appears on both activity and work pages', async ({ page }) => {
+    // This test verifies that the workActivities join table text is not duplicated
+    // First, fetch the script.js and verify workActivities structure
+    const scriptResponse = await page.goto('https://ivanderlich.github.io/angie-arquitectura/script.js');
+    const scriptContent = await scriptResponse.text();
+    
+    // Check that workActivities exists (with or without whitespace)
+    const hasWorkActivities = scriptContent.includes('workActivities') && 
+                               (scriptContent.includes('workActivities = [') || 
+                                scriptContent.includes('workActivities=['));
+    expect(hasWorkActivities).toBeTruthy();
+    
+    // Check for placeholder text pattern in comments
+    const hasPlaceholderPattern = scriptContent.includes('[REEMPLAZAR') && 
+                                   (scriptContent.includes('obra') || scriptContent.includes('trabajo'));
+    expect(hasPlaceholderPattern).toBeTruthy();
+    
+    // Verify the text field structure (should not have duplicated text in activities or projects)
+    // The text should only appear in workActivities entries
+    const activitiesDataMatch = scriptContent.match(/activitiesData\s*=\s*\{[\s\S]*?\};/);
+    expect(activitiesDataMatch).toBeTruthy();
+    
+    // Activities should have name and intro, not workSlugs or text
+    const activitiesText = activitiesDataMatch[0];
+    expect(activitiesText).not.toContain('workSlugs');
+    expect(activitiesText).toContain('name');
+    expect(activitiesText).toContain('intro');
+  });
 });

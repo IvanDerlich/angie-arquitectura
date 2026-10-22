@@ -116,23 +116,27 @@ const projectsData = {};
 const activitiesData = {
     'actividad-1': {
         slug: 'actividad-1',
-        title: '[REEMPLAZAR: Actividad 1]',
-        description: '[REEMPLAZAR: descripción de la actividad 1]',
-        workSlugs: [] // [REEMPLAZAR: obras donde la aplicó]
+        name: '[REEMPLAZAR: Actividad 1]',
+        intro: '[REEMPLAZAR: intro de actividad 1]'
     },
     'actividad-2': {
         slug: 'actividad-2',
-        title: '[REEMPLAZAR: Actividad 2]',
-        description: '[REEMPLAZAR: descripción de la actividad 2]',
-        workSlugs: [] // [REEMPLAZAR: obras donde la aplicó]
+        name: '[REEMPLAZAR: Actividad 2]',
+        intro: '[REEMPLAZAR: intro de actividad 2]'
     },
     'actividad-3': {
         slug: 'actividad-3',
-        title: '[REEMPLAZAR: Actividad 3]',
-        description: '[REEMPLAZAR: descripción de la actividad 3]',
-        workSlugs: [] // [REEMPLAZAR: obras donde la aplicó]
+        name: '[REEMPLAZAR: Actividad 3]',
+        intro: '[REEMPLAZAR: intro de actividad 3]'
     }
 };
+
+// Work-Activities join table (many-to-many relationship)
+// Each entry describes what she did in that activity for that work
+const workActivities = [
+    // Example: { workSlug: 'bano', activitySlug: 'actividad-1', text: 'Diseñé la distribución...' }
+    // [REEMPLAZAR: agregar entradas reales]
+];
 
 // Initialize project data from cards
 document.querySelectorAll('.project-card').forEach(card => {
@@ -168,34 +172,37 @@ document.querySelectorAll('.project-card').forEach(card => {
         
         const title = document.createElement('h3');
         title.className = 'actividad-title';
-        title.textContent = activity.title;
+        title.textContent = activity.name;
         
-        const description = document.createElement('p');
-        description.className = 'actividad-description';
-        description.textContent = activity.description;
+        const intro = document.createElement('p');
+        intro.className = 'actividad-description';
+        intro.textContent = activity.intro;
+        
+        // Find works for this activity from join table
+        const relatedWorks = workActivities.filter(wa => wa.activitySlug === activity.slug);
         
         const worksLabel = document.createElement('p');
         worksLabel.className = 'actividad-works';
-        worksLabel.textContent = activity.workSlugs.length > 0 
+        worksLabel.textContent = relatedWorks.length > 0 
             ? 'Aplicada en:' 
             : '[REEMPLAZAR: obras donde la aplicó]';
         
         card.appendChild(icon);
         card.appendChild(title);
-        card.appendChild(description);
+        card.appendChild(intro);
         card.appendChild(worksLabel);
         
-        if (activity.workSlugs.length > 0) {
+        if (relatedWorks.length > 0) {
             const worksList = document.createElement('ul');
             worksList.className = 'actividad-works-list';
             
-            activity.workSlugs.forEach(workSlug => {
-                const work = projectsData[workSlug];
+            relatedWorks.forEach(wa => {
+                const work = projectsData[wa.workSlug];
                 if (work) {
                     const li = document.createElement('li');
                     const link = document.createElement('a');
                     link.className = 'actividad-work-link';
-                    link.href = `#/${work.type}/${workSlug}`;
+                    link.href = `#/${work.type}/${wa.workSlug}`;
                     link.textContent = work.title;
                     li.appendChild(link);
                     worksList.appendChild(li);
@@ -392,27 +399,30 @@ document.querySelectorAll('.project-card').forEach(card => {
         mainSections.forEach(section => section.hidden = true);
         projectView.hidden = true;
         activityView.hidden = false;
-        document.title = `${activity.title} | Ángeles Arquitectura`;
+        document.title = `${activity.name} | Ángeles Arquitectura`;
         
         let html = `
-            <h1 class="activity-page-title">${activity.title}</h1>
-            <p class="activity-page-description">${activity.description}</p>
+            <h1 class="activity-page-title">${activity.name}</h1>
+            <p class="activity-page-description">${activity.intro}</p>
         `;
         
-        if (activity.workSlugs.length > 0) {
+        // Find works for this activity from join table
+        const relatedWorks = workActivities.filter(wa => wa.activitySlug === slug);
+        
+        if (relatedWorks.length > 0) {
             html += `
                 <div class="activity-works-section">
                     <h3>Aplicada en estos proyectos:</h3>
                     <div class="activity-works-grid">
             `;
             
-            activity.workSlugs.forEach(workSlug => {
-                const work = projectsData[workSlug];
+            relatedWorks.forEach(wa => {
+                const work = projectsData[wa.workSlug];
                 if (work) {
                     html += `
-                        <a href="#/${work.type}/${workSlug}" class="activity-work-card">
+                        <a href="#/${work.type}/${wa.workSlug}" class="activity-work-card">
                             <h4>${work.title}</h4>
-                            <p>${work.category}</p>
+                            <p class="activity-work-text">${wa.text}</p>
                         </a>
                     `;
                 }
@@ -532,23 +542,26 @@ document.querySelectorAll('.project-card').forEach(card => {
             </div>
         `;
         
-        // Add activities section
-        const projectActivities = Object.values(activitiesData).filter(activity => 
-            activity.workSlugs.includes(slug)
-        );
+        // Add activities section using join table
+        const projectActivities = workActivities.filter(wa => wa.workSlug === slug);
         
         if (projectActivities.length > 0) {
             projectContent.innerHTML += `
                 <div class="project-activities">
                     <h3>Actividades en este trabajo</h3>
                     <ul class="project-activities-list">
-                        ${projectActivities.map(activity => `
-                            <li>
-                                <a href="#/actividad/${activity.slug}" class="project-activity-link">
-                                    ${activity.title}
-                                </a>
-                            </li>
-                        `).join('')}
+                        ${projectActivities.map(wa => {
+                            const activity = activitiesData[wa.activitySlug];
+                            if (!activity) return '';
+                            return `
+                                <li>
+                                    <a href="#/actividad/${wa.activitySlug}" class="project-activity-link">
+                                        <strong>${activity.name}</strong>
+                                        <span class="project-activity-text">${wa.text}</span>
+                                    </a>
+                                </li>
+                            `;
+                        }).join('')}
                     </ul>
                 </div>
             `;
