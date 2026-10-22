@@ -114,20 +114,25 @@ const projectsData = {};
 
 // Activities data store
 const activitiesData = {
-    'actividad-1': {
-        slug: 'actividad-1',
-        name: '[REEMPLAZAR: Actividad 1]',
-        intro: '[REEMPLAZAR: intro de actividad 1]'
+    'proyecto': {
+        slug: 'proyecto',
+        name: 'Proyecto',
+        intro: '[REEMPLAZAR: intro de Proyecto]'
     },
-    'actividad-2': {
-        slug: 'actividad-2',
-        name: '[REEMPLAZAR: Actividad 2]',
-        intro: '[REEMPLAZAR: intro de actividad 2]'
+    'direccion-de-obra': {
+        slug: 'direccion-de-obra',
+        name: 'Dirección de obra',
+        intro: '[REEMPLAZAR: intro de Dirección de obra]'
     },
-    'actividad-3': {
-        slug: 'actividad-3',
-        name: '[REEMPLAZAR: Actividad 3]',
-        intro: '[REEMPLAZAR: intro de actividad 3]'
+    'remodelaciones': {
+        slug: 'remodelaciones',
+        name: 'Remodelaciones',
+        intro: '[REEMPLAZAR: intro de Remodelaciones]'
+    },
+    'amoblamiento': {
+        slug: 'amoblamiento',
+        name: 'Amoblamiento',
+        intro: '[REEMPLAZAR: intro de Amoblamiento]'
     }
 };
 

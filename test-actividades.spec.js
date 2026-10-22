@@ -21,26 +21,31 @@ test.describe('Activities Section', () => {
     await expect(navLink).toContainText('Qué hago');
   });
 
-  test('shows 3 placeholder activity cards', async ({ page }) => {
+  test('shows 4 activity cards with real service names', async ({ page }) => {
     await page.goto(BASE_URL);
     
     const activityCards = page.locator('.actividad-card');
-    await expect(activityCards).toHaveCount(3);
+    await expect(activityCards).toHaveCount(4);
     
-    // Check for placeholder text
-    const firstCard = activityCards.first();
-    await expect(firstCard).toContainText('[REEMPLAZAR');
+    // Check for real service names
+    await expect(page.locator('.actividad-title')).toHaveText([
+      'Proyecto',
+      'Dirección de obra',
+      'Remodelaciones',
+      'Amoblamiento'
+    ]);
   });
 
   test('activity cards have numbered icons', async ({ page }) => {
     await page.goto(BASE_URL);
     
     const icons = page.locator('.actividad-icon');
-    await expect(icons).toHaveCount(3);
+    await expect(icons).toHaveCount(4);
     
     await expect(icons.first()).toContainText('1');
     await expect(icons.nth(1)).toContainText('2');
     await expect(icons.nth(2)).toContainText('3');
+    await expect(icons.nth(3)).toContainText('4');
   });
 
   test('activity card shows placeholder for works', async ({ page }) => {
@@ -57,12 +62,12 @@ test.describe('Activities Section', () => {
     await firstCard.click();
     await page.waitForTimeout(500);
     
-    // Should navigate to #/actividad/actividad-1
-    await expect(page).toHaveURL(/.*#\/actividad\/actividad-1/);
+    // Should navigate to #/actividad/proyecto
+    await expect(page).toHaveURL(/.*#\/actividad\/proyecto/);
   });
 
   test('activity detail page renders correctly', async ({ page }) => {
-    await page.goto(`${BASE_URL}#/actividad/actividad-1`);
+    await page.goto(`${BASE_URL}#/actividad/proyecto`);
     await page.waitForTimeout(500);
     
     // Activity view should be visible
@@ -72,14 +77,14 @@ test.describe('Activities Section', () => {
     // Should show activity title
     const title = page.locator('.activity-page-title');
     await expect(title).toBeVisible();
-    await expect(title).toContainText('[REEMPLAZAR: Actividad 1]');
+    await expect(title).toContainText('Proyecto');
     
-    // Should show placeholder for works
-    await expect(page.locator('.activity-view-content')).toContainText('[REEMPLAZAR: obras donde la aplicó]');
+    // Should show placeholder for intro
+    await expect(page.locator('.activity-view-content')).toContainText('[REEMPLAZAR: intro de Proyecto]');
   });
 
   test('back link from activity detail returns to actividades section', async ({ page }) => {
-    await page.goto(`${BASE_URL}#/actividad/actividad-2`);
+    await page.goto(`${BASE_URL}#/actividad/remodelaciones`);
     await page.waitForTimeout(1000);
     
     const backLink = page.locator('#activity-view .project-back');
@@ -140,7 +145,7 @@ test.describe('Activities Section', () => {
 
   test('activity detail page has no horizontal overflow on mobile', async ({ page }) => {
     await page.setViewportSize({ width: 390, height: 844 });
-    await page.goto(`${BASE_URL}#/actividad/actividad-1`);
+    await page.goto(`${BASE_URL}#/actividad/amoblamiento`);
     await page.waitForTimeout(500);
     
     const bodyWidth = await page.evaluate(() => document.body.scrollWidth);
@@ -148,7 +153,7 @@ test.describe('Activities Section', () => {
   });
 
   test('all activity detail routes work', async ({ page }) => {
-    const activities = ['actividad-1', 'actividad-2', 'actividad-3'];
+    const activities = ['proyecto', 'direccion-de-obra', 'remodelaciones', 'amoblamiento'];
     
     for (const slug of activities) {
       await page.goto(`${BASE_URL}#/actividad/${slug}`);
