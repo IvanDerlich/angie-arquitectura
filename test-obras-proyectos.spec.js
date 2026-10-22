@@ -220,10 +220,11 @@ test.describe('Obras and Proyectos Sections', () => {
     // Check section labels
     await expect(page.locator('#obras .section-label')).toContainText('01');
     await expect(page.locator('#proyectos .section-label')).toContainText('02');
-    await expect(page.locator('#sobre-mi .section-label')).toContainText('03');
-    await expect(page.locator('#servicios .section-label')).toContainText('04');
-    await expect(page.locator('.precios .section-label')).toContainText('05');
-    await expect(page.locator('.contacto .section-label')).toContainText('06');
+    await expect(page.locator('#actividades .section-label')).toContainText('03');
+    await expect(page.locator('#sobre-mi .section-label')).toContainText('04');
+    await expect(page.locator('#servicios .section-label')).toContainText('05');
+    await expect(page.locator('.precios .section-label')).toContainText('06');
+    await expect(page.locator('.contacto .section-label')).toContainText('07');
   });
 
   test('should show only ONE photo of Angie', async ({ page }) => {
