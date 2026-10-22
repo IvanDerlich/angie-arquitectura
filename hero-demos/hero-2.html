@@ -8,13 +8,15 @@
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 .hero{position:relative;min-height:100vh;display:flex;align-items:stretch;background:linear-gradient(135deg,#F8F6F2 0%,#E8DCCB 100%);overflow:hidden}
-.iso-canvas{position:absolute;top:80px;right:0;bottom:0;left:40%;pointer-events:all}
+.art-wrapper{position:absolute;top:80px;right:0;width:60%;height:calc(100vh - 80px)}
+.iso-canvas{display:block;width:100%;height:100%}
+@media (max-width:768px){.art-wrapper{inset:80px 0 0 0;width:100%;height:calc(100vh - 80px);opacity:0.35;z-index:1}}
 .hero-content{position:relative;z-index:10;width:40%;max-width:600px;background:rgba(248,246,242,0.98);padding:60px 40px;display:flex;flex-direction:column;justify-content:center;backdrop-filter:blur(2px);margin-left:40px;align-self:center}
 .hero-content .hero-subtitle,.hero-content .hero-title,.hero-content .hero-tagline{color:#2F4A63}
 .hero-title .word{display:inline-block;white-space:nowrap}
 @media (prefers-reduced-motion:reduce){.iso-canvas{display:none}}
 .demo-note{position:fixed;top:20px;left:20px;background:white;padding:12px 20px;border-radius:8px;box-shadow:0 4px 12px rgba(0,0,0,0.1);font-size:14px;color:#2F4A63;z-index:2000}
-@media (max-width:768px){.demo-note{display:none}.hero{flex-direction:column}.hero-content{width:100%;max-width:none;padding:40px 24px;margin:0;background:rgba(248,246,242,0.95)}.iso-canvas{position:absolute;inset:80px 0 0 0;width:100%;opacity:0.35;z-index:1}}
+@media (max-width:768px){.demo-note{display:none}.hero{flex-direction:column}.hero-content{width:100%;max-width:none;padding:40px 24px;margin:0;background:rgba(248,246,242,0.95)}}
 </style>
 </head>
 <body>
@@ -30,26 +32,29 @@
 <a href="https://wa.me/542617685148" class="btn btn-primary" target="_blank"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z" fill="currentColor"/></svg>Escribime por WhatsApp</a>
 </div>
 </div>
-<canvas class="iso-canvas" id="canvas"></canvas>
+<div class="art-wrapper" id="artWrap"><canvas class="iso-canvas" id="canvas" style="width:100%;height:100%"></canvas></div>
 </section>
 <div style="text-align:center;padding:40px 20px;background:white"><a href="index.html" style="color:#7FA7C9;text-decoration:none;font-weight:500">← Ver todas las opciones</a></div>
 <script>
 const title=document.getElementById('title'),text='Espacios para habitar con calma';text.split(' ').forEach((word,wi)=>{const wordSpan=document.createElement('span');wordSpan.className='word';word.split('').forEach(char=>{const span=document.createElement('span');span.textContent=char;wordSpan.appendChild(span);});title.appendChild(wordSpan);if(wi<text.split(' ').length-1)title.appendChild(document.createTextNode(' '));});
 
-const canvas=document.getElementById('canvas'),ctx=canvas.getContext('2d'),dpr=window.devicePixelRatio||1;let w,h,dispW,dispH,mouseX=0,mouseY=0,time=0;
+const wrap=document.getElementById('artWrap'),canvas=document.getElementById('canvas'),ctx=canvas.getContext('2d'),dpr=window.devicePixelRatio||1;let w,h,mouseX=0,mouseY=0,time=0;
+wrap.style.height=(window.innerHeight-80)+'px';
 function resize(){
-  const viewportW=window.innerWidth,viewportH=window.innerHeight;
-  dispW=viewportW*0.6;
-  dispH=viewportH-80;
-  canvas.style.width=dispW+'px';
-  canvas.style.height=dispH+'px';
-  w=canvas.width=dispW*dpr;
-  h=canvas.height=dispH*dpr;
-  ctx.setTransform(1,0,0,1,0,0);
-  ctx.scale(dpr,dpr)
+  const r=wrap.getBoundingClientRect();
+  w=r.width;
+  h=r.height;
+  canvas.width=w*dpr;
+  canvas.height=h*dpr;
+  ctx.setTransform(dpr,0,0,dpr,0,0)
 }
-window.addEventListener('resize',resize);
-canvas.addEventListener('pointermove',e=>{const rect=canvas.getBoundingClientRect();mouseX=e.clientX-rect.left;mouseY=e.clientY-rect.top});
+// Size canvas immediately
+resize();
+// Watch for future resizes
+new ResizeObserver(entries => {
+  if(entries[0].contentRect.width > 0) resize();
+}).observe(wrap);
+canvas.addEventListener('pointermove',e=>{const r=canvas.getBoundingClientRect();mouseX=e.clientX-r.left;mouseY=e.clientY-r.top});
 
 function isoBox(x,y,z,w,h,d,colors){ctx.save();ctx.translate(x+y*0.5,z-y*0.3);
 // Top
@@ -59,11 +64,11 @@ ctx.fillStyle=colors[1];ctx.beginPath();ctx.moveTo(0,0);ctx.lineTo(0,d);ctx.line
 // Right
 ctx.fillStyle=colors[2];ctx.beginPath();ctx.moveTo(w,h*0.5);ctx.lineTo(w,d+h*0.5);ctx.lineTo(w,d);ctx.lineTo(w,h*0.5);ctx.closePath();ctx.fill();ctx.stroke();ctx.restore()}
 
-function draw(){ctx.clearRect(0,0,w,h);const targetHeight=dispH*0.7,floorHeight=targetHeight/6,cx=dispW/2,cy=dispH*0.65,influence=(mouseX/dispW-0.5)*40,buildProgress=Math.abs(Math.sin(time*0.3)),floors=6;
+function draw(){ctx.clearRect(0,0,w*dpr,h*dpr);const targetHeight=h*0.7,floorHeight=targetHeight/6,cx=w/2,cy=h*0.65,influence=(mouseX/w-0.5)*40,buildProgress=Math.abs(Math.sin(time*0.3)),floors=6;
 for(let floor=0;floor<floors;floor++){const progress=Math.max(0,Math.min(1,(buildProgress-floor*0.12)*2.5)),yOffset=-floor*floorHeight*progress+150*(1-progress),xOffset=influence*progress;ctx.save();ctx.translate(cx,cy-floor*floorHeight*progress);isoBox(-120+xOffset,yOffset,0,100,50,floorHeight*0.9,['#7FA7C9','#5A8DB0','#4A7D9F']);isoBox(40+xOffset,yOffset,0,80,50,floorHeight*0.9,['#C9A98C','#B39373','#9D7D63']);if(floor>0)isoBox(-30+xOffset,yOffset,0,60,50,floorHeight*0.8,['#E8DCCB','#D8CCB3','#C8BC9B']);ctx.restore()}
 time+=0.03;requestAnimationFrame(draw)}
 
-requestAnimationFrame(()=>{resize();if(!window.matchMedia('(prefers-reduced-motion:reduce)').matches)draw()});
+if(!window.matchMedia('(prefers-reduced-motion:reduce)').matches)draw();
 </script>
 </body>
 </html>
