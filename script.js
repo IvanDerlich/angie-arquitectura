@@ -77,7 +77,7 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
         if (href === '#') return;
         
         // Don't prevent default for project routes
-        if (href.startsWith('#/obra/') || href.startsWith('#/proyecto/')) return;
+        if (href.startsWith('#/obra/') || href.startsWith('#/proyecto/') || href.startsWith('#/actividad/')) return;
         
         e.preventDefault();
         
@@ -112,6 +112,28 @@ document.addEventListener('DOMContentLoaded', () => {
 // Project data store
 const projectsData = {};
 
+// Activities data store
+const activitiesData = {
+    'actividad-1': {
+        slug: 'actividad-1',
+        title: '[REEMPLAZAR: Actividad 1]',
+        description: '[REEMPLAZAR: descripción de la actividad 1]',
+        workSlugs: [] // [REEMPLAZAR: obras donde la aplicó]
+    },
+    'actividad-2': {
+        slug: 'actividad-2',
+        title: '[REEMPLAZAR: Actividad 2]',
+        description: '[REEMPLAZAR: descripción de la actividad 2]',
+        workSlugs: [] // [REEMPLAZAR: obras donde la aplicó]
+    },
+    'actividad-3': {
+        slug: 'actividad-3',
+        title: '[REEMPLAZAR: Actividad 3]',
+        description: '[REEMPLAZAR: descripción de la actividad 3]',
+        workSlugs: [] // [REEMPLAZAR: obras donde la aplicó]
+    }
+};
+
 // Initialize project data from cards
 document.querySelectorAll('.project-card').forEach(card => {
     const slug = card.dataset.slug;
@@ -129,6 +151,70 @@ document.querySelectorAll('.project-card').forEach(card => {
         coverImage: coverImg
     };
 });
+
+// Render activities grid
+(() => {
+    const activitiesGrid = document.getElementById('actividades-grid');
+    if (!activitiesGrid) return;
+    
+    Object.values(activitiesData).forEach((activity, index) => {
+        const card = document.createElement('article');
+        card.className = 'actividad-card';
+        card.dataset.slug = activity.slug;
+        
+        const icon = document.createElement('div');
+        icon.className = 'actividad-icon';
+        icon.textContent = (index + 1).toString();
+        
+        const title = document.createElement('h3');
+        title.className = 'actividad-title';
+        title.textContent = activity.title;
+        
+        const description = document.createElement('p');
+        description.className = 'actividad-description';
+        description.textContent = activity.description;
+        
+        const worksLabel = document.createElement('p');
+        worksLabel.className = 'actividad-works';
+        worksLabel.textContent = activity.workSlugs.length > 0 
+            ? 'Aplicada en:' 
+            : '[REEMPLAZAR: obras donde la aplicó]';
+        
+        card.appendChild(icon);
+        card.appendChild(title);
+        card.appendChild(description);
+        card.appendChild(worksLabel);
+        
+        if (activity.workSlugs.length > 0) {
+            const worksList = document.createElement('ul');
+            worksList.className = 'actividad-works-list';
+            
+            activity.workSlugs.forEach(workSlug => {
+                const work = projectsData[workSlug];
+                if (work) {
+                    const li = document.createElement('li');
+                    const link = document.createElement('a');
+                    link.className = 'actividad-work-link';
+                    link.href = `#/${work.type}/${workSlug}`;
+                    link.textContent = work.title;
+                    li.appendChild(link);
+                    worksList.appendChild(li);
+                }
+            });
+            
+            card.appendChild(worksList);
+        }
+        
+        // Click handler for activity card
+        card.addEventListener('click', (e) => {
+            if (e.target.tagName !== 'A') {
+                window.location.hash = `/actividad/${activity.slug}`;
+            }
+        });
+        
+        activitiesGrid.appendChild(card);
+    });
+})();
 
 // Quick View Modal
 (() => {
@@ -288,7 +374,64 @@ document.querySelectorAll('.project-card').forEach(card => {
     const showMainSite = () => {
         mainSections.forEach(section => section.hidden = false);
         projectView.hidden = true;
+        activityView.hidden = true;
         document.title = 'Ángeles Arquitectura | Angie Serrano Squadrito - Arquitecta en Mendoza';
+    };
+    
+    const activityView = document.getElementById('activity-view');
+    const activityContent = activityView.querySelector('.activity-view-content');
+    
+    const showActivityPage = (slug) => {
+        const activity = activitiesData[slug];
+        if (!activity) {
+            // 404 - go home
+            window.location.hash = '';
+            return;
+        }
+        
+        mainSections.forEach(section => section.hidden = true);
+        projectView.hidden = true;
+        activityView.hidden = false;
+        document.title = `${activity.title} | Ángeles Arquitectura`;
+        
+        let html = `
+            <h1 class="activity-page-title">${activity.title}</h1>
+            <p class="activity-page-description">${activity.description}</p>
+        `;
+        
+        if (activity.workSlugs.length > 0) {
+            html += `
+                <div class="activity-works-section">
+                    <h3>Aplicada en estos proyectos:</h3>
+                    <div class="activity-works-grid">
+            `;
+            
+            activity.workSlugs.forEach(workSlug => {
+                const work = projectsData[workSlug];
+                if (work) {
+                    html += `
+                        <a href="#/${work.type}/${workSlug}" class="activity-work-card">
+                            <h4>${work.title}</h4>
+                            <p>${work.category}</p>
+                        </a>
+                    `;
+                }
+            });
+            
+            html += `
+                    </div>
+                </div>
+            `;
+        } else {
+            html += `
+                <div class="activity-works-section">
+                    <p class="activity-page-description">[REEMPLAZAR: obras donde la aplicó]</p>
+                </div>
+            `;
+        }
+        
+        activityContent.innerHTML = html;
+        window.scrollTo(0, 0);
     };
     
     const showProjectPage = (slug, type) => {
@@ -389,6 +532,38 @@ document.querySelectorAll('.project-card').forEach(card => {
             </div>
         `;
         
+        // Add activities section
+        const projectActivities = Object.values(activitiesData).filter(activity => 
+            activity.workSlugs.includes(slug)
+        );
+        
+        if (projectActivities.length > 0) {
+            projectContent.innerHTML += `
+                <div class="project-activities">
+                    <h3>Actividades en este trabajo</h3>
+                    <ul class="project-activities-list">
+                        ${projectActivities.map(activity => `
+                            <li>
+                                <a href="#/actividad/${activity.slug}" class="project-activity-link">
+                                    ${activity.title}
+                                </a>
+                            </li>
+                        `).join('')}
+                    </ul>
+                </div>
+            `;
+        } else {
+            projectContent.innerHTML += `
+                <div class="project-activities">
+                    <h3>Actividades en este trabajo</h3>
+                    <p>[REEMPLAZAR: actividades de este trabajo]</p>
+                </div>
+            `;
+        }
+        
+        projectView.querySelector('.project-back').href = backLink;
+        projectView.querySelector('.project-back').textContent = `← ${backText}`;
+        
         // Add event listeners for gallery items
         setTimeout(() => {
             // Main gallery
@@ -428,6 +603,9 @@ document.querySelectorAll('.project-card').forEach(card => {
         } else if (hash.startsWith('#/proyecto/')) {
             const slug = hash.replace('#/proyecto/', '');
             showProjectPage(slug, 'proyecto');
+        } else if (hash.startsWith('#/actividad/')) {
+            const slug = hash.replace('#/actividad/', '');
+            showActivityPage(slug);
         } else {
             showMainSite();
             

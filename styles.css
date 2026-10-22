@@ -396,6 +396,89 @@ section {
     opacity: 0.8;
 }
 
+/* Actividades Section */
+.actividades {
+    background-color: #F8F6F2;
+}
+
+.actividades-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 32px;
+}
+
+.actividad-card {
+    background-color: white;
+    border-radius: 16px;
+    padding: 32px;
+    transition: transform 0.3s, box-shadow 0.3s;
+    cursor: pointer;
+}
+
+.actividad-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 32px rgba(47, 74, 99, 0.12);
+}
+
+.actividad-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    background-color: #7FA7C9;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-weight: 600;
+    font-size: 24px;
+    margin-bottom: 20px;
+}
+
+.actividad-title {
+    font-size: 24px;
+    font-weight: 600;
+    color: #2F4A63;
+    margin-bottom: 12px;
+}
+
+.actividad-description {
+    font-size: 16px;
+    line-height: 1.6;
+    color: #5A5A5A;
+    margin-bottom: 16px;
+}
+
+.actividad-works {
+    font-size: 14px;
+    color: #7FA7C9;
+    font-weight: 500;
+}
+
+.actividad-works-list {
+    list-style: none;
+    padding: 0;
+    margin: 12px 0 0 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.actividad-work-link {
+    display: inline-block;
+    padding: 6px 12px;
+    background-color: #F8F6F2;
+    border-radius: 6px;
+    color: #7FA7C9;
+    text-decoration: none;
+    font-size: 14px;
+    transition: background-color 0.2s, color 0.2s;
+}
+
+.actividad-work-link:hover {
+    background-color: #7FA7C9;
+    color: white;
+}
+
 /* Sobre Mí Section */
 .sobre-mi {
     background-color: #E8DCCB;
@@ -927,6 +1010,118 @@ section {
     .contacto-form-wrapper {
         padding: 24px;
     }
+}
+
+/* Activity View */
+.activity-view {
+    min-height: 100vh;
+    background: #fff;
+}
+
+.activity-view[hidden] {
+    display: none;
+}
+
+.activity-view-content {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 40px 0;
+}
+
+.activity-page-title {
+    font-size: 48px;
+    font-weight: 700;
+    color: #2F4A63;
+    margin: 32px 0 16px 0;
+}
+
+.activity-page-description {
+    font-size: 18px;
+    line-height: 1.8;
+    color: #5A5A5A;
+    margin-bottom: 48px;
+}
+
+.activity-works-section {
+    margin-top: 48px;
+}
+
+.activity-works-section h3 {
+    font-size: 24px;
+    font-weight: 600;
+    color: #2F4A63;
+    margin-bottom: 24px;
+}
+
+.activity-works-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 24px;
+}
+
+.activity-work-card {
+    background-color: #F8F6F2;
+    border-radius: 12px;
+    padding: 24px;
+    text-decoration: none;
+    transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.activity-work-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 24px rgba(47, 74, 99, 0.12);
+}
+
+.activity-work-card h4 {
+    font-size: 18px;
+    font-weight: 600;
+    color: #2F4A63;
+    margin-bottom: 8px;
+}
+
+.activity-work-card p {
+    font-size: 14px;
+    color: #7FA7C9;
+}
+
+/* Project Activities Section */
+.project-activities {
+    margin-top: 48px;
+    padding-top: 48px;
+    border-top: 1px solid #E8DCCB;
+}
+
+.project-activities h3 {
+    font-size: 24px;
+    font-weight: 600;
+    color: #2F4A63;
+    margin-bottom: 24px;
+}
+
+.project-activities-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+
+.project-activity-link {
+    display: inline-block;
+    padding: 12px 24px;
+    background-color: #F8F6F2;
+    border-radius: 8px;
+    color: #7FA7C9;
+    text-decoration: none;
+    font-size: 16px;
+    font-weight: 500;
+    transition: background-color 0.2s, color 0.2s;
+}
+
+.project-activity-link:hover {
+    background-color: #7FA7C9;
+    color: white;
 }
 
 /* Lightbox */
