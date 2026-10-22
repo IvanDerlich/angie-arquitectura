@@ -72,9 +72,9 @@ test.describe('Hero Demos', () => {
       const heroTitle = page.locator('.hero-title, .hero-title-large');
       await expect(heroTitle).toBeVisible();
 
-      // Check CTA is visible
-      const waCTA = page.locator('a[href*="wa.me"]').first();
-      await expect(waCTA).toBeVisible();
+      // Check CTA in hero buttons (not header) is visible
+      const heroCTA = page.locator('.hero-buttons a[href*="wa.me"]').first();
+      await expect(heroCTA).toBeVisible();
     });
   }
 });

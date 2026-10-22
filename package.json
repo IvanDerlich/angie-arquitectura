@@ -1,0 +1,23 @@
+{
+  "name": "workspace",
+  "version": "1.0.0",
+  "description": "Sitio web de Angie Serrano, arquitecta en Mendoza.",
+  "main": "script.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/IvanDerlich/angie-arquitectura.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/IvanDerlich/angie-arquitectura/issues"
+  },
+  "homepage": "https://github.com/IvanDerlich/angie-arquitectura#readme",
+  "devDependencies": {
+    "@playwright/test": "^1.64.1"
+  }
+}
