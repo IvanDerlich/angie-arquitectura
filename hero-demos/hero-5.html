@@ -8,12 +8,12 @@
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 .hero{position:relative;min-height:100vh;display:flex;align-items:stretch;background:linear-gradient(to bottom,#F8F6F2,#E8DCCB);overflow:hidden}
-.section-canvas{position:absolute;top:80px;right:0;bottom:0;width:60%;pointer-events:all}
+.section-canvas{position:absolute;top:80px;right:0;bottom:0;left:40%;pointer-events:all}
 .hero-content{position:relative;z-index:10;width:40%;max-width:600px;background:rgba(248,246,242,0.98);padding:60px 40px;display:flex;flex-direction:column;justify-content:center;backdrop-filter:blur(2px);margin-left:40px;align-self:center}
 .hero-content .hero-subtitle,.hero-content .hero-title,.hero-content .hero-tagline{color:#2F4A63}
 .hero-title .word{display:inline-block;white-space:nowrap}
 @media (prefers-reduced-motion:reduce){.section-canvas{display:none}}
-.demo-note{position:fixed;top:80px;right:20px;background:white;padding:12px 20px;border-radius:8px;box-shadow:0 4px 12px rgba(0,0,0,0.1);font-size:14px;color:#2F4A63;z-index:2000}
+.demo-note{position:fixed;top:20px;left:20px;background:white;padding:12px 20px;border-radius:8px;box-shadow:0 4px 12px rgba(0,0,0,0.1);font-size:14px;color:#2F4A63;z-index:2000}
 @media (max-width:768px){.demo-note{display:none}.hero{flex-direction:column}.hero-content{width:100%;max-width:none;padding:40px 24px;margin:0;background:rgba(248,246,242,0.95)}.section-canvas{position:absolute;inset:80px 0 0 0;width:100%;opacity:0.35;z-index:1}}
 </style>
 </head>
@@ -36,19 +36,37 @@
 <script>
 const title=document.getElementById('title'),text='Espacios para habitar con calma';text.split(' ').forEach((word,wi)=>{const wordSpan=document.createElement('span');wordSpan.className='word';word.split('').forEach(char=>{const span=document.createElement('span');span.textContent=char;wordSpan.appendChild(span);});title.appendChild(wordSpan);if(wi<text.split(' ').length-1)title.appendChild(document.createTextNode(' '));});
 
-const canvas=document.getElementById('canvas'),ctx=canvas.getContext('2d');let w=canvas.width=canvas.offsetWidth,h=canvas.height=canvas.offsetHeight,mouseX=w/2,mouseY=h/2,scrollY=0,time=0;window.addEventListener('resize',()=>{w=canvas.width=canvas.offsetWidth;h=canvas.height=canvas.offsetHeight});canvas.addEventListener('pointermove',e=>{const rect=canvas.getBoundingClientRect();mouseX=e.clientX-rect.left;mouseY=e.clientY-rect.top});window.addEventListener('scroll',()=>{scrollY=window.pageYOffset});
+const canvas=document.getElementById('canvas'),ctx=canvas.getContext('2d'),dpr=window.devicePixelRatio||1;let w,h,dispW,dispH,mouseX=0,mouseY=0,scrollY=0,time=0;
+function resize(){
+  const viewportW=window.innerWidth,viewportH=window.innerHeight;
+  dispW=viewportW*0.6;
+  dispH=viewportH-80;
+  canvas.style.width=dispW+'px';
+  canvas.style.height=dispH+'px';
+  w=canvas.width=dispW*dpr;
+  h=canvas.height=dispH*dpr;
+  mouseX=dispW/2;
+  mouseY=dispH/2;
+  ctx.setTransform(1,0,0,1,0,0);
+  ctx.scale(dpr,dpr)
+}
+window.addEventListener('resize',resize);
+canvas.addEventListener('pointermove',e=>{const rect=canvas.getBoundingClientRect();mouseX=e.clientX-rect.left;mouseY=e.clientY-rect.top});
+window.addEventListener('scroll',()=>{scrollY=window.pageYOffset});
 
-function drawFloor(y,depth){const parallaxX=(mouseX-w/2)*depth*0.08,parallaxY=(mouseY-h/2)*depth*0.05-scrollY*depth*0.15;ctx.save();ctx.translate(parallaxX,parallaxY);const floorW=Math.min(500,w*0.8),floorX=w/2-floorW/2;
+function drawFloor(y,depth){const parallaxX=(mouseX-dispW/2)*depth*0.08,parallaxY=(mouseY-dispH/2)*depth*0.05-scrollY*depth*0.15;ctx.save();ctx.translate(parallaxX,parallaxY);const floorW=Math.min(500,dispW*0.8),floorX=dispW/2-floorW/2;
 ctx.fillStyle=depth>0.5?'#C9A98C':'#E8DCCB';ctx.fillRect(floorX,y,floorW,18);ctx.strokeStyle='#2F4A63';ctx.lineWidth=3;ctx.strokeRect(floorX,y,floorW,18);
 // Windows
 const numWindows=Math.floor(floorW/110);for(let i=0;i<numWindows;i++){const winX=floorX+40+i*110,winY=y-75,winW=55,winH=65;ctx.fillStyle='#7FA7C9';ctx.globalAlpha=0.65;ctx.fillRect(winX,winY,winW,winH);ctx.globalAlpha=1;ctx.strokeRect(winX,winY,winW,winH);ctx.beginPath();ctx.moveTo(winX+winW/2,winY);ctx.lineTo(winX+winW/2,winY+winH);ctx.moveTo(winX,winY+winH/2);ctx.lineTo(winX+winW,winY+winH/2);ctx.stroke()}
-// Stairs on some floors
+// Stairs
 if(depth>0.6){ctx.strokeStyle='#2F4A63';ctx.lineWidth=2;for(let s=0;s<7;s++){const stairY=y-s*11;ctx.beginPath();ctx.moveTo(floorX+floorW-90,stairY);ctx.lineTo(floorX+floorW-45,stairY);ctx.stroke()}}
 ctx.restore()}
 
-function draw(){ctx.clearRect(0,0,w,h);const buildingHeight=h*0.8,floorHeight=buildingHeight/5.5,baseY=h*0.85,breath=Math.sin(time)*4;for(let floor=0;floor<5;floor++){const y=baseY-floor*floorHeight+breath*(floor*0.3);drawFloor(y,1-floor*0.15)}
+function draw(){ctx.clearRect(0,0,w,h);const buildingHeight=dispH*0.8,floorHeight=buildingHeight/5.5,baseY=dispH*0.85,breath=Math.sin(time)*4;
+for(let floor=0;floor<5;floor++){const y=baseY-floor*floorHeight+breath*(floor*0.3);drawFloor(y,1-floor*0.15)}
 time+=0.025;requestAnimationFrame(draw)}
-if(!window.matchMedia('(prefers-reduced-motion:reduce)').matches)draw();
+
+requestAnimationFrame(()=>{resize();if(!window.matchMedia('(prefers-reduced-motion:reduce)').matches)draw()});
 </script>
 </body>
 </html>

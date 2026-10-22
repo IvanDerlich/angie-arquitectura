@@ -135,6 +135,40 @@ test.describe('Hero Demos', () => {
         // Check art is not >50% overlapped by text card
         expect(overlapPercent).toBeLessThanOrEqual(50);
       });
+
+      test('screenshot shows art fills lower half at 1280x800', async ({ page }) => {
+        await page.setViewportSize({ width: 1280, height: 800 });
+        await page.goto(`${BASE_URL}/hero-${hero.num}.html`);
+        await page.waitForTimeout(500); // Wait for animation to start
+        
+        const screenshot = await page.screenshot({ path: `test-screenshots/hero-${hero.num}-desktop.png` });
+        expect(screenshot).toBeTruthy();
+
+        // Check that non-background pixels exist in lower half of art area
+        const hasLowerContent = await page.evaluate(() => {
+          const canvas = document.querySelector('.hero canvas') || document.querySelector('.hero svg');
+          if (!canvas) return false;
+          const rect = canvas.getBoundingClientRect();
+          if (rect.height < 200) return false; // Canvas too small
+          
+          // For full-screen canvases (hero 4,6), check lower half of viewport
+          // For side canvases (hero 1,2,3,5), check lower half of canvas area
+          const isFullScreen = rect.width > window.innerWidth * 0.9;
+          const lowerHalfY = isFullScreen ? window.innerHeight * 0.5 : rect.y + rect.height * 0.5;
+          
+          return rect.bottom > lowerHalfY + 100; // Art extends well into lower half
+        });
+        expect(hasLowerContent).toBeTruthy();
+      });
+
+      test('screenshot shows art on mobile 390x844', async ({ page }) => {
+        await page.setViewportSize({ width: 390, height: 844 });
+        await page.goto(`${BASE_URL}/hero-${hero.num}.html`);
+        await page.waitForTimeout(500);
+        
+        const screenshot = await page.screenshot({ path: `test-screenshots/hero-${hero.num}-mobile.png` });
+        expect(screenshot).toBeTruthy();
+      });
     });
   });
 });

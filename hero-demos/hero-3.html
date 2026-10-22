@@ -8,12 +8,12 @@
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 .hero{position:relative;min-height:100vh;display:flex;align-items:stretch;background:#E8DCCB;overflow:hidden}
-.colonnade-canvas{position:absolute;top:80px;right:0;bottom:0;width:60%;pointer-events:all}
+.colonnade-canvas{position:absolute;top:80px;right:0;bottom:0;left:40%;pointer-events:all}
 .hero-content{position:relative;z-index:10;width:40%;max-width:600px;background:rgba(248,246,242,0.98);padding:60px 40px;display:flex;flex-direction:column;justify-content:center;backdrop-filter:blur(2px);margin-left:40px;align-self:center}
 .hero-content .hero-subtitle,.hero-content .hero-title,.hero-content .hero-tagline{color:#2F4A63}
 .hero-title .word{display:inline-block;white-space:nowrap}
 @media (prefers-reduced-motion:reduce){.colonnade-canvas{display:none}}
-.demo-note{position:fixed;top:80px;right:20px;background:white;padding:12px 20px;border-radius:8px;box-shadow:0 4px 12px rgba(0,0,0,0.1);font-size:14px;color:#2F4A63;z-index:2000}
+.demo-note{position:fixed;top:20px;left:20px;background:white;padding:12px 20px;border-radius:8px;box-shadow:0 4px 12px rgba(0,0,0,0.1);font-size:14px;color:#2F4A63;z-index:2000}
 @media (max-width:768px){.demo-note{display:none}.hero{flex-direction:column}.hero-content{width:100%;max-width:none;padding:40px 24px;margin:0;background:rgba(248,246,242,0.95)}.colonnade-canvas{position:absolute;inset:80px 0 0 0;width:100%;opacity:0.35;z-index:1}}
 </style>
 </head>
@@ -36,17 +36,32 @@
 <script>
 const title=document.getElementById('title'),text='Espacios para habitar con calma';text.split(' ').forEach((word,wi)=>{const wordSpan=document.createElement('span');wordSpan.className='word';word.split('').forEach(char=>{const span=document.createElement('span');span.textContent=char;wordSpan.appendChild(span);});title.appendChild(wordSpan);if(wi<text.split(' ').length-1)title.appendChild(document.createTextNode(' '));});
 
-const canvas=document.getElementById('canvas'),ctx=canvas.getContext('2d');let w=canvas.width=canvas.offsetWidth,h=canvas.height=canvas.offsetHeight,mouseX=w/2,time=0;window.addEventListener('resize',()=>{w=canvas.width=canvas.offsetWidth;h=canvas.height=canvas.offsetHeight});canvas.addEventListener('pointermove',e=>{const rect=canvas.getBoundingClientRect();mouseX=e.clientX-rect.left});
+const canvas=document.getElementById('canvas'),ctx=canvas.getContext('2d'),dpr=window.devicePixelRatio||1;let w,h,dispW,dispH,mouseX=0,time=0;
+function resize(){
+  const viewportW=window.innerWidth,viewportH=window.innerHeight;
+  dispW=viewportW*0.6;
+  dispH=viewportH-80;
+  canvas.style.width=dispW+'px';
+  canvas.style.height=dispH+'px';
+  w=canvas.width=dispW*dpr;
+  h=canvas.height=dispH*dpr;
+  ctx.setTransform(1,0,0,1,0,0);
+  ctx.scale(dpr,dpr)
+}
+window.addEventListener('resize',resize);
+canvas.addEventListener('pointermove',e=>{const rect=canvas.getBoundingClientRect();mouseX=e.clientX-rect.left});
 
-function draw(){ctx.clearRect(0,0,w,h);const sunPos=time*0.8+(mouseX/w)*200,numArches=Math.ceil(w/110)+1;for(let i=-1;i<numArches;i++){const x=i*110,archW=90,archH=h*0.85,base=h*0.92,lightDist=Math.abs((x+archW/2)-sunPos%(w+220)),lightIntensity=Math.max(0,1-lightDist/250);
+function draw(){ctx.clearRect(0,0,w,h);const sunPos=time*0.8+mouseX*1.5,numArches=Math.ceil(dispW/110)+1;
+for(let i=-1;i<numArches;i++){const x=i*110,archW=90,archH=dispH*0.85,base=dispH*0.92,lightDist=Math.abs((x+archW/2)-sunPos%(dispW+220)),lightIntensity=Math.max(0,1-lightDist/250);
 // Crisp shadow polygon
-if(lightIntensity>0.2){const shadowShift=(sunPos-x)/3;ctx.fillStyle=`rgba(47,74,99,${lightIntensity*0.25})`;ctx.beginPath();ctx.moveTo(x+20,base);ctx.lineTo(x+20+shadowShift,base+h*0.08);ctx.lineTo(x+archW-20+shadowShift,base+h*0.08);ctx.lineTo(x+archW-20,base);ctx.closePath();ctx.fill()}
+if(lightIntensity>0.2){const shadowShift=(sunPos-x)/3;ctx.fillStyle=`rgba(47,74,99,${lightIntensity*0.25})`;ctx.beginPath();ctx.moveTo(x+20,base);ctx.lineTo(x+20+shadowShift,base+dispH*0.08);ctx.lineTo(x+archW-20+shadowShift,base+dispH*0.08);ctx.lineTo(x+archW-20,base);ctx.closePath();ctx.fill()}
 // Arch structure
 ctx.fillStyle=lightIntensity>0.5?'#F8F6F2':'#C9A98C';ctx.fillRect(x+8,base-archH,22,archH);ctx.fillRect(x+archW-30,base-archH,22,archH);ctx.beginPath();ctx.arc(x+archW/2,base-archH,archW/2-8,Math.PI,0);ctx.fill();ctx.strokeStyle='#2F4A63';ctx.lineWidth=3;ctx.stroke();ctx.fillRect(x,base-archH-12,archW,12);ctx.strokeRect(x,base-archH-12,archW,12);
 // Light highlight
 if(lightIntensity>0.4){ctx.fillStyle=`rgba(127,167,201,${lightIntensity*0.3})`;ctx.fillRect(x+8,base-archH,archW-16,archH)}}
 time+=1.5;requestAnimationFrame(draw)}
-if(!window.matchMedia('(prefers-reduced-motion:reduce)').matches)draw();
+
+requestAnimationFrame(()=>{resize();if(!window.matchMedia('(prefers-reduced-motion:reduce)').matches)draw()});
 </script>
 </body>
 </html>

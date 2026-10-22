@@ -13,7 +13,7 @@
 .hero-content .hero-subtitle,.hero-content .hero-title,.hero-content .hero-tagline{color:#2F4A63}
 .hero-title .word{display:inline-block;white-space:nowrap}
 @media (prefers-reduced-motion:reduce){.golden-canvas{display:none}}
-.demo-note{position:fixed;top:80px;right:20px;background:white;padding:12px 20px;border-radius:8px;box-shadow:0 4px 12px rgba(0,0,0,0.1);font-size:14px;color:#2F4A63;z-index:2000}
+.demo-note{position:fixed;top:20px;left:20px;background:white;padding:12px 20px;border-radius:8px;box-shadow:0 4px 12px rgba(0,0,0,0.1);font-size:14px;color:#2F4A63;z-index:2000}
 @media (max-width:768px){.demo-note{display:none}.hero-content{padding:24px}}
 </style>
 </head>
@@ -45,8 +45,8 @@ const spiralProgress=Math.min(1,(time%90)/90),maxSteps=10;ctx.strokeStyle='#7FA7
 // Compass arcs - faster, show most by 1.5s
 const arcProgress=Math.min(1,(time%90)/90);for(let i=0;i<6;i++){const r=50+i*60,startAngle=i*Math.PI/3,sweep=arcProgress*Math.PI*2*(0.8+i*0.05),mouseDistort=(mouseY/h-0.5)*0.3;ctx.strokeStyle=colors[i%3];ctx.lineWidth=2+Math.sin(time*0.05+i)*0.5;ctx.globalAlpha=0.7;ctx.beginPath();ctx.arc(0,0,r+mouseDistort*r*0.2,startAngle,startAngle+sweep);ctx.stroke();ctx.globalAlpha=1}
 // Golden rectangles - faster
-ctx.strokeStyle='#2F4A63';ctx.lineWidth=1.5;ctx.globalAlpha=0.4;let rectW=300,rectH=rectW/phi,rects=7;for(let i=0;i<rects;i++){if(i/rects>(time%90)/90)break;ctx.strokeRect(-rectW/2,-rectH/2,rectW,rectH);rectW/=phi;rectH/=phi}
-ctx.restore();time+=1.8;requestAnimationFrame(draw)}
+ctx.strokeStyle='#2F4A63';ctx.lineWidth=1.5;let rectW=300,rectH=rectW/phi,rects=7;for(let i=0;i<rects;i++){if(i/rects>(time%90)/90)break;ctx.globalAlpha=0.4;ctx.strokeRect(-rectW/2,-rectH/2,rectW,rectH);rectW/=phi;rectH/=phi}
+ctx.globalAlpha=1;ctx.restore();time+=1.8;requestAnimationFrame(draw)}
 if(!window.matchMedia('(prefers-reduced-motion:reduce)').matches)draw();
 </script>
 </body>

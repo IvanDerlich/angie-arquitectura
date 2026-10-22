@@ -8,12 +8,12 @@
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 .hero{position:relative;min-height:100vh;display:flex;align-items:stretch;background:#F8F6F2;overflow:hidden}
-.blueprint-canvas{position:absolute;top:80px;right:0;bottom:0;width:60%;pointer-events:all}
+.blueprint-canvas{position:absolute;top:80px;right:0;bottom:0;left:40%;pointer-events:all}
 .hero-content{position:relative;z-index:10;width:40%;max-width:600px;background:rgba(248,246,242,0.98);padding:60px 40px;display:flex;flex-direction:column;justify-content:center;backdrop-filter:blur(2px);margin-left:40px;align-self:center}
 .hero-content .hero-subtitle,.hero-content .hero-title,.hero-content .hero-tagline{color:#2F4A63}
 .hero-title .word{display:inline-block;white-space:nowrap}
 @media (prefers-reduced-motion:reduce){.blueprint-canvas{display:none}}
-.demo-note{position:fixed;top:80px;right:20px;background:white;padding:12px 20px;border-radius:8px;box-shadow:0 4px 12px rgba(0,0,0,0.1);font-size:14px;color:#2F4A63;z-index:2000}
+.demo-note{position:fixed;top:20px;left:20px;background:white;padding:12px 20px;border-radius:8px;box-shadow:0 4px 12px rgba(0,0,0,0.1);font-size:14px;color:#2F4A63;z-index:2000}
 @media (max-width:768px){.demo-note{display:none}.hero{flex-direction:column}.hero-content{width:100%;max-width:none;padding:40px 24px;margin:0;background:rgba(248,246,242,0.95)}.blueprint-canvas{position:absolute;inset:80px 0 0 0;width:100%;opacity:0.3;z-index:1}}
 </style>
 </head>
@@ -36,15 +36,29 @@
 <script>
 const title=document.getElementById('title'),text='Espacios para habitar con calma';text.split(' ').forEach((word,wi)=>{const wordSpan=document.createElement('span');wordSpan.className='word';word.split('').forEach(char=>{const span=document.createElement('span');span.textContent=char;wordSpan.appendChild(span);});title.appendChild(wordSpan);if(wi<text.split(' ').length-1)title.appendChild(document.createTextNode(' '));});
 
-const canvas=document.getElementById('canvas'),ctx=canvas.getContext('2d');let w=canvas.width=canvas.offsetWidth,h=canvas.height=canvas.offsetHeight,mouseX=w/2,mouseY=h/2,offset=0,ripples=[];window.addEventListener('resize',()=>{w=canvas.width=canvas.offsetWidth;h=canvas.height=canvas.offsetHeight});canvas.addEventListener('pointermove',e=>{const rect=canvas.getBoundingClientRect();mouseX=e.clientX-rect.left;mouseY=e.clientY-rect.top;ripples.push({x:mouseX,y:mouseY,r:0,life:1})});
+const canvas=document.getElementById('canvas'),ctx=canvas.getContext('2d'),dpr=window.devicePixelRatio||1;let w,h,dispW,dispH,mouseX=0,mouseY=0,offset=0,ripples=[];
+function resize(){
+  // Compute dimensions from viewport and CSS positioning
+  const viewportW=window.innerWidth,viewportH=window.innerHeight;
+  dispW=viewportW*0.6; // width:60%
+  dispH=viewportH-80;  // top:80px to bottom:0
+  canvas.style.width=dispW+'px';
+  canvas.style.height=dispH+'px';
+  w=canvas.width=dispW*dpr;
+  h=canvas.height=dispH*dpr;
+  ctx.setTransform(1,0,0,1,0,0);
+  ctx.scale(dpr,dpr)
+}
+window.addEventListener('resize',resize);
+canvas.addEventListener('pointermove',e=>{const rect=canvas.getBoundingClientRect();mouseX=e.clientX-rect.left;mouseY=e.clientY-rect.top;ripples.push({x:mouseX,y:mouseY,r:0,life:1})});
 
 function drawWall(x1,y1,x2,y2,thick=6){ctx.strokeStyle='#2F4A63';ctx.lineWidth=thick;ctx.beginPath();ctx.moveTo(x1,y1);ctx.lineTo(x2,y2);ctx.stroke()}
 function drawDoor(x,y,width,angle=0){ctx.save();ctx.translate(x,y);ctx.rotate(angle);ctx.strokeStyle='#7FA7C9';ctx.lineWidth=3;ctx.beginPath();ctx.moveTo(0,0);ctx.lineTo(width,0);ctx.stroke();ctx.beginPath();ctx.arc(0,0,width,0,Math.PI/2);ctx.stroke();ctx.restore()}
 function drawDimLine(x1,y1,x2,y2,text){ctx.strokeStyle='#7FA7C9';ctx.lineWidth=2;ctx.setLineDash([8,8]);ctx.beginPath();ctx.moveTo(x1,y1);ctx.lineTo(x2,y2);ctx.stroke();ctx.setLineDash([]);ctx.fillStyle='#2F4A63';ctx.font='14px monospace';ctx.fillText(text,(x1+x2)/2,(y1+y2)/2-8)}
 
-function draw(){ctx.clearRect(0,0,w,h);const cx=w/2,cy=h/2,scale=Math.min(w/900,h/700);ctx.save();ctx.translate(cx,cy);ctx.scale(scale,scale);const wallOffset=Math.sin(offset)*4;
-// Outer walls - thicker
-drawWall(-400,-280+wallOffset,400,-280+wallOffset,8);drawWall(400,-280+wallOffset,400,280-wallOffset,8);drawWall(400,280-wallOffset,-400,280-wallOffset,8);drawWall(-400,280-wallOffset,-400,-280+wallOffset,8);
+function draw(){ctx.clearRect(0,0,w,h);const cx=dispW/2,cy=dispH/2,scale=Math.min(dispW/900,dispH/700);ctx.save();ctx.translate(cx,cy);ctx.scale(scale,scale);const wallOffset=Math.sin(offset)*4,mouseInfluence=Math.sqrt((mouseX-cx)**2+(mouseY-cy)**2)/100;
+// Outer walls - animated thickness
+drawWall(-400,-280+wallOffset,400,-280+wallOffset,8+mouseInfluence);drawWall(400,-280+wallOffset,400,280-wallOffset,8+mouseInfluence);drawWall(400,280-wallOffset,-400,280-wallOffset,8+mouseInfluence);drawWall(-400,280-wallOffset,-400,-280+wallOffset,8+mouseInfluence);
 // Interior walls
 drawWall(-400,-80,150,-80,6);drawWall(150,-280,150,120,6);drawWall(-150,-280,-150,280,6);drawWall(-400,80,400,80,6);drawWall(80,80,80,280,6);drawWall(-400,180,400,180,6);
 // Doors
@@ -54,10 +68,12 @@ drawDimLine(-400,-310,400,-310,'8.00m');drawDimLine(430,-280,430,280,'5.60m');dr
 ctx.restore();
 
 // Pointer ripples
-ripples=ripples.filter(r=>{r.r+=6;r.life-=0.02;if(r.life<=0)return false;ctx.strokeStyle=`rgba(127,167,201,${r.life*0.8})`;ctx.lineWidth=3;ctx.beginPath();ctx.arc(r.x,r.y,r.r,0,Math.PI*2);ctx.stroke();return true});
+ripples=ripples.filter(r=>{r.r+=6;r.life-=0.02;if(r.life<=0)return false;const alpha=r.life*0.8;ctx.strokeStyle=`rgba(127,167,201,${alpha})`;ctx.lineWidth=3;ctx.beginPath();ctx.arc(r.x,r.y,r.r,0,Math.PI*2);ctx.stroke();return true});
 
 offset+=0.02;requestAnimationFrame(draw)}
-if(!window.matchMedia('(prefers-reduced-motion:reduce)').matches)draw();
+
+// Wait for layout then initialize
+requestAnimationFrame(()=>{resize();if(!window.matchMedia('(prefers-reduced-motion:reduce)').matches)draw()});
 </script>
 </body>
 </html>

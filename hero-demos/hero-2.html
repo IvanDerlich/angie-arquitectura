@@ -8,12 +8,12 @@
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 .hero{position:relative;min-height:100vh;display:flex;align-items:stretch;background:linear-gradient(135deg,#F8F6F2 0%,#E8DCCB 100%);overflow:hidden}
-.iso-canvas{position:absolute;top:80px;right:0;bottom:0;width:60%;pointer-events:all}
+.iso-canvas{position:absolute;top:80px;right:0;bottom:0;left:40%;pointer-events:all}
 .hero-content{position:relative;z-index:10;width:40%;max-width:600px;background:rgba(248,246,242,0.98);padding:60px 40px;display:flex;flex-direction:column;justify-content:center;backdrop-filter:blur(2px);margin-left:40px;align-self:center}
 .hero-content .hero-subtitle,.hero-content .hero-title,.hero-content .hero-tagline{color:#2F4A63}
 .hero-title .word{display:inline-block;white-space:nowrap}
 @media (prefers-reduced-motion:reduce){.iso-canvas{display:none}}
-.demo-note{position:fixed;top:80px;right:20px;background:white;padding:12px 20px;border-radius:8px;box-shadow:0 4px 12px rgba(0,0,0,0.1);font-size:14px;color:#2F4A63;z-index:2000}
+.demo-note{position:fixed;top:20px;left:20px;background:white;padding:12px 20px;border-radius:8px;box-shadow:0 4px 12px rgba(0,0,0,0.1);font-size:14px;color:#2F4A63;z-index:2000}
 @media (max-width:768px){.demo-note{display:none}.hero{flex-direction:column}.hero-content{width:100%;max-width:none;padding:40px 24px;margin:0;background:rgba(248,246,242,0.95)}.iso-canvas{position:absolute;inset:80px 0 0 0;width:100%;opacity:0.35;z-index:1}}
 </style>
 </head>
@@ -36,7 +36,20 @@
 <script>
 const title=document.getElementById('title'),text='Espacios para habitar con calma';text.split(' ').forEach((word,wi)=>{const wordSpan=document.createElement('span');wordSpan.className='word';word.split('').forEach(char=>{const span=document.createElement('span');span.textContent=char;wordSpan.appendChild(span);});title.appendChild(wordSpan);if(wi<text.split(' ').length-1)title.appendChild(document.createTextNode(' '));});
 
-const canvas=document.getElementById('canvas'),ctx=canvas.getContext('2d');let w=canvas.width=canvas.offsetWidth,h=canvas.height=canvas.offsetHeight,mouseX=w/2,mouseY=h/2,time=0;window.addEventListener('resize',()=>{w=canvas.width=canvas.offsetWidth;h=canvas.height=canvas.offsetHeight});canvas.addEventListener('pointermove',e=>{const rect=canvas.getBoundingClientRect();mouseX=e.clientX-rect.left;mouseY=e.clientY-rect.top});
+const canvas=document.getElementById('canvas'),ctx=canvas.getContext('2d'),dpr=window.devicePixelRatio||1;let w,h,dispW,dispH,mouseX=0,mouseY=0,time=0;
+function resize(){
+  const viewportW=window.innerWidth,viewportH=window.innerHeight;
+  dispW=viewportW*0.6;
+  dispH=viewportH-80;
+  canvas.style.width=dispW+'px';
+  canvas.style.height=dispH+'px';
+  w=canvas.width=dispW*dpr;
+  h=canvas.height=dispH*dpr;
+  ctx.setTransform(1,0,0,1,0,0);
+  ctx.scale(dpr,dpr)
+}
+window.addEventListener('resize',resize);
+canvas.addEventListener('pointermove',e=>{const rect=canvas.getBoundingClientRect();mouseX=e.clientX-rect.left;mouseY=e.clientY-rect.top});
 
 function isoBox(x,y,z,w,h,d,colors){ctx.save();ctx.translate(x+y*0.5,z-y*0.3);
 // Top
@@ -46,9 +59,11 @@ ctx.fillStyle=colors[1];ctx.beginPath();ctx.moveTo(0,0);ctx.lineTo(0,d);ctx.line
 // Right
 ctx.fillStyle=colors[2];ctx.beginPath();ctx.moveTo(w,h*0.5);ctx.lineTo(w,d+h*0.5);ctx.lineTo(w,d);ctx.lineTo(w,h*0.5);ctx.closePath();ctx.fill();ctx.stroke();ctx.restore()}
 
-function draw(){ctx.clearRect(0,0,w,h);ctx.save();const targetHeight=h*0.7,floorHeight=targetHeight/6,cx=w/2,cy=h*0.65,influence=(mouseX/w-0.5)*25,buildProgress=Math.abs(Math.sin(time*0.3));const floors=6;for(let floor=0;floor<floors;floor++){const progress=Math.max(0,Math.min(1,(buildProgress-floor*0.12)*2.5)),yOffset=-floor*floorHeight*progress+150*(1-progress),xOffset=influence*progress;ctx.save();ctx.translate(cx,cy-floor*floorHeight*progress);isoBox(-120+xOffset,yOffset,0,100,50,floorHeight*0.9,['#7FA7C9','#5A8DB0','#4A7D9F']);isoBox(40+xOffset,yOffset,0,80,50,floorHeight*0.9,['#C9A98C','#B39373','#9D7D63']);if(floor>0)isoBox(-30+xOffset,yOffset,0,60,50,floorHeight*0.8,['#E8DCCB','#D8CCB3','#C8BC9B']);ctx.restore()}
-ctx.restore();time+=0.03;requestAnimationFrame(draw)}
-if(!window.matchMedia('(prefers-reduced-motion:reduce)').matches)draw();
+function draw(){ctx.clearRect(0,0,w,h);const targetHeight=dispH*0.7,floorHeight=targetHeight/6,cx=dispW/2,cy=dispH*0.65,influence=(mouseX/dispW-0.5)*40,buildProgress=Math.abs(Math.sin(time*0.3)),floors=6;
+for(let floor=0;floor<floors;floor++){const progress=Math.max(0,Math.min(1,(buildProgress-floor*0.12)*2.5)),yOffset=-floor*floorHeight*progress+150*(1-progress),xOffset=influence*progress;ctx.save();ctx.translate(cx,cy-floor*floorHeight*progress);isoBox(-120+xOffset,yOffset,0,100,50,floorHeight*0.9,['#7FA7C9','#5A8DB0','#4A7D9F']);isoBox(40+xOffset,yOffset,0,80,50,floorHeight*0.9,['#C9A98C','#B39373','#9D7D63']);if(floor>0)isoBox(-30+xOffset,yOffset,0,60,50,floorHeight*0.8,['#E8DCCB','#D8CCB3','#C8BC9B']);ctx.restore()}
+time+=0.03;requestAnimationFrame(draw)}
+
+requestAnimationFrame(()=>{resize();if(!window.matchMedia('(prefers-reduced-motion:reduce)').matches)draw()});
 </script>
 </body>
 </html>
