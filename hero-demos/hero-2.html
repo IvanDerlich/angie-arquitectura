@@ -6,7 +6,7 @@
     <title>Hero 2: Render to Real - Ángeles Arquitectura</title>
     <link rel="stylesheet" href="../styles.css">
     <style>
-        .hero { position: relative; min-height: 100vh; display: flex; align-items: center; background: #2F4A63; overflow: hidden; }
+        .hero { position: relative; min-height: 100vh; display: flex; align-items: center; background: #F8F6F2; overflow: hidden; }
         
         .before-after-container { position: absolute; inset: 0; z-index: 1; }
         
@@ -14,19 +14,21 @@
         
         .before-image, .after-image { position: absolute; inset: 0; }
         
-        .before-image img, .after-image img { width: 100%; height: 100%; object-fit: cover; opacity: 0.2; }
+        .before-image img, .after-image img { width: 100%; height: 100%; object-fit: cover; }
         
         .after-image { clip-path: inset(0 50% 0 0); }
         
-        .slider-handle { position: absolute; left: 50%; top: 0; bottom: 0; width: 4px; background: white; transform: translateX(-50%); cursor: ew-resize; z-index: 10; box-shadow: 0 0 10px rgba(0,0,0,0.3); }
+        .slider-handle { position: absolute; left: 50%; top: 0; bottom: 0; width: 4px; background: white; transform: translateX(-50%); cursor: ew-resize; z-index: 10; box-shadow: 0 0 10px rgba(0,0,0,0.3); touch-action: none; }
         
-        .slider-button { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 48px; height: 48px; background: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 12px rgba(0,0,0,0.2); }
+        .slider-button { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 48px; height: 48px; background: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 12px rgba(0,0,0,0.2); pointer-events: none; }
         
         .slider-button::before, .slider-button::after { content: ''; position: absolute; width: 10px; height: 10px; border: solid #2F4A63; }
         
         .slider-button::before { border-width: 0 2px 2px 0; transform: rotate(135deg); left: 12px; }
         
         .slider-button::after { border-width: 0 2px 2px 0; transform: rotate(-45deg); right: 12px; }
+
+        .text-backdrop { position: absolute; inset: 0; background: rgba(47,74,99,0.5); z-index: 5; pointer-events: none; }
         
         .hero-content { position: relative; z-index: 10; color: white; }
         
@@ -59,6 +61,7 @@
                 <div class="slider-handle" id="slider"><div class="slider-button"></div></div>
             </div>
         </div>
+        <div class="text-backdrop"></div>
         <div class="container"><div class="hero-content">
             <p class="hero-subtitle">ARQ. ANGIE SERRANO SQUADRITO</p>
             <h1 class="hero-title">Espacios para habitar con calma.</h1>
@@ -71,7 +74,7 @@
     </section>
     <div style="text-align:center;padding:40px 20px;background:white;"><a href="index.html" style="color:#7FA7C9;text-decoration:none;font-weight:500;">← Ver todas las opciones</a></div>
     <script>
-const wrapper=document.getElementById('ba-wrapper'),slider=document.getElementById('slider'),afterImg=document.getElementById('after-img');let isDragging=false,autoPlay=true,autoDir=1,autoPos=50;function updateSlider(pos){const pct=Math.max(0,Math.min(100,pos));slider.style.left=pct+'%';afterImg.style.clipPath='inset(0 '+(100-pct)+'% 0 0)';}function handleMove(e){if(!isDragging&&!autoPlay)return;const rect=wrapper.getBoundingClientRect(),x=(e.touches?e.touches[0].clientX:e.clientX)-rect.left,pct=(x/rect.width)*100;updateSlider(pct);if(isDragging)autoPlay=false;}slider.addEventListener('mousedown',()=>isDragging=true);slider.addEventListener('touchstart',()=>isDragging=true);document.addEventListener('mouseup',()=>isDragging=false);document.addEventListener('touchend',()=>isDragging=false);document.addEventListener('mousemove',handleMove);document.addEventListener('touchmove',handleMove);function animate(){if(autoPlay){autoPos+=autoDir*0.3;if(autoPos>=70||autoPos<=30)autoDir*=-1;updateSlider(autoPos);}requestAnimationFrame(animate);}if(!window.matchMedia('(prefers-reduced-motion: reduce)').matches){animate();}else{autoPlay=false;updateSlider(50);}
+const wrapper=document.getElementById('ba-wrapper'),slider=document.getElementById('slider'),afterImg=document.getElementById('after-img');let isDragging=false,autoPlay=true,autoPos=50;function updateSlider(pos){const pct=Math.max(0,Math.min(100,pos));slider.style.left=pct+'%';afterImg.style.clipPath='inset(0 '+(100-pct)+'% 0 0)';}function getPosition(e){const rect=wrapper.getBoundingClientRect(),x=(e.touches?e.touches[0].clientX:e.clientX)-rect.left;return(x/rect.width)*100;}function handleStart(e){isDragging=true;autoPlay=false;updateSlider(getPosition(e));}function handleMove(e){if(isDragging){e.preventDefault();updateSlider(getPosition(e));}}function handleEnd(){isDragging=false;}slider.addEventListener('mousedown',handleStart);slider.addEventListener('touchstart',handleStart,{passive:false});wrapper.addEventListener('mousedown',handleStart);wrapper.addEventListener('touchstart',handleStart,{passive:false});document.addEventListener('mouseup',handleEnd);document.addEventListener('touchend',handleEnd);document.addEventListener('mousemove',handleMove);document.addEventListener('touchmove',handleMove,{passive:false});function animate(){if(autoPlay){autoPos+=0.3*(autoPos>=70||autoPos<=30?-1:1);if(autoPos>70)autoPos=70;if(autoPos<30)autoPos=30;updateSlider(autoPos);}requestAnimationFrame(animate);}if(!window.matchMedia('(prefers-reduced-motion: reduce)').matches){animate();}else{autoPlay=false;updateSlider(50);}
     </script>
 </body>
 </html>

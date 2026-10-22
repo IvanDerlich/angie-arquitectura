@@ -51,11 +51,18 @@
             animation: fadeIn 1.5s ease-out 2.5s forwards;
         }
 
+        .hero-image-reveal::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to bottom, rgba(47,74,99,0.3) 0%, rgba(47,74,99,0.6) 100%);
+            z-index: 1;
+        }
+
         .hero-image-reveal img {
             width: 100%;
             height: 100%;
             object-fit: cover;
-            opacity: 0.15;
         }
 
         @keyframes fadeIn {
