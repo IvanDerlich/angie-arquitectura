@@ -7,22 +7,21 @@
 <link rel="stylesheet" href="../styles.css">
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
-.hero{position:relative;min-height:100vh;display:flex;align-items:center;background:linear-gradient(to bottom,#F8F6F2,#E8DCCB);overflow:hidden}
-.section-canvas{position:absolute;inset:0}
-.hero-content{position:relative;z-index:10;max-width:800px;background:rgba(248,246,242,0.95);padding:40px;border-radius:12px;backdrop-filter:blur(10px)}
+.hero{position:relative;min-height:100vh;display:flex;align-items:stretch;background:linear-gradient(to bottom,#F8F6F2,#E8DCCB);overflow:hidden}
+.section-canvas{position:absolute;top:80px;right:0;bottom:0;width:60%;pointer-events:all}
+.hero-content{position:relative;z-index:10;width:40%;max-width:600px;background:rgba(248,246,242,0.98);padding:60px 40px;display:flex;flex-direction:column;justify-content:center;backdrop-filter:blur(2px);margin-left:40px;align-self:center}
 .hero-content .hero-subtitle,.hero-content .hero-title,.hero-content .hero-tagline{color:#2F4A63}
 .hero-title .word{display:inline-block;white-space:nowrap}
 @media (prefers-reduced-motion:reduce){.section-canvas{display:none}}
 .demo-note{position:fixed;top:80px;right:20px;background:white;padding:12px 20px;border-radius:8px;box-shadow:0 4px 12px rgba(0,0,0,0.1);font-size:14px;color:#2F4A63;z-index:2000}
-@media (max-width:768px){.demo-note{display:none}.hero-content{padding:24px}}
+@media (max-width:768px){.demo-note{display:none}.hero{flex-direction:column}.hero-content{width:100%;max-width:none;padding:40px 24px;margin:0;background:rgba(248,246,242,0.95)}.section-canvas{position:absolute;inset:80px 0 0 0;width:100%;opacity:0.35;z-index:1}}
 </style>
 </head>
 <body>
 <div class="demo-note">Opción 5: Corte de Edificio</div>
 <header class="header" id="header"><div class="container"><div class="header-content"><a href="../index.html" class="logo">Ángeles Arquitectura</a><nav class="nav" id="nav"><a href="../index.html#obras" class="nav-link">Obras</a><a href="../index.html#proyectos" class="nav-link">Proyectos</a><a href="../index.html#sobre-mi" class="nav-link">Sobre mí</a><a href="../index.html#servicios" class="nav-link">Servicios</a><a href="../index.html#precios" class="nav-link">Precios</a><a href="../index.html#contacto" class="nav-link">Contacto</a></nav><a href="https://wa.me/542617685148" class="whatsapp-btn-header" target="_blank"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z" fill="currentColor"/></svg>WhatsApp</a><button class="mobile-menu-btn" id="mobile-menu-btn"><span></span><span></span><span></span></button></div></div></header>
 <section class="hero" id="hero">
-<canvas class="section-canvas" id="canvas"></canvas>
-<div class="container"><div class="hero-content">
+<div class="hero-content">
 <p class="hero-subtitle">ARQ. ANGIE SERRANO SQUADRITO</p>
 <h1 class="hero-title" id="title"></h1>
 <p class="hero-tagline">Arquitectura que nace del lugar y de quienes lo habitan.</p>
@@ -30,24 +29,25 @@
 <a href="../index.html#obras" class="btn btn-secondary">Ver mis obras</a>
 <a href="https://wa.me/542617685148" class="btn btn-primary" target="_blank"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z" fill="currentColor"/></svg>Escribime por WhatsApp</a>
 </div>
-</div></div>
+</div>
+<canvas class="section-canvas" id="canvas"></canvas>
 </section>
 <div style="text-align:center;padding:40px 20px;background:white"><a href="index.html" style="color:#7FA7C9;text-decoration:none;font-weight:500">← Ver todas las opciones</a></div>
 <script>
 const title=document.getElementById('title'),text='Espacios para habitar con calma';text.split(' ').forEach((word,wi)=>{const wordSpan=document.createElement('span');wordSpan.className='word';word.split('').forEach(char=>{const span=document.createElement('span');span.textContent=char;wordSpan.appendChild(span);});title.appendChild(wordSpan);if(wi<text.split(' ').length-1)title.appendChild(document.createTextNode(' '));});
 
-const canvas=document.getElementById('canvas'),ctx=canvas.getContext('2d');let w=canvas.width=window.innerWidth,h=canvas.height=window.innerHeight,mouseX=w/2,mouseY=h/2,scrollY=0,time=0;window.addEventListener('resize',()=>{w=canvas.width=window.innerWidth;h=canvas.height=window.innerHeight});canvas.addEventListener('pointermove',e=>{mouseX=e.clientX;mouseY=e.clientY});window.addEventListener('scroll',()=>{scrollY=window.pageYOffset});
+const canvas=document.getElementById('canvas'),ctx=canvas.getContext('2d');let w=canvas.width=canvas.offsetWidth,h=canvas.height=canvas.offsetHeight,mouseX=w/2,mouseY=h/2,scrollY=0,time=0;window.addEventListener('resize',()=>{w=canvas.width=canvas.offsetWidth;h=canvas.height=canvas.offsetHeight});canvas.addEventListener('pointermove',e=>{const rect=canvas.getBoundingClientRect();mouseX=e.clientX-rect.left;mouseY=e.clientY-rect.top});window.addEventListener('scroll',()=>{scrollY=window.pageYOffset});
 
-function drawFloor(y,depth){const parallaxX=(mouseX-w/2)*depth*0.05,parallaxY=(mouseY-h/2)*depth*0.03-scrollY*depth*0.2;ctx.save();ctx.translate(parallaxX,parallaxY);const floorW=600,floorX=w/2-floorW/2;
-ctx.fillStyle=depth===1?'#C9A98C':'#E8DCCB';ctx.fillRect(floorX,y,floorW,15);ctx.strokeStyle='#2F4A63';ctx.lineWidth=3;ctx.strokeRect(floorX,y,floorW,15);
+function drawFloor(y,depth){const parallaxX=(mouseX-w/2)*depth*0.08,parallaxY=(mouseY-h/2)*depth*0.05-scrollY*depth*0.15;ctx.save();ctx.translate(parallaxX,parallaxY);const floorW=Math.min(500,w*0.8),floorX=w/2-floorW/2;
+ctx.fillStyle=depth>0.5?'#C9A98C':'#E8DCCB';ctx.fillRect(floorX,y,floorW,18);ctx.strokeStyle='#2F4A63';ctx.lineWidth=3;ctx.strokeRect(floorX,y,floorW,18);
 // Windows
-for(let i=0;i<5;i++){const winX=floorX+80+i*100,winY=y-80,winW=60,winH=70;ctx.fillStyle='#7FA7C9';ctx.globalAlpha=0.7;ctx.fillRect(winX,winY,winW,winH);ctx.globalAlpha=1;ctx.strokeRect(winX,winY,winW,winH);ctx.beginPath();ctx.moveTo(winX+winW/2,winY);ctx.lineTo(winX+winW/2,winY+winH);ctx.moveTo(winX,winY+winH/2);ctx.lineTo(winX+winW,winY+winH/2);ctx.stroke()}
-// Stairs
-if(depth===1){ctx.strokeStyle='#2F4A63';ctx.lineWidth=2;for(let s=0;s<8;s++){const stairY=y-s*12;ctx.beginPath();ctx.moveTo(floorX+floorW-100,stairY);ctx.lineTo(floorX+floorW-50,stairY);ctx.stroke()}}
+const numWindows=Math.floor(floorW/110);for(let i=0;i<numWindows;i++){const winX=floorX+40+i*110,winY=y-75,winW=55,winH=65;ctx.fillStyle='#7FA7C9';ctx.globalAlpha=0.65;ctx.fillRect(winX,winY,winW,winH);ctx.globalAlpha=1;ctx.strokeRect(winX,winY,winW,winH);ctx.beginPath();ctx.moveTo(winX+winW/2,winY);ctx.lineTo(winX+winW/2,winY+winH);ctx.moveTo(winX,winY+winH/2);ctx.lineTo(winX+winW,winY+winH/2);ctx.stroke()}
+// Stairs on some floors
+if(depth>0.6){ctx.strokeStyle='#2F4A63';ctx.lineWidth=2;for(let s=0;s<7;s++){const stairY=y-s*11;ctx.beginPath();ctx.moveTo(floorX+floorW-90,stairY);ctx.lineTo(floorX+floorW-45,stairY);ctx.stroke()}}
 ctx.restore()}
 
-function draw(){ctx.clearRect(0,0,w,h);ctx.save();ctx.translate(0,h*0.6);const breath=Math.sin(time)*5;for(let floor=0;floor<5;floor++){const y=-floor*120+breath*floor;drawFloor(y,1-floor*0.15)}
-ctx.restore();time+=0.02;requestAnimationFrame(draw)}
+function draw(){ctx.clearRect(0,0,w,h);const buildingHeight=h*0.8,floorHeight=buildingHeight/5.5,baseY=h*0.85,breath=Math.sin(time)*4;for(let floor=0;floor<5;floor++){const y=baseY-floor*floorHeight+breath*(floor*0.3);drawFloor(y,1-floor*0.15)}
+time+=0.025;requestAnimationFrame(draw)}
 if(!window.matchMedia('(prefers-reduced-motion:reduce)').matches)draw();
 </script>
 </body>

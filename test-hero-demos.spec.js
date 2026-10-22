@@ -91,6 +91,50 @@ test.describe('Hero Demos', () => {
         // Check no console errors
         expect(consoleErrors).toHaveLength(0);
       });
+
+      test('art canvas covers >=80% of hero height and is visible (not >50% overlapped)', async ({ page }) => {
+        await page.setViewportSize({ width: 1280, height: 800 });
+        await page.goto(`${BASE_URL}/hero-${hero.num}.html`);
+
+        // Get hero section height (subtract header ~80px)
+        const heroHeight = await page.evaluate(() => {
+          const hero = document.querySelector('.hero');
+          return hero ? hero.offsetHeight : 0;
+        });
+        expect(heroHeight).toBeGreaterThan(0);
+
+        // Get art canvas/svg bounding box
+        const artBox = await page.evaluate(() => {
+          const canvas = document.querySelector('.hero canvas') || document.querySelector('.hero svg');
+          if (!canvas) return null;
+          const rect = canvas.getBoundingClientRect();
+          return { x: rect.x, y: rect.y, width: rect.width, height: rect.height };
+        });
+        expect(artBox).not.toBeNull();
+
+        // Check art covers >=80% of hero height
+        const artHeightPercent = (artBox.height / heroHeight) * 100;
+        expect(artHeightPercent).toBeGreaterThanOrEqual(80);
+
+        // Get text card bounding box
+        const cardBox = await page.evaluate(() => {
+          const card = document.querySelector('.hero-content');
+          if (!card) return null;
+          const rect = card.getBoundingClientRect();
+          return { x: rect.x, y: rect.y, width: rect.width, height: rect.height };
+        });
+        expect(cardBox).not.toBeNull();
+
+        // Calculate overlap (if any)
+        const overlapX = Math.max(0, Math.min(artBox.x + artBox.width, cardBox.x + cardBox.width) - Math.max(artBox.x, cardBox.x));
+        const overlapY = Math.max(0, Math.min(artBox.y + artBox.height, cardBox.y + cardBox.height) - Math.max(artBox.y, cardBox.y));
+        const overlapArea = overlapX * overlapY;
+        const artArea = artBox.width * artBox.height;
+        const overlapPercent = artArea > 0 ? (overlapArea / artArea) * 100 : 0;
+
+        // Check art is not >50% overlapped by text card
+        expect(overlapPercent).toBeLessThanOrEqual(50);
+      });
     });
   });
 });
