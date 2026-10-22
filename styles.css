@@ -382,6 +382,20 @@ section {
     font-weight: 500;
 }
 
+.project-location {
+    font-size: 14px;
+    color: #7FA7C9;
+    margin-bottom: 8px;
+    font-weight: 500;
+}
+
+.project-description {
+    font-size: 14px;
+    line-height: 1.5;
+    color: #2F4A63;
+    opacity: 0.8;
+}
+
 /* Sobre Mí Section */
 .sobre-mi {
     background-color: #E8DCCB;
@@ -930,6 +944,125 @@ section {
     .lightbox-prev, .lightbox-next { top: auto; bottom: 60px; transform: none; width: 44px; height: 44px; } 
     .lightbox-stage { max-width: 95vw; max-height: 85vh; }
     .lightbox-stage img, .lightbox-stage video { max-width: 95vw; max-height: 85vh; }
+}
+
+/* Quick View Modal */
+.quick-view {
+    position: fixed;
+    inset: 0;
+    z-index: 1500;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.quick-view[hidden] {
+    display: none;
+}
+
+.quick-view-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(47, 74, 99, 0.92);
+    cursor: pointer;
+}
+
+.quick-view-content {
+    position: relative;
+    z-index: 1;
+    background: #fff;
+    border-radius: 12px;
+    max-width: 900px;
+    max-height: 90vh;
+    width: 90%;
+    overflow: auto;
+    box-shadow: 0 20px 60px rgba(47, 74, 99, 0.4);
+}
+
+.quick-view-close {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    background: rgba(255, 255, 255, 0.95);
+    border: 0;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    font-size: 28px;
+    line-height: 1;
+    cursor: pointer;
+    color: #2F4A63;
+    z-index: 2;
+    transition: all 0.2s;
+}
+
+.quick-view-close:hover {
+    background: #fff;
+    transform: scale(1.1);
+}
+
+.quick-view-image-wrapper {
+    width: 100%;
+    aspect-ratio: 16/9;
+    overflow: hidden;
+    border-radius: 12px 12px 0 0;
+    background: #F8F6F2;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.quick-view-image {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+
+.quick-view-info {
+    padding: 32px;
+}
+
+.quick-view-title {
+    font-size: 28px;
+    font-weight: 600;
+    color: #2F4A63;
+    margin-bottom: 8px;
+}
+
+.quick-view-category {
+    font-size: 16px;
+    color: #7FA7C9;
+    margin-bottom: 16px;
+}
+
+.quick-view-description {
+    font-size: 16px;
+    line-height: 1.6;
+    color: #2F4A63;
+    margin-bottom: 24px;
+}
+
+@media (max-width: 768px) {
+    .quick-view-content {
+        max-width: 95%;
+        max-height: 85vh;
+    }
+    
+    .quick-view-info {
+        padding: 24px;
+    }
+    
+    .quick-view-title {
+        font-size: 24px;
+    }
+    
+    .quick-view-category {
+        font-size: 14px;
+    }
+    
+    .quick-view-description {
+        font-size: 15px;
+    }
 }
 
 /* Project View Page */
