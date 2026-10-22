@@ -1,80 +1,96 @@
 const { test, expect } = require('@playwright/test');
 
-const BASE_URL = 'https://ivanderlich.github.io/angie-arquitectura';
+const BASE_URL = 'https://ivanderlich.github.io/angie-arquitectura/hero-demos';
 
-const demos = [
-  { num: 1, name: 'Blueprint Draw', title: 'Espacios para habitar con calma' },
-  { num: 2, name: 'Render to Real', title: 'Espacios para habitar con calma' },
-  { num: 3, name: 'Architectural Panels', title: 'Espacios para habitar con calma' },
-  { num: 4, name: 'Ken Burns', title: 'Espacios para habitar con calma' },
-  { num: 5, name: 'Scroll-Driven', title: 'Espacios para habitar con calma' },
-  { num: 6, name: 'Minimal Typographic', title: 'Espacios para habitar con calma' }
+const heroes = [
+  { num: 1, name: 'Plano Generativo' },
+  { num: 2, name: 'Volúmenes Isométricos' },
+  { num: 3, name: 'Arcos de Luz' },
+  { num: 4, name: 'Grid Interactivo' },
+  { num: 5, name: 'Corte Arquitectónico' },
+  { num: 6, name: 'Proporción Áurea' }
 ];
 
 test.describe('Hero Demos', () => {
   test('index page loads and links to all 6 demos', async ({ page }) => {
     const consoleErrors = [];
-    page.on('console', msg => {
-      if (msg.type() === 'error') consoleErrors.push(msg.text());
-    });
-
-    await page.goto(`${BASE_URL}/hero-demos/?t=${Date.now()}`);
-    await page.waitForLoadState('networkidle');
-
-    // Check all 6 demo links exist
-    for (let i = 1; i <= 6; i++) {
-      const link = page.locator(`a[href="hero-${i}.html"]`);
+    page.on('console', msg => { if (msg.type() === 'error') consoleErrors.push(msg.text()); });
+    
+    await page.goto(`${BASE_URL}/index.html`);
+    await expect(page).toHaveTitle(/Propuestas de Hero/);
+    
+    for (const hero of heroes) {
+      const link = page.locator(`a[href="hero-${hero.num}.html"]`);
       await expect(link).toBeVisible();
     }
 
-    // Check title
-    await expect(page.locator('h1')).toContainText('Propuestas');
-
-    // No console errors
     expect(consoleErrors).toHaveLength(0);
   });
 
-  for (const demo of demos) {
-    test(`Hero ${demo.num} (${demo.name}) loads without errors`, async ({ page }) => {
-      const consoleErrors = [];
-      page.on('console', msg => {
-        if (msg.type() === 'error') consoleErrors.push(msg.text());
+  heroes.forEach(hero => {
+    test.describe(`Hero ${hero.num} (${hero.name})`, () => {
+      test('loads without errors on desktop', async ({ page, viewport }) => {
+        const consoleErrors = [];
+        page.on('console', msg => { if (msg.type() === 'error') consoleErrors.push(msg.text()); });
+        
+        await page.setViewportSize({ width: 1280, height: 800 });
+        await page.goto(`${BASE_URL}/hero-${hero.num}.html`);
+        
+        // Check hero title is visible
+        const heroTitle = page.locator('.hero-title');
+        await expect(heroTitle).toBeVisible();
+        await expect(heroTitle).toContainText('Espacios para habitar');
+
+        // Check NO img tags in hero section
+        const heroImages = await page.locator('.hero img').count();
+        expect(heroImages).toBe(0);
+
+        // Check WhatsApp CTA exists and is in viewport
+        const heroCTA = page.locator('.hero-buttons a[href*="wa.me"]').first();
+        await expect(heroCTA).toBeVisible();
+        const ctaBox = await heroCTA.boundingBox();
+        expect(ctaBox).not.toBeNull();
+        expect(ctaBox.y).toBeGreaterThan(0);
+        expect(ctaBox.y + ctaBox.height).toBeLessThan(800);
+
+        // Check no horizontal overflow
+        const bodyWidth = await page.evaluate(() => document.body.scrollWidth);
+        expect(bodyWidth).toBeLessThanOrEqual(1280);
+
+        // Check no console errors
+        expect(consoleErrors).toHaveLength(0);
       });
 
-      await page.goto(`${BASE_URL}/hero-demos/hero-${demo.num}.html?t=${Date.now()}`);
-      await page.waitForLoadState('networkidle');
+      test('works on mobile', async ({ page }) => {
+        const consoleErrors = [];
+        page.on('console', msg => { if (msg.type() === 'error') consoleErrors.push(msg.text()); });
+        
+        await page.setViewportSize({ width: 390, height: 844 });
+        await page.goto(`${BASE_URL}/hero-${hero.num}.html`);
+        
+        // Check hero title is visible
+        const heroTitle = page.locator('.hero-title');
+        await expect(heroTitle).toBeVisible();
 
-      // Check hero title exists
-      const heroTitle = page.locator('.hero-title, .hero-title-large');
-      await expect(heroTitle).toBeVisible();
-      
-      const titleText = await heroTitle.textContent();
-      expect(titleText).toContain('habitar');
+        // Check NO img tags in hero section
+        const heroImages = await page.locator('.hero img').count();
+        expect(heroImages).toBe(0);
 
-      // Check WhatsApp CTA exists
-      const waCTA = page.locator('a[href*="wa.me"]').first();
-      await expect(waCTA).toBeVisible();
+        // Check WhatsApp CTA in hero section is visible and in viewport
+        const heroCTA = page.locator('.hero-buttons a[href*="wa.me"]').first();
+        await expect(heroCTA).toBeVisible();
+        const ctaBox = await heroCTA.boundingBox();
+        expect(ctaBox).not.toBeNull();
+        expect(ctaBox.y).toBeGreaterThan(0);
+        expect(ctaBox.y + ctaBox.height).toBeLessThan(844);
 
-      // Check header logo
-      await expect(page.locator('.logo')).toContainText('Ángeles');
+        // Check no horizontal overflow
+        const bodyWidth = await page.evaluate(() => document.body.scrollWidth);
+        expect(bodyWidth).toBeLessThanOrEqual(390);
 
-      // No console errors
-      expect(consoleErrors).toHaveLength(0);
+        // Check no console errors
+        expect(consoleErrors).toHaveLength(0);
+      });
     });
-
-    test(`Hero ${demo.num} works on mobile`, async ({ page }) => {
-      await page.setViewportSize({ width: 375, height: 667 });
-      
-      await page.goto(`${BASE_URL}/hero-demos/hero-${demo.num}.html?t=${Date.now()}`);
-      await page.waitForLoadState('networkidle');
-
-      // Check title is visible
-      const heroTitle = page.locator('.hero-title, .hero-title-large');
-      await expect(heroTitle).toBeVisible();
-
-      // Check CTA in hero buttons (not header) is visible
-      const heroCTA = page.locator('.hero-buttons a[href*="wa.me"]').first();
-      await expect(heroCTA).toBeVisible();
-    });
-  }
+  });
 });
