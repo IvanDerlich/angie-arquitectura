@@ -105,3 +105,52 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 });
+
+// Project gallery lightbox
+(() => {
+    const lb = document.getElementById('lightbox');
+    if (!lb) return;
+    const stage = lb.querySelector('.lightbox-stage');
+    const caption = lb.querySelector('.lightbox-caption');
+    let items = [], idx = 0, title = '';
+
+    const render = () => {
+        stage.innerHTML = '';
+        const src = items[idx];
+        let el;
+        if (/\.mp4$/i.test(src)) {
+            el = document.createElement('video');
+            el.src = src; el.controls = true; el.playsInline = true; el.preload = 'metadata';
+        } else {
+            el = document.createElement('img');
+            el.src = src; el.alt = title;
+        }
+        stage.appendChild(el);
+        caption.textContent = `${title} · ${idx + 1} / ${items.length}`;
+        const multi = items.length > 1;
+        lb.querySelector('.lightbox-prev').hidden = !multi;
+        lb.querySelector('.lightbox-next').hidden = !multi;
+    };
+    const open = (card) => {
+        items = JSON.parse(card.dataset.gallery || '[]');
+        if (!items.length) return;
+        title = card.dataset.title || ''; idx = 0;
+        lb.hidden = false; document.body.style.overflow = 'hidden';
+        render();
+    };
+    const close = () => { lb.hidden = true; stage.innerHTML = ''; document.body.style.overflow = ''; };
+    const step = (d) => { idx = (idx + d + items.length) % items.length; render(); };
+
+    document.querySelectorAll('.project-open').forEach(btn =>
+        btn.addEventListener('click', () => open(btn.closest('.project-card'))));
+    lb.querySelector('.lightbox-close').addEventListener('click', close);
+    lb.querySelector('.lightbox-prev').addEventListener('click', () => step(-1));
+    lb.querySelector('.lightbox-next').addEventListener('click', () => step(1));
+    lb.addEventListener('click', (e) => { if (e.target === lb) close(); });
+    document.addEventListener('keydown', (e) => {
+        if (lb.hidden) return;
+        if (e.key === 'Escape') close();
+        if (e.key === 'ArrowLeft') step(-1);
+        if (e.key === 'ArrowRight') step(1);
+    });
+})();
