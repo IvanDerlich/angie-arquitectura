@@ -52,6 +52,8 @@
             box-shadow: 0 4px 12px rgba(47, 74, 99, 0.08);
             transition: all 0.3s ease;
             border: 2px solid transparent;
+            display: flex;
+            flex-direction: column;
         }
 
         .demo-card:hover {
@@ -63,11 +65,32 @@
         .demo-card a {
             text-decoration: none;
             color: inherit;
-            display: block;
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+        }
+
+        .demo-thumbnail {
+            width: 100%;
+            height: 220px;
+            overflow: hidden;
+            background: #E8DCCB;
+        }
+
+        .demo-thumbnail img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.3s ease;
+        }
+
+        .demo-card:hover .demo-thumbnail img {
+            transform: scale(1.05);
         }
 
         .demo-content {
             padding: 28px;
+            flex: 1;
         }
 
         .demo-number {
@@ -130,6 +153,9 @@
         <div class="demos-grid">
             <div class="demo-card">
                 <a href="hero-1.html">
+                    <div class="demo-thumbnail">
+                        <img src="hero-1-thumb.jpg" alt="Blueprint Draw Preview">
+                    </div>
                     <div class="demo-content">
                         <span class="demo-number">Opción 1</span>
                         <h2 class="demo-title">Blueprint Draw</h2>
@@ -140,6 +166,9 @@
 
             <div class="demo-card">
                 <a href="hero-2.html">
+                    <div class="demo-thumbnail">
+                        <img src="hero-2-thumb.jpg" alt="Render to Real Preview">
+                    </div>
                     <div class="demo-content">
                         <span class="demo-number">Opción 2</span>
                         <h2 class="demo-title">Render to Real</h2>
@@ -150,6 +179,9 @@
 
             <div class="demo-card">
                 <a href="hero-3.html">
+                    <div class="demo-thumbnail">
+                        <img src="hero-3-thumb.jpg" alt="Paneles Arquitectónicos Preview">
+                    </div>
                     <div class="demo-content">
                         <span class="demo-number">Opción 3</span>
                         <h2 class="demo-title">Paneles Arquitectónicos</h2>
@@ -160,6 +192,9 @@
 
             <div class="demo-card">
                 <a href="hero-4.html">
+                    <div class="demo-thumbnail">
+                        <img src="hero-4-thumb.jpg" alt="Ken Burns Preview">
+                    </div>
                     <div class="demo-content">
                         <span class="demo-number">Opción 4</span>
                         <h2 class="demo-title">Ken Burns Slideshow</h2>
@@ -170,6 +205,9 @@
 
             <div class="demo-card">
                 <a href="hero-5.html">
+                    <div class="demo-thumbnail">
+                        <img src="hero-5-thumb.jpg" alt="Scroll-Driven Preview">
+                    </div>
                     <div class="demo-content">
                         <span class="demo-number">Opción 5</span>
                         <h2 class="demo-title">Scroll-Driven Zoom</h2>
@@ -180,6 +218,9 @@
 
             <div class="demo-card">
                 <a href="hero-6.html">
+                    <div class="demo-thumbnail">
+                        <img src="hero-6-thumb.jpg" alt="Tipografía Minimalista Preview">
+                    </div>
                     <div class="demo-content">
                         <span class="demo-number">Opción 6</span>
                         <h2 class="demo-title">Tipografía Minimalista</h2>
