@@ -220,6 +220,9 @@ document.querySelectorAll('.project-card').forEach(card => {
             el.controls = true;
             el.playsInline = true;
             el.preload = 'metadata';
+            // Add poster frame
+            const posterSrc = src.replace('.mp4', '-poster.jpg');
+            el.poster = posterSrc;
             el.style.maxWidth = '100%';
             el.style.maxHeight = '100%';
         } else {
@@ -304,9 +307,10 @@ document.querySelectorAll('.project-card').forEach(card => {
         const galleryHTML = project.gallery.map((src, idx) => {
             const isVideo = /\.mp4$/i.test(src);
             if (isVideo) {
+                const posterSrc = src.replace('.mp4', '-poster.jpg');
                 return `
                     <button type="button" class="gallery-item" data-idx="${idx}">
-                        <video src="${src}" class="gallery-thumbnail"></video>
+                        <video src="${src}" poster="${posterSrc}" class="gallery-thumbnail"></video>
                         <div class="gallery-play-icon">▶</div>
                     </button>
                 `;
