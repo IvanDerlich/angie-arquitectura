@@ -96,6 +96,10 @@ test.describe('Hero Demos', () => {
         await page.setViewportSize({ width: 1280, height: 800 });
         await page.goto(`${BASE_URL}/hero-${hero.num}.html`);
 
+        // Wait for canvas sizing to complete
+        await page.waitForTimeout(3000);
+        await page.evaluate(() => new Promise(r => requestAnimationFrame(() => requestAnimationFrame(r))));
+
         // Get hero section height (subtract header ~80px)
         const heroHeight = await page.evaluate(() => {
           const hero = document.querySelector('.hero');
@@ -139,6 +143,11 @@ test.describe('Hero Demos', () => {
       test('screenshot shows art fills lower half at 1280x800', async ({ page }) => {
         await page.setViewportSize({ width: 1280, height: 800 });
         await page.goto(`${BASE_URL}/hero-${hero.num}.html`);
+
+        // Wait for canvas sizing to complete
+        await page.waitForTimeout(3000);
+        await page.evaluate(() => new Promise(r => requestAnimationFrame(() => requestAnimationFrame(r))));
+        
         await page.waitForTimeout(500); // Wait for animation to start
         
         const screenshot = await page.screenshot({ path: `test-screenshots/hero-${hero.num}-desktop.png` });
@@ -164,6 +173,11 @@ test.describe('Hero Demos', () => {
       test('screenshot shows art on mobile 390x844', async ({ page }) => {
         await page.setViewportSize({ width: 390, height: 844 });
         await page.goto(`${BASE_URL}/hero-${hero.num}.html`);
+
+        // Wait for canvas sizing to complete
+        await page.waitForTimeout(3000);
+        await page.evaluate(() => new Promise(r => requestAnimationFrame(() => requestAnimationFrame(r))));
+        
         await page.waitForTimeout(500);
         
         const screenshot = await page.screenshot({ path: `test-screenshots/hero-${hero.num}-mobile.png` });
