@@ -7,7 +7,7 @@ if (mobileMenuBtn && nav) {
         mobileMenuBtn.classList.toggle('active');
         nav.classList.toggle('active');
     });
-
+    
     // Close mobile menu when clicking on a nav link
     const navLinks = nav.querySelectorAll('.nav-link');
     navLinks.forEach(link => {
@@ -76,6 +76,9 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
         // Don't prevent default for just "#"
         if (href === '#') return;
         
+        // Don't prevent default for project routes
+        if (href.startsWith('#/obra/') || href.startsWith('#/proyecto/')) return;
+        
         e.preventDefault();
         
         const target = document.querySelector(href);
@@ -91,47 +94,144 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
     });
 });
 
-// Project gallery lightbox
+// Add loading animation for images
 document.addEventListener('DOMContentLoaded', () => {
+    const images = document.querySelectorAll('img');
+    
+    images.forEach(img => {
+        img.addEventListener('load', () => {
+            img.style.opacity = '0';
+            setTimeout(() => {
+                img.style.transition = 'opacity 0.3s';
+                img.style.opacity = '1';
+            }, 50);
+        });
+    });
+});
+
+// Project data store
+const projectsData = {};
+
+// Initialize project data from cards
+document.querySelectorAll('.project-card').forEach(card => {
+    const slug = card.dataset.slug;
+    const coverImg = card.querySelector('.project-image-wrapper img').src;
+    projectsData[slug] = {
+        slug,
+        type: card.dataset.type || 'proyecto', // 'obra' or 'proyecto'
+        title: card.dataset.title,
+        category: card.dataset.category || card.querySelector('.project-location')?.textContent || '',
+        location: card.dataset.location || '',
+        description: card.dataset.description || card.querySelector('.project-description')?.textContent || '',
+        gallery: JSON.parse(card.dataset.gallery || '[]'),
+        design: card.dataset.design ? JSON.parse(card.dataset.design) : null,
+        real: card.dataset.real ? JSON.parse(card.dataset.real) : null,
+        coverImage: coverImg
+    };
+});
+
+// Quick View Modal
+(() => {
+    const quickView = document.getElementById('quick-view');
+    if (!quickView) return;
+    
+    const qvImage = quickView.querySelector('.quick-view-image');
+    const qvTitle = quickView.querySelector('.quick-view-title');
+    const qvCategory = quickView.querySelector('.quick-view-category');
+    const qvDescription = quickView.querySelector('.quick-view-description');
+    const qvFullBtn = quickView.querySelector('.quick-view-full');
+    const qvCloseBtn = quickView.querySelector('.quick-view-close');
+    const qvOverlay = quickView.querySelector('.quick-view-overlay');
+    
+    let currentSlug = '';
+    let currentType = 'proyecto';
+    
+    const openQuickView = (card) => {
+        const slug = card.dataset.slug;
+        const project = projectsData[slug];
+        if (!project) return;
+        
+        currentSlug = slug;
+        currentType = project.type;
+        qvImage.src = project.coverImage;
+        qvImage.alt = project.title;
+        qvTitle.textContent = project.title;
+        qvCategory.textContent = `${project.category} · ${project.location}`;
+        qvDescription.textContent = project.description;
+        
+        quickView.hidden = false;
+        document.body.style.overflow = 'hidden';
+    };
+    
+    const closeQuickView = () => {
+        quickView.hidden = true;
+        document.body.style.overflow = '';
+        currentSlug = '';
+    };
+    
+    // Open quick view when clicking project card
+    document.querySelectorAll('.project-card').forEach(card => {
+        card.addEventListener('click', (e) => {
+            // Don't open if clicking on a link that has its own action
+            if (e.target.tagName === 'A' && e.target.href && !e.target.classList.contains('project-link')) {
+                return;
+            }
+            e.preventDefault();
+            openQuickView(card);
+        });
+    });
+    
+    // Navigate to full project page
+    qvFullBtn.addEventListener('click', () => {
+        closeQuickView();
+        window.location.hash = `/${currentType}/${currentSlug}`;
+    });
+    
+    // Close handlers
+    qvCloseBtn.addEventListener('click', closeQuickView);
+    qvOverlay.addEventListener('click', closeQuickView);
+    
+    // Keyboard handler
+    document.addEventListener('keydown', (e) => {
+        if (!quickView.hidden && e.key === 'Escape') {
+            closeQuickView();
+        }
+    });
+})();
+
+// Project gallery lightbox
+(() => {
     const lb = document.getElementById('lightbox');
     if (!lb) return;
-    
     const stage = lb.querySelector('.lightbox-stage');
     const caption = lb.querySelector('.lightbox-caption');
-    const closeBtn = lb.querySelector('.lightbox-close');
-    const prevBtn = lb.querySelector('.lightbox-prev');
-    const nextBtn = lb.querySelector('.lightbox-next');
-    
-    let items = [];
-    let idx = 0;
-    let title = '';
+    let items = [], idx = 0, title = '';
 
     const render = () => {
         stage.innerHTML = '';
         const src = items[idx];
         let el;
-        
         if (/\.mp4$/i.test(src)) {
             el = document.createElement('video');
             el.src = src;
             el.controls = true;
             el.playsInline = true;
             el.preload = 'metadata';
+            el.style.maxWidth = '100%';
+            el.style.maxHeight = '100%';
         } else {
             el = document.createElement('img');
             el.src = src;
             el.alt = title;
         }
-        
         stage.appendChild(el);
         caption.textContent = `${title} · ${idx + 1} / ${items.length}`;
-        
         const multi = items.length > 1;
-        prevBtn.hidden = !multi;
-        nextBtn.hidden = !multi;
+        lb.querySelector('.lightbox-prev').hidden = !multi;
+        lb.querySelector('.lightbox-next').hidden = !multi;
     };
 
-    const open = (gallery, projectTitle, startIdx = 0) => {
+    window.openLightbox = (gallery, projectTitle, startIdx = 0) => {
         items = gallery;
         if (!items.length) return;
         title = projectTitle;
@@ -152,25 +252,10 @@ document.addEventListener('DOMContentLoaded', () => {
         render();
     };
 
-    // Make project cards open lightbox
-    document.querySelectorAll('.project-card').forEach(card => {
-        card.addEventListener('click', (e) => {
-            // Don't open if clicking on a link with its own href
-            if (e.target.tagName === 'A' && e.target.href && e.target.href !== '#') {
-                return;
-            }
-            
-            e.preventDefault();
-            const gallery = JSON.parse(card.dataset.gallery || '[]');
-            const projectTitle = card.dataset.title || '';
-            open(gallery, projectTitle, 0);
-        });
-    });
-
     // Lightbox controls
-    closeBtn.addEventListener('click', close);
-    prevBtn.addEventListener('click', () => step(-1));
-    nextBtn.addEventListener('click', () => step(1));
+    lb.querySelector('.lightbox-close').addEventListener('click', close);
+    lb.querySelector('.lightbox-prev').addEventListener('click', () => step(-1));
+    lb.querySelector('.lightbox-next').addEventListener('click', () => step(1));
     
     // Click outside to close
     lb.addEventListener('click', (e) => {
@@ -186,4 +271,152 @@ document.addEventListener('DOMContentLoaded', () => {
         if (e.key === 'ArrowLeft') step(-1);
         if (e.key === 'ArrowRight') step(1);
     });
-});
+})();
+
+// SPA Router for project pages
+(() => {
+    const mainSections = document.querySelectorAll('section, header, footer');
+    const projectView = document.getElementById('project-view');
+    const projectContent = projectView.querySelector('.project-view-content');
+    
+    const showMainSite = () => {
+        mainSections.forEach(section => section.hidden = false);
+        projectView.hidden = true;
+        document.title = 'Ángeles Arquitectura | Angie Serrano Squadrito - Arquitecta en Mendoza';
+    };
+    
+    const showProjectPage = (slug, type) => {
+        const project = projectsData[slug];
+        if (!project) {
+            // 404 - go home
+            window.location.hash = '';
+            return;
+        }
+        
+        mainSections.forEach(section => section.hidden = true);
+        projectView.hidden = false;
+        document.title = `${project.title} | Ángeles Arquitectura`;
+        
+        // Build project page content
+        const galleryHTML = project.gallery.map((src, idx) => {
+            const isVideo = /\.mp4$/i.test(src);
+            if (isVideo) {
+                return `
+                    <button type="button" class="gallery-item" onclick="window.openLightbox(${JSON.stringify(project.gallery)}, '${project.title}', ${idx})">
+                        <video src="${src}" class="gallery-thumbnail"></video>
+                        <div class="gallery-play-icon">▶</div>
+                    </button>
+                `;
+            } else {
+                return `
+                    <button type="button" class="gallery-item" onclick="window.openLightbox(${JSON.stringify(project.gallery)}, '${project.title}', ${idx})">
+                        <img src="${src}" alt="${project.title}" class="gallery-thumbnail">
+                    </button>
+                `;
+            }
+        }).join('');
+        
+        // Build "Diseño → Resultado real" section if both design and real photos exist
+        let designRealHTML = '';
+        if (project.design && project.real) {
+            const designItemsHTML = project.design.map((src, idx) => {
+                return `
+                    <button type="button" class="gallery-item" onclick="window.openLightbox(${JSON.stringify(project.design)}, '${project.title} - Diseño', ${idx})">
+                        <img src="${src}" alt="${project.title} - Diseño" class="gallery-thumbnail">
+                    </button>
+                `;
+            }).join('');
+            
+            const realItemsHTML = project.real.map((src, idx) => {
+                return `
+                    <button type="button" class="gallery-item" onclick="window.openLightbox(${JSON.stringify(project.real)}, '${project.title} - Resultado real', ${idx})">
+                        <img src="${src}" alt="${project.title} - Resultado real" class="gallery-thumbnail">
+                    </button>
+                `;
+            }).join('');
+            
+            designRealHTML = `
+                <div class="project-comparison-section">
+                    <h2 class="project-section-title">Diseño → Resultado real</h2>
+                    <div class="project-comparison-grid">
+                        <div class="project-comparison-column">
+                            <h3 class="project-comparison-subtitle">Renders del diseño</h3>
+                            <div class="project-gallery">
+                                ${designItemsHTML}
+                            </div>
+                        </div>
+                        <div class="project-comparison-column">
+                            <h3 class="project-comparison-subtitle">Fotos del resultado</h3>
+                            <div class="project-gallery">
+                                ${realItemsHTML}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+        
+        const backLink = type === 'obra' ? '#obras' : '#proyectos';
+        const backText = type === 'obra' ? 'Volver a obras' : 'Volver a proyectos';
+        
+        projectContent.innerHTML = `
+            <div class="project-hero">
+                <img src="${project.coverImage}" alt="${project.title}" class="project-hero-image">
+            </div>
+            <div class="project-info">
+                <h1 class="project-page-title">${project.title}</h1>
+                <p class="project-page-category">${project.category} · ${project.location}</p>
+                <div class="project-page-description">
+                    <p>${project.description}</p>
+                </div>
+            </div>
+            ${designRealHTML}
+            <div class="project-gallery-section">
+                <h2 class="project-gallery-title">Galería completa</h2>
+                <div class="project-gallery">
+                    ${galleryHTML}
+                </div>
+            </div>
+            <div class="project-back-link">
+                <a href="${backLink}" class="btn btn-secondary">${backText}</a>
+            </div>
+        `;
+        
+        window.scrollTo(0, 0);
+    };
+    
+    const route = () => {
+        const hash = window.location.hash;
+        
+        if (hash.startsWith('#/obra/')) {
+            const slug = hash.replace('#/obra/', '');
+            showProjectPage(slug, 'obra');
+        } else if (hash.startsWith('#/proyecto/')) {
+            const slug = hash.replace('#/proyecto/', '');
+            showProjectPage(slug, 'proyecto');
+        } else {
+            showMainSite();
+            
+            // Handle section scroll
+            if (hash && hash.length > 1 && !hash.startsWith('#/')) {
+                setTimeout(() => {
+                    const target = document.querySelector(hash);
+                    if (target) {
+                        const headerHeight = header ? header.offsetHeight : 0;
+                        const targetPosition = target.offsetTop - headerHeight;
+                        window.scrollTo({
+                            top: targetPosition,
+                            behavior: 'smooth'
+                        });
+                    }
+                }, 100);
+            }
+        }
+    };
+    
+    // Handle hash changes
+    window.addEventListener('hashchange', route);
+    
+    // Initial route
+    route();
+})();
