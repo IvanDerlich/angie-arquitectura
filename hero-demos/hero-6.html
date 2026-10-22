@@ -3,40 +3,25 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>Hero 6: Proporción Áurea - Ángeles Arquitectura</title>
+<title>Hero 6: Espiral Áurea - Ángeles Arquitectura</title>
 <link rel="stylesheet" href="../styles.css">
 <style>
+*{margin:0;padding:0;box-sizing:border-box}
 .hero{position:relative;min-height:100vh;display:flex;align-items:center;background:linear-gradient(135deg,#E8DCCB,#F8F6F2);overflow:hidden}
-.golden-container{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;opacity:0.12}
-.golden-svg{width:600px;height:600px;max-width:80vw;max-height:80vh}
-.golden-circle{fill:none;stroke-width:2;opacity:0;animation:fadeInCircle 1.5s ease-out forwards}
-.golden-line{stroke-width:1.5;opacity:0;animation:fadeInLine 1.5s ease-out forwards}
-.golden-circle:nth-child(1){stroke:#2F4A63;animation-delay:0s}
-.golden-circle:nth-child(2){stroke:#7FA7C9;animation-delay:0.3s}
-.golden-circle:nth-child(3){stroke:#C9A98C;animation-delay:0.6s}
-.golden-line:nth-child(4){stroke:#2F4A63;animation-delay:0.9s}
-.golden-line:nth-child(5){stroke:#7FA7C9;animation-delay:1.2s}
-@keyframes fadeInCircle{to{opacity:0.8}}
-@keyframes fadeInLine{to{opacity:0.6}}
-.hero-content{position:relative;z-index:10;max-width:800px}.hero-content .hero-subtitle,.hero-content .hero-title,.hero-content .hero-tagline{color:#2F4A63}.hero-title .word{display:inline-block;white-space:nowrap}
-@media (prefers-reduced-motion:reduce){.golden-circle,.golden-line{animation:none;opacity:0.8}}
+.golden-canvas{position:absolute;inset:0}
+.hero-content{position:relative;z-index:10;max-width:800px;background:rgba(248,246,242,0.95);padding:40px;border-radius:12px;backdrop-filter:blur(10px)}
+.hero-content .hero-subtitle,.hero-content .hero-title,.hero-content .hero-tagline{color:#2F4A63}
+.hero-title .word{display:inline-block;white-space:nowrap}
+@media (prefers-reduced-motion:reduce){.golden-canvas{display:none}}
 .demo-note{position:fixed;top:80px;right:20px;background:white;padding:12px 20px;border-radius:8px;box-shadow:0 4px 12px rgba(0,0,0,0.1);font-size:14px;color:#2F4A63;z-index:2000}
-@media (max-width:768px){.demo-note{display:none}}
+@media (max-width:768px){.demo-note{display:none}.hero-content{padding:24px}}
 </style>
 </head>
 <body>
-<div class="demo-note">Opción 6: Proporción Áurea</div>
+<div class="demo-note">Opción 6: Espiral Áurea</div>
 <header class="header" id="header"><div class="container"><div class="header-content"><a href="../index.html" class="logo">Ángeles Arquitectura</a><nav class="nav" id="nav"><a href="../index.html#obras" class="nav-link">Obras</a><a href="../index.html#proyectos" class="nav-link">Proyectos</a><a href="../index.html#sobre-mi" class="nav-link">Sobre mí</a><a href="../index.html#servicios" class="nav-link">Servicios</a><a href="../index.html#precios" class="nav-link">Precios</a><a href="../index.html#contacto" class="nav-link">Contacto</a></nav><a href="https://wa.me/542617685148" class="whatsapp-btn-header" target="_blank"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z" fill="currentColor"/></svg>WhatsApp</a><button class="mobile-menu-btn" id="mobile-menu-btn"><span></span><span></span><span></span></button></div></div></header>
 <section class="hero" id="hero">
-<div class="golden-container"><svg class="golden-svg" viewBox="0 0 600 600" xmlns="http://www.w3.org/2000/svg">
-<circle class="golden-circle" cx="300" cy="300" r="250"/>
-<circle class="golden-circle" cx="300" cy="300" r="155"/>
-<circle class="golden-circle" cx="300" cy="300" r="95"/>
-<line class="golden-line" x1="50" y1="300" x2="550" y2="300"/>
-<line class="golden-line" x1="300" y1="50" x2="300" y2="550"/>
-<path class="golden-line" d="M 300 50 L 515 214 L 424 486 L 176 486 L 85 214 Z" fill="none"/>
-<rect class="golden-line" x="150" y="150" width="300" height="185.5" fill="none"/>
-</svg></div>
+<canvas class="golden-canvas" id="canvas"></canvas>
 <div class="container"><div class="hero-content">
 <p class="hero-subtitle">ARQ. ANGIE SERRANO SQUADRITO</p>
 <h1 class="hero-title" id="title"></h1>
@@ -48,6 +33,21 @@
 </div></div>
 </section>
 <div style="text-align:center;padding:40px 20px;background:white"><a href="index.html" style="color:#7FA7C9;text-decoration:none;font-weight:500">← Ver todas las opciones</a></div>
-<script>const title=document.getElementById('title'),text='Espacios para habitar con calma';text.split(' ').forEach((word,wi)=>{const wordSpan=document.createElement('span');wordSpan.className='word';word.split('').forEach(char=>{const span=document.createElement('span');span.textContent=char;wordSpan.appendChild(span);});title.appendChild(wordSpan);if(wi<text.split(' ').length-1)title.appendChild(document.createTextNode(' '));});</script>
+<script>
+const title=document.getElementById('title'),text='Espacios para habitar con calma';text.split(' ').forEach((word,wi)=>{const wordSpan=document.createElement('span');wordSpan.className='word';word.split('').forEach(char=>{const span=document.createElement('span');span.textContent=char;wordSpan.appendChild(span);});title.appendChild(wordSpan);if(wi<text.split(' ').length-1)title.appendChild(document.createTextNode(' '));});
+
+const canvas=document.getElementById('canvas'),ctx=canvas.getContext('2d');let w=canvas.width=window.innerWidth,h=canvas.height=window.innerHeight,mouseX=w/2,mouseY=h/2,time=0;window.addEventListener('resize',()=>{w=canvas.width=window.innerWidth;h=canvas.height=window.innerHeight});canvas.addEventListener('pointermove',e=>{mouseX=e.clientX;mouseY=e.clientY});
+
+const phi=1.618034,colors=['#7FA7C9','#C9A98C','#2F4A63'];
+function draw(){ctx.clearRect(0,0,w,h);const cx=w/2,cy=h/2,scale=Math.min(w,h)/600,mouseInfluence=(mouseX/w-0.5)*30;ctx.save();ctx.translate(cx,cy);ctx.scale(scale,scale);ctx.rotate(mouseInfluence*0.01);
+// Fibonacci spiral
+const spiralProgress=time%200/200,maxSteps=10;ctx.strokeStyle='#7FA7C9';ctx.lineWidth=3;let x=0,y=0,size=8,angle=0;for(let i=0;i<maxSteps;i++){if(i/maxSteps>spiralProgress)break;const nextSize=size*phi;ctx.beginPath();ctx.arc(x,y,size,angle,angle+Math.PI/2);ctx.stroke();const cos=Math.cos(angle+Math.PI/2),sin=Math.sin(angle+Math.PI/2);x+=size*cos;y+=size*sin;angle+=Math.PI/2;size=nextSize}
+// Compass arcs
+const arcProgress=(time*1.5)%360;for(let i=0;i<6;i++){const r=50+i*60,startAngle=i*Math.PI/3,sweep=arcProgress*Math.PI/180;ctx.strokeStyle=colors[i%3];ctx.lineWidth=2+Math.sin(time+i)*0.5;ctx.globalAlpha=0.7;ctx.beginPath();ctx.arc(0,0,r,startAngle,startAngle+sweep);ctx.stroke();ctx.globalAlpha=1}
+// Golden rectangles
+ctx.strokeStyle='#2F4A63';ctx.lineWidth=1.5;ctx.globalAlpha=0.4;let rectW=300,rectH=rectW/phi,rects=7;for(let i=0;i<rects;i++){if(i/rects>(time%150)/150)break;ctx.strokeRect(-rectW/2,-rectH/2,rectW,rectH);rectW/=phi;rectH/=phi}
+ctx.restore();time+=1;requestAnimationFrame(draw)}
+if(!window.matchMedia('(prefers-reduced-motion:reduce)').matches)draw();
+</script>
 </body>
 </html>
