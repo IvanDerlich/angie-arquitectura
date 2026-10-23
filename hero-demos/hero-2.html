@@ -112,32 +112,58 @@ function draw(){
   // Building parameters
   const margin=16,baseW=140,baseD=140,floorH=60,floors=5;
   
-  // Calculate bounding box including animation extremes
-  const buildingWidth=baseW+baseD;
-  
-  // Vertical extent:
-  // - floors stack: (floors-1)*floorH from top floor to bottom floor base
-  // - top floor height: floorH
-  // - isometric top face extends up by: baseD*0.5
-  // Total from top to bottom: (floors-1)*floorH + floorH + baseD*0.5
-  const verticalExtent=(floors-1)*floorH+floorH+baseD*0.5;
-  
-  // Max wobble in any direction
+  // Compute actual bounding box from all polygon vertices at max animation offsets
   const maxWobble=15;
+  const maxInfluence=20;
   
-  // Total bounds including wobble
-  const totalHeight=verticalExtent+maxWobble;
-  const totalWidth=buildingWidth+maxWobble*2;
+  // Collect all vertices for all floors at extreme positions
+  let minX=Infinity,maxX=-Infinity,minY=Infinity,maxY=-Infinity;
   
-  // Calculate scale to fit with margin
-  const scale=Math.min((w-margin*2)/totalWidth,(h-margin*2)/totalHeight);
+  for(let i=0;i<floors;i++){
+    // Max offset for this floor
+    const maxXOff=maxInfluence*(i+1)*0.2+maxWobble*0.1;
+    
+    // Floor positions at extremes (left and right)
+    for(const xOff of[-maxXOff,maxXOff]){
+      // Box position (before isometric transform)
+      const x=-baseW/2+xOff; // relative to center
+      const y=0;
+      const z=-i*floorH; // relative to cy
+      
+      // Isometric transform
+      const isoX=x+y*0.5;
+      const isoY=z-y*0.3;
+      
+      // All vertices of the three faces (relative to isoX, isoY)
+      const vertices=[
+        // Top face
+        [isoX,isoY],[isoX+baseW,isoY+baseW*0.5],[isoX+baseW+baseD,isoY+baseW*0.5-baseD*0.5],[isoX+baseD,isoY-baseD*0.5],
+        // Left face
+        [isoX,isoY],[isoX+baseD,isoY-baseD*0.5],[isoX+baseD,isoY-baseD*0.5+floorH],[isoX,isoY+floorH],
+        // Right face
+        [isoX+baseW,isoY+baseW*0.5],[isoX+baseW+baseD,isoY+baseW*0.5-baseD*0.5],[isoX+baseW+baseD,isoY+baseW*0.5-baseD*0.5+floorH],[isoX+baseW,isoY+baseW*0.5+floorH]
+      ];
+      
+      // Update bounding box
+      for(const[vx,vy]of vertices){
+        minX=Math.min(minX,vx);
+        maxX=Math.max(maxX,vx);
+        minY=Math.min(minY,vy);
+        maxY=Math.max(maxY,vy);
+      }
+    }
+  }
   
-  // Position so top of highest floor is at margin/scale
-  // Top floor center is at cy - (floors-1)*floorH
-  // Top face extends up by baseD*0.5
-  // So: (cy - (floors-1)*floorH - baseD*0.5) = margin/scale + maxWobble
-  const cy=(margin+maxWobble)/scale+(floors-1)*floorH+baseD*0.5;
-  const cx=w/(2*scale);
+  // Compute scale to fit bbox with margin
+  const bboxW=maxX-minX;
+  const bboxH=maxY-minY;
+  const scale=Math.min((w-margin*2)/bboxW,(h-margin*2)/bboxH);
+  
+  // Translate so bbox center maps to canvas center
+  const bboxCenterX=(minX+maxX)/2;
+  const bboxCenterY=(minY+maxY)/2;
+  const cx=w/(2*scale)-bboxCenterX;
+  const cy=h/(2*scale)-bboxCenterY;
   
   const influence=(mouseX/w-0.5)*20,wobble=Math.sin(time*0.5)*15;
   

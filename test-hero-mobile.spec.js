@@ -194,49 +194,75 @@ test.describe('Hero Demos - Mobile Tests', () => {
     
   });
   
-  // Special test for Hero 2: verify no content touches top edge during animation
-  test('Hero 2 (Volúmenes Isométricos) has no content in top 8px over 3s animation', async ({ page }) => {
-    await page.setViewportSize({ width: 390, height: 844 });
-    await page.goto(`${BASE_URL}/hero-2.html`);
-    
-    // Wait for canvas to be ready
-    await page.waitForFunction(() => {
-      const c = document.querySelector('canvas');
-      return c && c.width > 0 && c.height > 0;
-    }, { timeout: 5000 });
-    
-    // Sample top 8px row at multiple points over 3 seconds
-    const sampleTimes = [0, 500, 1000, 1500, 2000, 2500, 3000];
-    
-    for (const delay of sampleTimes) {
-      await page.waitForTimeout(delay === 0 ? 300 : 500);
+  // Special test for Hero 2: verify no content in outer 8px border during animation
+  [
+    { width: 390, height: 844, name: 'mobile 390x844' },
+    { width: 360, height: 780, name: 'mobile 360x780' },
+    { width: 1280, height: 800, name: 'desktop 1280x800' }
+  ].forEach(viewport => {
+    test(`Hero 2 (Volúmenes Isométricos) has no content in outer 8px border over 3s animation at ${viewport.name}`, async ({ page }) => {
+      await page.setViewportSize({ width: viewport.width, height: viewport.height });
+      await page.goto(`${BASE_URL}/hero-2.html`);
       
-      const hasContentInTop = await page.evaluate(() => {
-        const canvas = document.querySelector('canvas');
-        if (!canvas) return false;
+      // Wait for canvas to be ready
+      await page.waitForFunction(() => {
+        const c = document.querySelector('canvas');
+        return c && c.width > 0 && c.height > 0;
+      }, { timeout: 5000 });
+      
+      // Sample border at multiple points over 3 seconds
+      const sampleTimes = [0, 500, 1000, 1500, 2000, 2500, 3000];
+      
+      for (const delay of sampleTimes) {
+        await page.waitForTimeout(delay === 0 ? 300 : 500);
         
-        const ctx = canvas.getContext('2d');
-        const imageData = ctx.getImageData(0, 0, canvas.width, 8);
-        const pixels = imageData.data;
-        
-        // Check every pixel in top 8 rows
-        for (let i = 0; i < pixels.length; i += 4) {
-          const r = pixels[i];
-          const g = pixels[i + 1];
-          const b = pixels[i + 2];
-          const a = pixels[i + 3];
+        const hasContentInBorder = await page.evaluate(() => {
+          const canvas = document.querySelector('canvas');
+          if (!canvas) return false;
           
-          // Check for non-background (not transparent and not pure beige/white)
-          if (a > 10 && !(r > 230 && g > 220 && b > 210)) {
-            return true; // Found non-background content
+          const ctx = canvas.getContext('2d');
+          const w = canvas.width;
+          const h = canvas.height;
+          const border = 8;
+          
+          // Check top border
+          let imageData = ctx.getImageData(0, 0, w, border);
+          let pixels = imageData.data;
+          for (let i = 0; i < pixels.length; i += 4) {
+            const r = pixels[i], g = pixels[i + 1], b = pixels[i + 2], a = pixels[i + 3];
+            if (a > 10 && !(r > 230 && g > 220 && b > 210)) return true;
           }
-        }
+          
+          // Check bottom border
+          imageData = ctx.getImageData(0, h - border, w, border);
+          pixels = imageData.data;
+          for (let i = 0; i < pixels.length; i += 4) {
+            const r = pixels[i], g = pixels[i + 1], b = pixels[i + 2], a = pixels[i + 3];
+            if (a > 10 && !(r > 230 && g > 220 && b > 210)) return true;
+          }
+          
+          // Check left border
+          imageData = ctx.getImageData(0, 0, border, h);
+          pixels = imageData.data;
+          for (let i = 0; i < pixels.length; i += 4) {
+            const r = pixels[i], g = pixels[i + 1], b = pixels[i + 2], a = pixels[i + 3];
+            if (a > 10 && !(r > 230 && g > 220 && b > 210)) return true;
+          }
+          
+          // Check right border
+          imageData = ctx.getImageData(w - border, 0, border, h);
+          pixels = imageData.data;
+          for (let i = 0; i < pixels.length; i += 4) {
+            const r = pixels[i], g = pixels[i + 1], b = pixels[i + 2], a = pixels[i + 3];
+            if (a > 10 && !(r > 230 && g > 220 && b > 210)) return true;
+          }
+          
+          return false; // Only background in all borders
+        });
         
-        return false; // Only background in top 8px
-      });
-      
-      expect(hasContentInTop).toBe(false);
-    }
+        expect(hasContentInBorder).toBe(false);
+      }
+    });
   });
 
 });
