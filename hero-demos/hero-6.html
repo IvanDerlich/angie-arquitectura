@@ -46,8 +46,14 @@ const canvas=document.getElementById('canvas'),ctx=canvas.getContext('2d'),dpr=w
 
 function resize(){
   const rect=canvas.getBoundingClientRect();
-  w=rect.width;
-  h=rect.height;
+  // Use rect if it has meaningful size, otherwise fallback to window
+  if(rect.width > 0 && rect.height > 0){
+    w=rect.width;
+    h=rect.height;
+  } else {
+    w=window.innerWidth;
+    h=window.innerHeight;
+  }
   canvas.width=w*dpr;
   canvas.height=h*dpr;
   ctx.setTransform(dpr,0,0,dpr,0,0);
@@ -55,7 +61,8 @@ function resize(){
   mouseY=h/2;
 }
 
-resize();
+// Initial resize after a brief delay to let CSS apply
+setTimeout(resize, 10);
 window.addEventListener('resize',resize);
 
 function handlePointer(e){
