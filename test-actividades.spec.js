@@ -1,6 +1,6 @@
 const { test, expect } = require('@playwright/test');
 
-const BASE_URL = 'https://ivanderlich.github.io/angie-arquitectura';
+const BASE_URL = process.env.BASE_URL || 'http://localhost:8080';
 
 test.describe('Activities Section', () => {
   test('actividades section is visible on main page', async ({ page }) => {
