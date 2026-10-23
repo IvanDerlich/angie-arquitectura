@@ -16,7 +16,7 @@
 .hero-title .word{display:inline-block;white-space:nowrap}
 @media (prefers-reduced-motion:reduce){.blueprint-canvas{display:none}}
 .demo-note{position:fixed;bottom:20px;top:auto;left:20px;background:white;padding:12px 20px;border-radius:8px;box-shadow:0 4px 12px rgba(0,0,0,0.1);font-size:14px;color:#2F4A63;z-index:2000}
-@media (max-width:768px){.demo-note{display:none}.hero{flex-direction:column}.hero-content{width:100%;max-width:none;padding:40px 24px;margin:0;background:rgba(248,246,242,0.95)}.art-wrapper{inset:80px 0 0 0;width:100%;opacity:0.3;z-index:1}}
+@media (max-width:768px){.demo-note{display:none}.hero{flex-direction:column;min-height:auto}.art-wrapper{position:relative;top:0;right:0;width:100%;height:47vh;opacity:1;z-index:1;order:-1}.hero-content{position:relative;width:100%;max-width:none;padding:40px 24px;margin:0;background:#F8F6F2;z-index:2;order:1}}
 </style>
 </head>
 <body>
@@ -39,7 +39,7 @@
 const title=document.getElementById('title'),text='Espacios para habitar con calma';text.split(' ').forEach((word,wi)=>{const wordSpan=document.createElement('span');wordSpan.className='word';word.split('').forEach(char=>{const span=document.createElement('span');span.textContent=char;wordSpan.appendChild(span);});title.appendChild(wordSpan);if(wi<text.split(' ').length-1)title.appendChild(document.createTextNode(' '));});
 
 const wrap=document.getElementById('artWrap'),canvas=document.getElementById('canvas'),ctx=canvas.getContext('2d'),dpr=window.devicePixelRatio||1;let w,h,mouseX=0,mouseY=0,offset=0,ripples=[];
-wrap.style.height=(window.innerHeight-80)+'px';
+
 function resize(){
   const r=wrap.getBoundingClientRect();
   w=r.width;
@@ -55,7 +55,15 @@ resize();
 new ResizeObserver(entries => {
   if(entries[0].contentRect.width > 0) resize();
 }).observe(wrap);
-canvas.addEventListener('pointermove',e=>{const r=canvas.getBoundingClientRect();mouseX=e.clientX-r.left;mouseY=e.clientY-r.top;ripples.push({x:mouseX,y:mouseY,r:0,life:1})});
+
+function handlePointer(e){
+  const r=canvas.getBoundingClientRect();
+  mouseX=e.clientX-r.left;
+  mouseY=e.clientY-r.top;
+  ripples.push({x:mouseX,y:mouseY,r:0,life:1});
+}
+canvas.addEventListener('pointermove',handlePointer);
+canvas.addEventListener('pointerdown',handlePointer);
 
 function drawWall(x1,y1,x2,y2,thick=6){ctx.strokeStyle='#2F4A63';ctx.lineWidth=thick;ctx.beginPath();ctx.moveTo(x1,y1);ctx.lineTo(x2,y2);ctx.stroke()}
 function drawDoor(x,y,width,angle=0){ctx.save();ctx.translate(x,y);ctx.rotate(angle);ctx.strokeStyle='#7FA7C9';ctx.lineWidth=3;ctx.beginPath();ctx.moveTo(0,0);ctx.lineTo(width,0);ctx.stroke();ctx.beginPath();ctx.arc(0,0,width,0,Math.PI/2);ctx.stroke();ctx.restore()}

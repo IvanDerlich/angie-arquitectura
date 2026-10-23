@@ -14,7 +14,7 @@
 .hero-title .word{display:inline-block;white-space:nowrap}
 @media (prefers-reduced-motion:reduce){.golden-canvas{display:none}}
 .demo-note{position:fixed;bottom:20px;top:auto;left:20px;background:white;padding:12px 20px;border-radius:8px;box-shadow:0 4px 12px rgba(0,0,0,0.1);font-size:14px;color:#2F4A63;z-index:2000}
-@media (max-width:768px){.demo-note{display:none}.hero-content{padding:24px}}
+@media (max-width:768px){.demo-note{display:none}.golden-canvas{opacity:0.6}.hero-content{padding:24px;background:rgba(248,246,242,0.98);backdrop-filter:blur(15px)}}
 </style>
 </head>
 <body>
@@ -36,7 +36,14 @@
 <script>
 const title=document.getElementById('title'),text='Espacios para habitar con calma';text.split(' ').forEach((word,wi)=>{const wordSpan=document.createElement('span');wordSpan.className='word';word.split('').forEach(char=>{const span=document.createElement('span');span.textContent=char;wordSpan.appendChild(span);});title.appendChild(wordSpan);if(wi<text.split(' ').length-1)title.appendChild(document.createTextNode(' '));});
 
-const canvas=document.getElementById('canvas'),ctx=canvas.getContext('2d');let w=canvas.width=window.innerWidth,h=canvas.height=window.innerHeight,mouseX=w/2,mouseY=h/2,time=0;window.addEventListener('resize',()=>{w=canvas.width=window.innerWidth;h=canvas.height=window.innerHeight});canvas.addEventListener('pointermove',e=>{mouseX=e.clientX;mouseY=e.clientY});
+const canvas=document.getElementById('canvas'),ctx=canvas.getContext('2d');let w=canvas.width=window.innerWidth,h=canvas.height=window.innerHeight,mouseX=w/2,mouseY=h/2,time=0;
+window.addEventListener('resize',()=>{w=canvas.width=window.innerWidth;h=canvas.height=window.innerHeight});
+function handlePointer(e){
+  mouseX=e.clientX;
+  mouseY=e.clientY;
+}
+canvas.addEventListener('pointermove',handlePointer);
+canvas.addEventListener('pointerdown',handlePointer);
 
 const phi=1.618034,colors=['#7FA7C9','#C9A98C','#2F4A63'];
 function draw(){ctx.clearRect(0,0,w,h);const cx=w/2,cy=h/2,scale=Math.min(w,h)/600,mouseInfluence=(mouseX/w-0.5)*50;ctx.save();ctx.translate(cx,cy);ctx.scale(scale,scale);ctx.rotate(mouseInfluence*0.015);
