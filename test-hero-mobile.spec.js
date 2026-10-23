@@ -3,12 +3,12 @@ const { test, expect } = require('@playwright/test');
 const BASE_URL = process.env.BASE_URL || 'http://localhost:8080/hero-demos';
 
 const heroes = [
-  { num: 1, name: 'Plano Generativo', hasBackdrop: false },
-  { num: 2, name: 'Volúmenes Isométricos', hasBackdrop: false },
-  { num: 3, name: 'Arcos de Luz', hasBackdrop: false },
-  { num: 4, name: 'Grid Interactivo', hasBackdrop: true },
-  { num: 5, name: 'Corte Arquitectónico', hasBackdrop: false },
-  { num: 6, name: 'Proporción Áurea', hasBackdrop: true }
+  { num: 1, name: 'Plano Generativo' },
+  { num: 2, name: 'Volúmenes Isométricos' },
+  { num: 3, name: 'Arcos de Luz' },
+  { num: 4, name: 'Grid Interactivo' },
+  { num: 5, name: 'Corte Arquitectónico' },
+  { num: 6, name: 'Proporción Áurea' }
 ];
 
 test.describe('Hero Demos - Mobile Tests', () => {
@@ -43,8 +43,8 @@ test.describe('Hero Demos - Mobile Tests', () => {
         const minHeight = viewport.height * 0.40;
         expect(artHeight).toBeGreaterThanOrEqual(minHeight);
         
-        // For heroes 1,2,3,5 check opacity is 1 (not backdrop heroes)
-        if (!hero.hasBackdrop) {
+        // For heroes 1,2,3,5,6 check opacity is 1 (not backdrop heroes 4)
+        if (hero.num !== 4) {
           const artOpacity = await page.evaluate(() => {
             const canvas = document.querySelector('canvas');
             const wrapper = canvas?.closest('.art-wrapper');
@@ -56,41 +56,68 @@ test.describe('Hero Demos - Mobile Tests', () => {
           expect(artOpacity).toBe(1);
         }
         
-        // Check for non-background pixels in art box (or verify canvas is rendering)
-        const hasContent = await page.evaluate(() => {
+        // Check art box is above text block and they don't overlap
+        const { artBottom, textTop } = await page.evaluate(() => {
           const canvas = document.querySelector('canvas');
-          if (!canvas) return false;
-          
-          // For very small viewports, just verify canvas has valid dimensions
-          if (canvas.width < 400 || canvas.height < 400) {
-            return canvas.width > 0 && canvas.height > 0;
-          }
+          const textBlock = document.querySelector('.hero-content');
+          const artBox = canvas.getBoundingClientRect();
+          const textBox = textBlock.getBoundingClientRect();
+          return {
+            artBottom: artBox.bottom,
+            textTop: textBox.top
+          };
+        });
+        
+        // Art should end before or at text start (no overlap)
+        expect(artBottom).toBeLessThanOrEqual(textTop + 1); // +1 for rounding
+        
+        // Check for non-background pixels in at least 3 of 4 quadrants
+        const quadrantsWithContent = await page.evaluate(() => {
+          const canvas = document.querySelector('canvas');
+          if (!canvas) return 0;
           
           const ctx = canvas.getContext('2d');
-          const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-          const pixels = imageData.data;
+          const w = canvas.width;
+          const h = canvas.height;
           
-          // Sample pixels to find non-transparent and non-pure-background
-          let nonBackgroundCount = 0;
-          const sampleRate = 100; // Check every 100th pixel
+          // Define quadrants
+          const quadrants = [
+            { x: 0, y: 0, w: w/2, h: h/2 },           // top-left
+            { x: w/2, y: 0, w: w/2, h: h/2 },         // top-right
+            { x: 0, y: h/2, w: w/2, h: h/2 },         // bottom-left
+            { x: w/2, y: h/2, w: w/2, h: h/2 }        // bottom-right
+          ];
           
-          for (let i = 0; i < pixels.length; i += 4 * sampleRate) {
-            const r = pixels[i];
-            const g = pixels[i + 1];
-            const b = pixels[i + 2];
-            const a = pixels[i + 3];
+          let quadrantsWithPixels = 0;
+          
+          for (const quad of quadrants) {
+            const imageData = ctx.getImageData(quad.x, quad.y, quad.w, quad.h);
+            const pixels = imageData.data;
             
-            // Check for non-transparent and not pure white/beige
-            if (a > 10 && !(r > 240 && g > 240 && b > 235)) {
-              nonBackgroundCount++;
-              if (nonBackgroundCount > 10) return true; // Found enough content
+            let nonBackgroundCount = 0;
+            const sampleRate = 200; // Sample every 200th pixel
+            
+            for (let i = 0; i < pixels.length; i += 4 * sampleRate) {
+              const r = pixels[i];
+              const g = pixels[i + 1];
+              const b = pixels[i + 2];
+              const a = pixels[i + 3];
+              
+              // Check for non-transparent and not pure white/beige
+              if (a > 10 && !(r > 240 && g > 240 && b > 235)) {
+                nonBackgroundCount++;
+                if (nonBackgroundCount > 5) {
+                  quadrantsWithPixels++;
+                  break; // Found content in this quadrant
+                }
+              }
             }
           }
           
-          return nonBackgroundCount > 10;
+          return quadrantsWithPixels;
         });
         
-        expect(hasContent).toBeTruthy();
+        expect(quadrantsWithContent).toBeGreaterThanOrEqual(3);
         
         // Check both CTAs are in viewport
         const ctaButtons = page.locator('.hero-buttons a');
@@ -118,6 +145,14 @@ test.describe('Hero Demos - Mobile Tests', () => {
           return canvas && canvas.width > 0 && canvas.height > 0;
         });
         expect(canvasStillValid).toBeTruthy();
+        
+        // Take screenshot at 390x844 for visual verification
+        if (viewport.width === 390 && viewport.height === 844) {
+          await page.screenshot({ 
+            path: `test-screenshots/hero-${hero.num}-mobile-390x844.png`,
+            fullPage: false
+          });
+        }
       });
     });
     
