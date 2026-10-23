@@ -194,4 +194,49 @@ test.describe('Hero Demos - Mobile Tests', () => {
     
   });
   
+  // Special test for Hero 2: verify no content touches top edge during animation
+  test('Hero 2 (Volúmenes Isométricos) has no content in top 8px over 3s animation', async ({ page }) => {
+    await page.setViewportSize({ width: 390, height: 844 });
+    await page.goto(`${BASE_URL}/hero-2.html`);
+    
+    // Wait for canvas to be ready
+    await page.waitForFunction(() => {
+      const c = document.querySelector('canvas');
+      return c && c.width > 0 && c.height > 0;
+    }, { timeout: 5000 });
+    
+    // Sample top 8px row at multiple points over 3 seconds
+    const sampleTimes = [0, 500, 1000, 1500, 2000, 2500, 3000];
+    
+    for (const delay of sampleTimes) {
+      await page.waitForTimeout(delay === 0 ? 300 : 500);
+      
+      const hasContentInTop = await page.evaluate(() => {
+        const canvas = document.querySelector('canvas');
+        if (!canvas) return false;
+        
+        const ctx = canvas.getContext('2d');
+        const imageData = ctx.getImageData(0, 0, canvas.width, 8);
+        const pixels = imageData.data;
+        
+        // Check every pixel in top 8 rows
+        for (let i = 0; i < pixels.length; i += 4) {
+          const r = pixels[i];
+          const g = pixels[i + 1];
+          const b = pixels[i + 2];
+          const a = pixels[i + 3];
+          
+          // Check for non-background (not transparent and not pure beige/white)
+          if (a > 10 && !(r > 230 && g > 220 && b > 210)) {
+            return true; // Found non-background content
+          }
+        }
+        
+        return false; // Only background in top 8px
+      });
+      
+      expect(hasContentInTop).toBe(false);
+    }
+  });
+
 });
