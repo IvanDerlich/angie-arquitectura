@@ -59,10 +59,15 @@ function resize(){
   ctx.setTransform(dpr,0,0,dpr,0,0);
   mouseX=w/2;
   mouseY=h/2;
+  canvas.dataset.ready='true';
 }
 
-// Initial resize after a brief delay to let CSS apply
-setTimeout(resize, 10);
+// Wait for DOM to be ready, then resize
+if(document.readyState === 'loading'){
+  document.addEventListener('DOMContentLoaded', resize);
+} else {
+  resize();
+}
 window.addEventListener('resize',resize);
 
 function handlePointer(e){
