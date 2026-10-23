@@ -114,23 +114,29 @@ function draw(){
   
   // Calculate bounding box including animation extremes
   const buildingWidth=baseW+baseD;
-  const buildingBaseHeight=floors*floorH;
+  
+  // Vertical extent:
+  // - floors stack: (floors-1)*floorH from top floor to bottom floor base
+  // - top floor height: floorH
+  // - isometric top face extends up by: baseD*0.5
+  // Total from top to bottom: (floors-1)*floorH + floorH + baseD*0.5
+  const verticalExtent=(floors-1)*floorH+floorH+baseD*0.5;
   
   // Max wobble in any direction
   const maxWobble=15;
   
-  // The isometric top face extends upward by ~d/2
-  const isoTopExtent=baseD*0.5;
-  
-  // Total height including top face and wobble
-  const totalHeight=buildingBaseHeight+isoTopExtent+maxWobble;
-  const totalWidth=buildingWidth+maxWobble*2; // wobble affects width too
+  // Total bounds including wobble
+  const totalHeight=verticalExtent+maxWobble;
+  const totalWidth=buildingWidth+maxWobble*2;
   
   // Calculate scale to fit with margin
   const scale=Math.min((w-margin*2)/totalWidth,(h-margin*2)/totalHeight);
   
-  // Center vertically with margin, accounting for top extent
-  const cy=margin/scale+totalHeight*0.5;
+  // Position so top of highest floor is at margin/scale
+  // Top floor center is at cy - (floors-1)*floorH
+  // Top face extends up by baseD*0.5
+  // So: (cy - (floors-1)*floorH - baseD*0.5) = margin/scale + maxWobble
+  const cy=(margin+maxWobble)/scale+(floors-1)*floorH+baseD*0.5;
   const cx=w/(2*scale);
   
   const influence=(mouseX/w-0.5)*20,wobble=Math.sin(time*0.5)*15;
