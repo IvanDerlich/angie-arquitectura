@@ -44,6 +44,19 @@ test.describe('Hero Demos - Mobile Tests', () => {
         const minHeight = viewport.height * 0.40;
         expect(artHeight).toBeGreaterThanOrEqual(minHeight);
         
+        // Check canvas buffer aspect ratio matches CSS display ratio (±2%)
+        const { bufferRatio, displayRatio, ratioMatch } = await page.evaluate(() => {
+          const canvas = document.querySelector('canvas');
+          const rect = canvas.getBoundingClientRect();
+          const bufferRatio = canvas.width / canvas.height;
+          const displayRatio = rect.width / rect.height;
+          const ratioDiff = Math.abs(bufferRatio - displayRatio);
+          const ratioMatch = ratioDiff / displayRatio <= 0.02; // within 2%
+          return { bufferRatio, displayRatio, ratioMatch };
+        });
+        
+        expect(ratioMatch).toBe(true);
+        
         // For heroes 1,2,3,5,6 check opacity is 1 (not backdrop heroes 4)
         if (hero.num !== 4) {
           const artOpacity = await page.evaluate(() => {

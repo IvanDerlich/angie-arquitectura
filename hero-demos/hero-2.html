@@ -108,13 +108,25 @@ function isoBox(x,y,z,w,d,h,colors){
 
 function draw(){
   ctx.clearRect(0,0,w,h);
-  const cx=w/2,cy=h*0.6,baseW=140,baseD=140,floorH=60,floors=5,influence=(mouseX/w-0.5)*20,wobble=Math.sin(time*0.5)*15;
+  
+  // Calculate scale to fit building with margin
+  const margin=16,baseW=140,baseD=140,floorH=60,floors=5;
+  const buildingHeight=floors*floorH;
+  const buildingWidth=baseW+baseD;
+  const scale=Math.min((w-margin*2)/buildingWidth,(h-margin*2)/buildingHeight);
+  
+  const cx=w/2,cy=h*0.55+margin,influence=(mouseX/w-0.5)*20*scale,wobble=Math.sin(time*0.5)*15*scale;
+  
+  ctx.save();
+  ctx.scale(scale,scale);
   
   for(let i=0;i<floors;i++){
-    const floorY=cy-i*floorH,xOff=influence*(i+1)*0.2+Math.sin(time*0.7+i)*wobble*0.1;
+    const floorY=(cy/scale)-i*floorH,xOff=influence*(i+1)*0.2+Math.sin(time*0.7+i)*wobble*0.1;
     const colors=i%3===0?['#7FA7C9','#5A8DB0','#4A7D9F']:i%3===1?['#C9A98C','#B39373','#9D7D63']:['#E8DCCB','#D8CCB3','#C8BC9B'];
-    isoBox(cx-baseW/2+xOff,0,floorY,baseW,baseD,floorH,colors);
+    isoBox((cx/scale)-baseW/2+xOff,0,floorY,baseW,baseD,floorH,colors);
   }
+  
+  ctx.restore();
   
   time+=0.02;
   requestAnimationFrame(draw);

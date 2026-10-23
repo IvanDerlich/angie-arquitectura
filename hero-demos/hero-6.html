@@ -42,24 +42,87 @@
 <script>
 const title=document.getElementById('title'),text='Espacios para habitar con calma';text.split(' ').forEach((word,wi)=>{const wordSpan=document.createElement('span');wordSpan.className='word';word.split('').forEach(char=>{const span=document.createElement('span');span.textContent=char;wordSpan.appendChild(span);});title.appendChild(wordSpan);if(wi<text.split(' ').length-1)title.appendChild(document.createTextNode(' '));});
 
-const canvas=document.getElementById('canvas'),ctx=canvas.getContext('2d');let w=canvas.width=window.innerWidth,h=canvas.height=window.innerHeight,mouseX=w/2,mouseY=h/2,time=0;
-window.addEventListener('resize',()=>{w=canvas.width=window.innerWidth;h=canvas.height=window.innerHeight});
+const canvas=document.getElementById('canvas'),ctx=canvas.getContext('2d'),dpr=window.devicePixelRatio||1;let w,h,mouseX=0,mouseY=0,time=0;
+
+function resize(){
+  const rect=canvas.getBoundingClientRect();
+  w=rect.width;
+  h=rect.height;
+  canvas.width=w*dpr;
+  canvas.height=h*dpr;
+  ctx.setTransform(dpr,0,0,dpr,0,0);
+  mouseX=w/2;
+  mouseY=h/2;
+}
+
+resize();
+window.addEventListener('resize',resize);
+
 function handlePointer(e){
-  mouseX=e.clientX;
-  mouseY=e.clientY;
+  const rect=canvas.getBoundingClientRect();
+  mouseX=e.clientX-rect.left;
+  mouseY=e.clientY-rect.top;
 }
 canvas.addEventListener('pointermove',handlePointer);
 canvas.addEventListener('pointerdown',handlePointer);
 
 const phi=1.618034,colors=['#7FA7C9','#C9A98C','#2F4A63'];
-function draw(){ctx.clearRect(0,0,w,h);const cx=w/2,cy=h/2,scale=Math.min(w,h)/600,mouseInfluence=(mouseX/w-0.5)*50;ctx.save();ctx.translate(cx,cy);ctx.scale(scale,scale);ctx.rotate(mouseInfluence*0.015);
-// Fibonacci spiral - faster
-const spiralProgress=Math.min(1,(time%90)/90),maxSteps=10;ctx.strokeStyle='#7FA7C9';ctx.lineWidth=3;let x=0,y=0,size=8,angle=0;for(let i=0;i<maxSteps;i++){if(i/maxSteps>spiralProgress)break;const nextSize=size*phi;ctx.beginPath();ctx.arc(x,y,size,angle,angle+Math.PI/2);ctx.stroke();const cos=Math.cos(angle+Math.PI/2),sin=Math.sin(angle+Math.PI/2);x+=size*cos;y+=size*sin;angle+=Math.PI/2;size=nextSize}
-// Compass arcs - faster, show most by 1.5s
-const arcProgress=Math.min(1,(time%90)/90);for(let i=0;i<6;i++){const r=50+i*60,startAngle=i*Math.PI/3,sweep=arcProgress*Math.PI*2*(0.8+i*0.05),mouseDistort=(mouseY/h-0.5)*0.3;ctx.strokeStyle=colors[i%3];ctx.lineWidth=2+Math.sin(time*0.05+i)*0.5;ctx.globalAlpha=0.7;ctx.beginPath();ctx.arc(0,0,r+mouseDistort*r*0.2,startAngle,startAngle+sweep);ctx.stroke();ctx.globalAlpha=1}
-// Golden rectangles - faster
-ctx.strokeStyle='#2F4A63';ctx.lineWidth=1.5;let rectW=300,rectH=rectW/phi,rects=7;for(let i=0;i<rects;i++){if(i/rects>(time%90)/90)break;ctx.globalAlpha=0.4;ctx.strokeRect(-rectW/2,-rectH/2,rectW,rectH);rectW/=phi;rectH/=phi}
-ctx.globalAlpha=1;ctx.restore();time+=1.8;requestAnimationFrame(draw)}
+function draw(){
+  ctx.clearRect(0,0,w*dpr,h*dpr);
+  const cx=w/2,cy=h/2,scale=Math.min(w,h)/600,mouseInfluence=(mouseX/w-0.5)*50;
+  ctx.save();
+  ctx.translate(cx,cy);
+  ctx.scale(scale,scale);
+  ctx.rotate(mouseInfluence*0.015);
+  
+  // Fibonacci spiral - stronger strokes
+  const spiralProgress=Math.min(1,(time%90)/90),maxSteps=10;
+  ctx.strokeStyle='#7FA7C9';
+  ctx.lineWidth=4;
+  let x=0,y=0,size=8,angle=0;
+  for(let i=0;i<maxSteps;i++){
+    if(i/maxSteps>spiralProgress)break;
+    const nextSize=size*phi;
+    ctx.beginPath();
+    ctx.arc(x,y,size,angle,angle+Math.PI/2);
+    ctx.stroke();
+    const cos=Math.cos(angle+Math.PI/2),sin=Math.sin(angle+Math.PI/2);
+    x+=size*cos;
+    y+=size*sin;
+    angle+=Math.PI/2;
+    size=nextSize;
+  }
+  
+  // Compass arcs - stronger
+  const arcProgress=Math.min(1,(time%90)/90);
+  for(let i=0;i<6;i++){
+    const r=50+i*60,startAngle=i*Math.PI/3,sweep=arcProgress*Math.PI*2*(0.8+i*0.05),mouseDistort=(mouseY/h-0.5)*0.3;
+    ctx.strokeStyle=colors[i%3];
+    ctx.lineWidth=3+Math.sin(time*0.05+i)*0.5;
+    ctx.globalAlpha=0.8;
+    ctx.beginPath();
+    ctx.arc(0,0,r+mouseDistort*r*0.2,startAngle,startAngle+sweep);
+    ctx.stroke();
+    ctx.globalAlpha=1;
+  }
+  
+  // Golden rectangles - stronger
+  ctx.strokeStyle='#2F4A63';
+  ctx.lineWidth=2;
+  let rectW=300,rectH=rectW/phi,rects=7;
+  for(let i=0;i<rects;i++){
+    if(i/rects>(time%90)/90)break;
+    ctx.globalAlpha=0.5;
+    ctx.strokeRect(-rectW/2,-rectH/2,rectW,rectH);
+    rectW/=phi;
+    rectH/=phi;
+  }
+  
+  ctx.globalAlpha=1;
+  ctx.restore();
+  time+=1.8;
+  requestAnimationFrame(draw);
+}
 if(!window.matchMedia('(prefers-reduced-motion:reduce)').matches)draw();
 </script>
 </body>

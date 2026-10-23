@@ -54,16 +54,57 @@ canvas.addEventListener('pointerdown',handlePointer);
 
 function initPoints(){points=[];const cols=Math.ceil(w/60),rows=Math.ceil(h/60);for(let i=0;i<cols;i++)for(let j=0;j<rows;j++)points.push({x:i*60+30,y:j*60+30,ox:i*60+30,oy:j*60+30})}
 
-function draw(){ctx.clearRect(0,0,w,h);points.forEach((p,i)=>{const dx=mouseX-p.x,dy=mouseY-p.y,dist=Math.sqrt(dx*dx+dy*dy),force=Math.max(0,1-dist/250),tx=p.ox+dx*force*0.4+Math.sin(time+i)*8,ty=p.oy+dy*force*0.4+Math.cos(time+i)*8;p.x+=(tx-p.x)*0.15;p.y+=(ty-p.y)*0.15;
-// Edge fade
-const fadeMargin=80,edgeFade=Math.min(1,p.x/fadeMargin,p.y/fadeMargin,(w-p.x)/fadeMargin,(h-p.y)/fadeMargin);
-// Draw point
-const alpha=(0.4+force*0.6)*edgeFade;ctx.fillStyle=force>0.5?`rgba(127,167,201,${alpha})`:`rgba(47,74,99,${alpha})`;ctx.beginPath();ctx.arc(p.x,p.y,3+force*5,0,Math.PI*2);ctx.fill();
-// Draw connections
-points.forEach((p2,j)=>{if(j<=i)return;const d=Math.sqrt((p.x-p2.x)**2+(p.y-p2.y)**2);if(d<80){const edgeFade2=Math.min(1,p2.x/fadeMargin,p2.y/fadeMargin,(w-p2.x)/fadeMargin,(h-p2.y)/fadeMargin),lineAlpha=Math.max(0,(1-d/80)*0.3*Math.min(edgeFade,edgeFade2));ctx.strokeStyle=`rgba(127,167,201,${lineAlpha})`;ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(p.x,p.y);ctx.lineTo(p2.x,p2.y);ctx.stroke()}})});
-// Ripple at cursor
-for(let r=0;r<3;r++){const ripple=(time*3+r*20)%200,alpha=Math.max(0,1-ripple/200);ctx.strokeStyle=`rgba(127,167,201,${alpha})`;ctx.lineWidth=2;ctx.beginPath();ctx.arc(mouseX,mouseY,ripple,0,Math.PI*2);ctx.stroke()}
-time+=0.03;requestAnimationFrame(draw)}
+function draw(){
+  ctx.clearRect(0,0,w,h);
+  const isMobile=w<768;
+  const dotSizeBase=isMobile?5:3;
+  const alphaBase=isMobile?0.7:0.4;
+  
+  points.forEach((p,i)=>{
+    const dx=mouseX-p.x,dy=mouseY-p.y,dist=Math.sqrt(dx*dx+dy*dy),force=Math.max(0,1-dist/250),tx=p.ox+dx*force*0.4+Math.sin(time+i)*8,ty=p.oy+dy*force*0.4+Math.cos(time+i)*8;
+    p.x+=(tx-p.x)*0.15;
+    p.y+=(ty-p.y)*0.15;
+    
+    // Edge fade
+    const fadeMargin=80,edgeFade=Math.min(1,p.x/fadeMargin,p.y/fadeMargin,(w-p.x)/fadeMargin,(h-p.y)/fadeMargin);
+    
+    // Draw point - stronger on mobile
+    const alpha=(alphaBase+force*0.6)*edgeFade;
+    ctx.fillStyle=force>0.5?`rgba(127,167,201,${alpha})`:`rgba(47,74,99,${alpha})`;
+    ctx.beginPath();
+    ctx.arc(p.x,p.y,dotSizeBase+force*5,0,Math.PI*2);
+    ctx.fill();
+    
+    // Draw connections
+    points.forEach((p2,j)=>{
+      if(j<=i)return;
+      const d=Math.sqrt((p.x-p2.x)**2+(p.y-p2.y)**2);
+      if(d<80){
+        const edgeFade2=Math.min(1,p2.x/fadeMargin,p2.y/fadeMargin,(w-p2.x)/fadeMargin,(h-p2.y)/fadeMargin);
+        const lineAlpha=Math.max(0,(1-d/80)*(isMobile?0.5:0.3)*Math.min(edgeFade,edgeFade2));
+        ctx.strokeStyle=`rgba(127,167,201,${lineAlpha})`;
+        ctx.lineWidth=isMobile?1.5:1;
+        ctx.beginPath();
+        ctx.moveTo(p.x,p.y);
+        ctx.lineTo(p2.x,p2.y);
+        ctx.stroke();
+      }
+    });
+  });
+  
+  // Ripple at cursor
+  for(let r=0;r<3;r++){
+    const ripple=(time*3+r*20)%200,alpha=Math.max(0,1-ripple/200);
+    ctx.strokeStyle=`rgba(127,167,201,${alpha})`;
+    ctx.lineWidth=2;
+    ctx.beginPath();
+    ctx.arc(mouseX,mouseY,ripple,0,Math.PI*2);
+    ctx.stroke();
+  }
+  
+  time+=0.03;
+  requestAnimationFrame(draw);
+}
 
 resize();
 if(!window.matchMedia('(prefers-reduced-motion:reduce)').matches)draw();
