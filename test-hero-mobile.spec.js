@@ -107,25 +107,29 @@ test.describe('Hero Demos - Mobile Tests', () => {
         });
         
         // Verify canvas still renders after touch
-        await page.waitForTimeout(100);
+        await page.waitForTimeout(200);
         const stillHasContent = await page.evaluate(() => {
           const canvas = document.querySelector('canvas');
           if (!canvas) return false;
           const ctx = canvas.getContext('2d');
           
-          // Sample a 5x5 grid around the center
-          const centerX = Math.floor(canvas.width / 2);
-          const centerY = Math.floor(canvas.height / 2);
+          // Sample multiple points across the canvas
+          const samples = [
+            {x: 0.5, y: 0.5}, // center
+            {x: 0.3, y: 0.3}, // top-left quadrant
+            {x: 0.7, y: 0.3}, // top-right quadrant
+            {x: 0.3, y: 0.7}, // bottom-left quadrant
+            {x: 0.7, y: 0.7}, // bottom-right quadrant
+            {x: 0.5, y: 0.3}, // top-center
+            {x: 0.5, y: 0.7}, // bottom-center
+          ];
           
-          for (let dx = -2; dx <= 2; dx++) {
-            for (let dy = -2; dy <= 2; dy++) {
-              const imageData = ctx.getImageData(
-                centerX + dx * 50, 
-                centerY + dy * 50, 
-                1, 
-                1
-              );
-              if (imageData.data[3] > 0) return true; // Found non-transparent pixel
+          for (const sample of samples) {
+            const x = Math.floor(canvas.width * sample.x);
+            const y = Math.floor(canvas.height * sample.y);
+            if (x >= 0 && x < canvas.width && y >= 0 && y < canvas.height) {
+              const imageData = ctx.getImageData(x, y, 1, 1);
+              if (imageData.data[3] > 0) return true;
             }
           }
           return false;
