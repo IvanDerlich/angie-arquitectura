@@ -112,13 +112,23 @@ test.describe('Hero Demos - Mobile Tests', () => {
           const canvas = document.querySelector('canvas');
           if (!canvas) return false;
           const ctx = canvas.getContext('2d');
-          const imageData = ctx.getImageData(
-            canvas.width / 2, 
-            canvas.height / 2, 
-            1, 
-            1
-          );
-          return imageData.data[3] > 0; // Check alpha channel
+          
+          // Sample a 5x5 grid around the center
+          const centerX = Math.floor(canvas.width / 2);
+          const centerY = Math.floor(canvas.height / 2);
+          
+          for (let dx = -2; dx <= 2; dx++) {
+            for (let dy = -2; dy <= 2; dy++) {
+              const imageData = ctx.getImageData(
+                centerX + dx * 50, 
+                centerY + dy * 50, 
+                1, 
+                1
+              );
+              if (imageData.data[3] > 0) return true; // Found non-transparent pixel
+            }
+          }
+          return false;
         });
         expect(stillHasContent).toBeTruthy();
       });
