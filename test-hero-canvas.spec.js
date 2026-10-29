@@ -123,21 +123,69 @@ test.describe('Hero Canvas Rendering', () => {
     
     expect(hasRendered).toBe(true);
     
-    // Check art is visible on mobile (height >= 45vh)
+    // Check art is visible on mobile (height >= 40vh)
     const artHeight = await page.evaluate(() => {
-      const canvas = document.querySelector('canvas');
-      return canvas ? canvas.getBoundingClientRect().height : 0;
+      const stage = document.querySelector('.hero-canvas-stage');
+      return stage ? stage.getBoundingClientRect().height : 0;
     });
     
-    expect(artHeight).toBeGreaterThanOrEqual(844 * 0.45);
+    expect(artHeight).toBeGreaterThanOrEqual(844 * 0.40);
     
-    // Verify blue-dominant pixels on mobile too
+    // Verify top 20 rows of visible art block aren't flat background color
+    const topRowsHaveVariation = await page.evaluate(() => {
+      const canvas = document.querySelector('canvas');
+      const stage = document.querySelector('.hero-canvas-stage');
+      if (!canvas || !stage) return false;
+      
+      const gl = canvas.getContext('webgl2') || canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
+      if (!gl) return false;
+      
+      const width = gl.drawingBufferWidth;
+      const height = gl.drawingBufferHeight;
+      const pixels = new Uint8Array(width * height * 4);
+      gl.readPixels(0, 0, width, height, gl.RGBA, gl.UNSIGNED_BYTE, pixels);
+      
+      // Sample top 20 rows (accounting for canvas offset)
+      // Canvas is positioned with top: -35vh, so we sample from further down
+      const stageRect = stage.getBoundingClientRect();
+      const canvasRect = canvas.getBoundingClientRect();
+      const offsetY = Math.abs(canvasRect.top - stageRect.top);
+      const scaleFactor = height / canvasRect.height;
+      const startRow = Math.floor(offsetY * scaleFactor);
+      
+      const bgColor = { r: 247, g: 246, b: 242 }; // Light beige background
+      const bgThreshold = 15; // Allow some variation
+      let nonBgPixels = 0;
+      const samplesToCheck = 200;
+      
+      for (let i = 0; i < samplesToCheck; i++) {
+        const row = startRow + Math.floor(Math.random() * 20);
+        const col = Math.floor(Math.random() * width);
+        const idx = (row * width + col) * 4;
+        const r = pixels[idx];
+        const g = pixels[idx + 1];
+        const b = pixels[idx + 2];
+        
+        // Check if pixel is NOT the flat background color
+        if (Math.abs(r - bgColor.r) > bgThreshold ||
+            Math.abs(g - bgColor.g) > bgThreshold ||
+            Math.abs(b - bgColor.b) > bgThreshold) {
+          nonBgPixels++;
+        }
+      }
+      
+      // At least 70% of top samples should be non-background (terrain)
+      return nonBgPixels >= samplesToCheck * 0.7;
+    });
+    
+    expect(topRowsHaveVariation).toBe(true);
+    
+    // Verify blue-dominant pixels exist
     const pixelAnalysis = await page.evaluate(() => {
       const canvas = document.querySelector('canvas');
       const gl = canvas.getContext('webgl2') || canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
       if (!gl) return { hasBlue: false, blueCount: 0, totalSamples: 0 };
       
-      // Read WebGL pixels directly
       const width = gl.drawingBufferWidth;
       const height = gl.drawingBufferHeight;
       const pixels = new Uint8Array(width * height * 4);

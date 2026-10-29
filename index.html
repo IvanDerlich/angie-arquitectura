@@ -62,7 +62,7 @@
             max-width: 100%;
         }
         
-        /* Mobile: art in full-width block (~50vh) above text, no overlap */
+        /* Mobile: art in full-width block (~45vh) above text, crop canvas to show terrain */
         @media (max-width: 768px) {
             .hero { 
                 min-height: 100vh;
@@ -74,10 +74,18 @@
             
             .hero-canvas-stage {
                 position: relative;
-                height: 50vh;
+                height: 45vh;
                 width: 100%;
                 display: block;
                 overflow: hidden;
+            }
+            
+            .hero-canvas-stage canvas {
+                position: absolute;
+                top: -35vh;
+                left: 0;
+                width: 100% !important;
+                height: 80vh !important;
             }
             
             .hero .container {
