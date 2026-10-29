@@ -187,6 +187,8 @@ a {
 /* Room Scene */
 .room-scene {
     height: 500px;
+    width: 100%;
+    max-width: 800px;
     margin: 0 auto;
     transform-style: preserve-3d;
     transition: transform 0.1s;
@@ -1700,8 +1702,9 @@ section {
     .room-scene {
         transform: none !important;
         height: auto;
-        width: 100%;
-        max-width: 100%;
+        width: 100% !important;
+        max-width: 100% !important;
+        margin: 0 !important;
     }
     
     .room-views {
