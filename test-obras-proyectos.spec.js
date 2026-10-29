@@ -357,4 +357,31 @@ test.describe('Obras and Proyectos Sections', () => {
     
     expect(imageWidth).toBeGreaterThanOrEqual(340);
   });
+
+  test('should have Presupuesto section without prices', async ({ page }) => {
+    await page.goto(BASE_URL);
+    
+    // Check nav item
+    const navPresupuesto = page.locator('nav a[href="#precios"]');
+    await expect(navPresupuesto).toBeVisible();
+    await expect(navPresupuesto).toContainText('Presupuesto');
+    
+    // Check section exists
+    await page.locator('#precios').scrollIntoViewIfNeeded();
+    await expect(page.locator('#precios')).toBeVisible();
+    
+    // Check section label
+    await expect(page.locator('#precios .section-label')).toContainText('PRESUPUESTO');
+    
+    // Check WhatsApp button exists
+    const whatsappBtn = page.locator('#precios a.btn-primary');
+    await expect(whatsappBtn).toBeVisible();
+    await expect(whatsappBtn).toContainText('Consultame por WhatsApp');
+    
+    // Verify no price placeholders or prices are shown
+    const sectionText = await page.locator('#precios').textContent();
+    expect(sectionText).not.toContain('$[PRECIO]');
+    expect(sectionText).not.toContain('Desde $');
+    expect(sectionText).not.toContain('precio-item');
+  });
 });

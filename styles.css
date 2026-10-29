@@ -660,6 +660,21 @@ section {
     background-color: #E8DCCB;
 }
 
+.precios-content {
+    max-width: 800px;
+    margin: 0 auto;
+    text-align: center;
+}
+
+.precios-description {
+    font-size: 18px;
+    color: #2F4A63;
+    line-height: 1.7;
+    margin-bottom: 40px;
+    opacity: 0.9;
+}
+
+/* Legacy grid styles (kept for compatibility) */
 .precios-grid {
     display: grid;
     grid-template-columns: 1fr 1.2fr;
