@@ -261,8 +261,8 @@ document.querySelectorAll('.project-card').forEach(card => {
         qvImage.alt = project.title;
         qvTitle.textContent = project.title;
         
-        // Show category with location only if location exists
-        if (project.location && !project.location.includes('A CONFIRMAR')) {
+        // Show category with location if location exists and is confirmed
+        if (project.location && project.location !== '[UBICACIÓN — A CONFIRMAR]' && !project.location.includes('REEMPLAZAR')) {
             qvCategory.textContent = `${project.category} · ${project.location}`;
         } else {
             qvCategory.textContent = project.category;
@@ -543,7 +543,7 @@ document.querySelectorAll('.project-card').forEach(card => {
             </div>
             <div class="project-info">
                 <h1 class="project-page-title">${project.title}</h1>
-                <p class="project-page-category">${project.category}${project.location && !project.location.includes('A CONFIRMAR') ? ' · ' + project.location : ''}</p>
+                <p class="project-page-category">${project.category}${project.location && project.location !== '[UBICACIÓN — A CONFIRMAR]' && !project.location.includes('REEMPLAZAR') ? ' · ' + project.location : ''}</p>
                 <div class="project-page-description">
                     <p>${project.description}</p>
                 </div>

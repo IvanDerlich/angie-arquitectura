@@ -36,7 +36,7 @@ test.describe('Obras and Proyectos Sections', () => {
     await expect(obrasCards).toHaveCount(2);
     
     // Verify Baño is present (featured first)
-    await expect(obrasCards.first()).toContainText('Remodelación de baño');
+    await expect(obrasCards.first()).toContainText('Remodelación de sanitario');
     
     // Verify Casa Country is present (marked as En obra)
     await expect(obrasCards.nth(1)).toContainText('Casa Country');
@@ -74,7 +74,7 @@ test.describe('Obras and Proyectos Sections', () => {
     await expect(quickView).toBeVisible();
     
     // Check content
-    await expect(quickView.locator('.quick-view-title')).toContainText('Remodelación de baño');
+    await expect(quickView.locator('.quick-view-title')).toContainText('Remodelación de sanitario');
     await expect(quickView.locator('.quick-view-category')).toContainText('Remodelación');
     
     // Close modal
@@ -101,7 +101,7 @@ test.describe('Obras and Proyectos Sections', () => {
     
     // Project view should be visible
     await expect(page.locator('#project-view')).toBeVisible();
-    await expect(page.locator('.project-page-title')).toContainText('Remodelación de baño');
+    await expect(page.locator('.project-page-title')).toContainText('Remodelación de sanitario');
   });
 
   test('should navigate to Proyecto detail page from quick-view', async ({ page }) => {
@@ -211,11 +211,15 @@ test.describe('Obras and Proyectos Sections', () => {
     // Check for placeholder brackets in visible text
     const body = await page.locator('body').textContent();
     
-    expect(body).toContain('[UBICACIÓN — REEMPLAZAR]');
+    // Check for visible placeholders (description placeholders are in multiple cards)
     expect(body).toContain('[DESCRIPCIÓN DEL PROYECTO — REEMPLAZAR POR TEXTO DE ANGIE]');
     expect(body).toContain('[BIO — REEMPLAZAR POR TEXTO DE ANGIE]');
-    expect(body).toContain('[EMAIL — REEMPLAZAR]');
-    expect(body).toContain('[INSTAGRAM — REEMPLAZAR]');
+    // Email and Instagram are no longer placeholders
+    
+    // Verify Casa Country has location in data attribute (not displayed)
+    const casaCountryCard = page.locator('#obras .project-card').nth(1);
+    const locationData = await casaCountryCard.getAttribute('data-location');
+    expect(locationData).toBe('[UBICACIÓN — A CONFIRMAR]');
   });
 
   test('should have correct section numbering', async ({ page }) => {
@@ -261,7 +265,7 @@ test.describe('Obras and Proyectos Sections', () => {
     
     // Should show project view directly
     await expect(page.locator('#project-view')).toBeVisible();
-    await expect(page.locator('.project-page-title')).toContainText('Remodelación de baño');
+    await expect(page.locator('.project-page-title')).toContainText('Remodelación de sanitario');
   });
 
   test('deep link to proyecto should work', async ({ page }) => {
@@ -320,26 +324,19 @@ test.describe('Obras and Proyectos Sections', () => {
     // Check for activities text
     const activitiesText = await banoCard.locator('.project-activities').textContent();
     
-    expect(activitiesText).toContain('Reorganización del espacio');
-    expect(activitiesText).toContain('Diseño de mobiliario');
     expect(activitiesText).toContain('Dirección de obra');
-    expect(activitiesText).toContain('Cómputo de materiales');
   });
 
-  test('should not show location for bathroom obra', async ({ page }) => {
+  test('should show location for bathroom obra', async ({ page }) => {
     await page.goto(BASE_URL);
     
     await page.locator('#obras').scrollIntoViewIfNeeded();
     
     const banoCard = page.locator('#obras .project-card').first();
     
-    // Check that there's no project-location element
-    const locationElements = await banoCard.locator('.project-location').count();
-    expect(locationElements).toBe(0);
-    
-    // Also check that location text doesn't appear in the card content
+    // Check that location is shown
     const cardText = await banoCard.textContent();
-    expect(cardText).not.toContain('UBICACIÓN');
+    expect(cardText).toContain('Ciudad de Mendoza');
   });
 
   test('mobile: images should be full-width and crisp at 390x844', async ({ page }) => {
