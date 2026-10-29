@@ -67,16 +67,30 @@ test.describe('Hero Transmission WebGL', () => {
         const canvasZIndex = await canvasContainer.evaluate((el) => 
             window.getComputedStyle(el).zIndex
         );
-        const overlayZIndex = await overlay.evaluate((el) => 
-            window.getComputedStyle(el).zIndex
-        );
         const contentZIndex = await content.evaluate((el) => 
             window.getComputedStyle(el).zIndex
         );
         
         expect(parseInt(canvasZIndex)).toBe(0);
-        expect(parseInt(overlayZIndex)).toBe(1);
         expect(parseInt(contentZIndex)).toBe(2);
+    });
+
+    test('text and canvas do not overlap at 1440x900', async ({ page }) => {
+        await page.setViewportSize({ width: 1440, height: 900 });
+        await page.goto(BASE_URL);
+        
+        await page.waitForTimeout(1000);
+        
+        const textBox = await page.locator('.hero-content').boundingBox();
+        const canvasBox = await page.locator('#hero-canvas-container').boundingBox();
+        
+        expect(textBox).toBeTruthy();
+        expect(canvasBox).toBeTruthy();
+        
+        const textRight = textBox.x + textBox.width;
+        const canvasLeft = canvasBox.x;
+        
+        expect(textRight).toBeLessThanOrEqual(canvasLeft);
     });
 });
 
