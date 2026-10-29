@@ -42,14 +42,21 @@
             background: rgba(248, 246, 242, 0.95);
             padding: 2.5rem 2rem;
             border-radius: 12px;
-            max-width: 480px;
-            width: 40%;
+            min-width: 440px;
+            max-width: 520px;
+            width: 42%;
             margin-left: 5%;
             backdrop-filter: blur(8px);
             box-shadow: 0 8px 32px rgba(47, 74, 99, 0.15);
         }
         
-        /* Mobile: art in full-width block (~45vh) above text, no overlap */
+        /* Ensure headline stays on max 3 lines */
+        .hero-title {
+            line-height: 1.15;
+            max-width: 100%;
+        }
+        
+        /* Mobile: art in full-width block (~50vh) above text, no overlap */
         @media (max-width: 768px) {
             .hero { 
                 min-height: 100vh;
@@ -60,7 +67,7 @@
             
             .hero-canvas-stage {
                 position: relative;
-                height: 45vh;
+                height: 50vh;
                 width: 100%;
                 flex-shrink: 0;
             }
@@ -74,6 +81,7 @@
             
             .hero-content {
                 width: auto;
+                min-width: auto;
                 max-width: none;
                 margin: 0 1.5rem;
                 padding: 2rem 1.5rem;
@@ -637,13 +645,13 @@
   let mouse = { x: 0, y: 0, xDamped: 0, yDamped: 0 };
   const isMobile = typeof window.orientation !== 'undefined';
 
-  // Angie's palette colors (hex to RGB)
+  // Angie's palette colors for terrain (hex to RGB)
+  // From valleys (deep blue) to peaks (nude)
   const palette = [
-    { r: 232/255, g: 220/255, b: 203/255 }, // #E8DCCB
-    { r: 201/255, g: 169/255, b: 140/255 }, // #C9A98C
-    { r: 127/255, g: 167/255, b: 201/255 }, // #7FA7C9
-    { r: 248/255, g: 246/255, b: 242/255 }, // #F8F6F2
-    { r: 47/255, g: 74/255, b: 99/255 }      // #2F4A63
+    { r: 79/255, g: 127/255, b: 168/255 },  // #4F7FA8 - deep blue valleys
+    { r: 127/255, g: 167/255, b: 201/255 }, // #7FA7C9 - soft blue
+    { r: 201/255, g: 169/255, b: 140/255 }, // #C9A98C - sand
+    { r: 232/255, g: 220/255, b: 203/255 }  // #E8DCCB - nude peaks
   ];
 
   init();
@@ -657,13 +665,15 @@
 
   function setupScene() {
     scene = new THREE.Scene();
-    const fogColor = new THREE.Color(palette[3].r, palette[3].g, palette[3].b);
+    // Use light background color for fog
+    const fogColor = new THREE.Color(0.97, 0.96, 0.95);
     scene.background = fogColor;
     scene.fog = new THREE.Fog(fogColor, 10, 80);
 
     camera = new THREE.PerspectiveCamera(60, width / height, 0.1, 1000);
-    camera.position.set(0, 8, 4);
-    camera.lookAt(0, 0, 0);
+    // Tilt camera down for terrain view - position higher and tilted down
+    camera.position.set(0, 12, 8);
+    camera.lookAt(0, 0, -20);
 
     const ambientLight = new THREE.AmbientLight(0xffffff, 0.8);
     scene.add(ambientLight);
@@ -672,7 +682,7 @@
     directionalLight.position.set(0, 10, 5);
     scene.add(directionalLight);
 
-    renderer = new THREE.WebGLRenderer({ antialias: true });
+    renderer = new THREE.WebGLRenderer({ antialias: true, preserveDrawingBuffer: true });
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
     renderer.setSize(width, height);
     stage.appendChild(renderer.domElement);
@@ -708,7 +718,7 @@
   }
 
   function createTerrain() {
-    const geometry = new THREE.PlaneGeometry(100, 400, 200, 200);
+    const geometry = new THREE.PlaneGeometry(120, 400, 240, 240);
     const positions = geometry.attributes.position.array;
     const colors = new Float32Array(positions.length);
 
@@ -717,13 +727,14 @@
       const x = positions[i];
       const y = positions[i + 1];
       
-      // Generate terrain height using noise
-      const height = noise(x * 0.05, y * 0.05) * 5 + 
-                     noise(x * 0.1, y * 0.1) * 2.5;
+      // Generate terrain height using noise - more pronounced valleys and peaks
+      const height = noise(x * 0.04, y * 0.04) * 6 + 
+                     noise(x * 0.08, y * 0.08) * 3 +
+                     noise(x * 0.15, y * 0.15) * 1.5;
       positions[i + 2] = height;
 
-      // Color based on height
-      const heightNorm = (height + 7.5) / 15; // Normalize to 0-1
+      // Color based on height - valleys blue, peaks nude
+      const heightNorm = Math.max(0, Math.min(1, (height + 5) / 15)); // Normalize to 0-1
       const colorIndex = Math.min(Math.floor(heightNorm * palette.length), palette.length - 1);
       const color = palette[colorIndex];
       
@@ -780,10 +791,10 @@
     terrain.position.z += 0.5;
     if (terrain.position.z > 20) terrain.position.z = -180;
 
-    // Subtle camera movement based on mouse
-    camera.position.x = (mouse.xDamped - width / 2) * 0.01;
-    camera.position.y = 8 + (mouse.yDamped - height / 2) * 0.01;
-    camera.lookAt(0, 0, -100);
+    // Subtle camera movement based on mouse - keep tilted down
+    camera.position.x = (mouse.xDamped - width / 2) * 0.008;
+    camera.position.y = 12 + (mouse.yDamped - height / 2) * 0.008;
+    camera.lookAt(0, 0, -20);
 
     renderer.render(scene, camera);
   }
