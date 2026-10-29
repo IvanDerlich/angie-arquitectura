@@ -143,7 +143,7 @@ a {
 .hero-gallery-scroller {
     height: 100%;
     transform-style: preserve-3d;
-    transform: translateX(10vw);
+    transform: translateX(15vw);
 }
 
 .hero-gallery-room {
@@ -244,7 +244,7 @@ a {
 }
 
 .hero-content-inner {
-    max-width: 550px;
+    max-width: 480px;
     margin-left: 3vw;
     pointer-events: auto;
 }

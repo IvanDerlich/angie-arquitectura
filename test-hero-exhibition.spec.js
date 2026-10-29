@@ -95,4 +95,36 @@ test.describe('Hero Exhibition Gallery', () => {
         const count = await visibleImages.count();
         expect(count).toBeGreaterThan(0);
     });
+
+    test('hero text should not overlap any artwork frames on desktop', async ({ page }) => {
+        await page.setViewportSize({ width: 1440, height: 900 });
+        await page.goto('http://localhost:8000');
+        
+        // Wait for everything to be ready
+        await page.waitForSelector('.hero-gallery-room__img', { state: 'visible', timeout: 5000 });
+        await page.waitForTimeout(1000);
+        
+        // Get the text content bounding box
+        const contentBox = await page.locator('.hero-content-inner').boundingBox();
+        expect(contentBox).not.toBeNull();
+        
+        // Get all image bounding boxes
+        const images = page.locator('.hero-gallery-room__img');
+        const imageCount = await images.count();
+        
+        // Check each image doesn't intersect with text
+        for (let i = 0; i < imageCount; i++) {
+            const imageBox = await images.nth(i).boundingBox();
+            if (imageBox) {
+                // Check for intersection
+                const noOverlap = 
+                    contentBox.x + contentBox.width < imageBox.x || // content is left of image
+                    contentBox.x > imageBox.x + imageBox.width || // content is right of image
+                    contentBox.y + contentBox.height < imageBox.y || // content is above image
+                    contentBox.y > imageBox.y + imageBox.height; // content is below image
+                
+                expect(noOverlap).toBeTruthy();
+            }
+        }
+    });
 });
