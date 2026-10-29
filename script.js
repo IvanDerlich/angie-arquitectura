@@ -650,3 +650,73 @@ document.querySelectorAll('.project-card').forEach(card => {
     // Initial route
     route();
 })();
+
+// 3D Room Display with Mouse Tilt
+(function() {
+    const roomDisplay = document.getElementById('room-display');
+    const roomScene = document.querySelector('.room-scene');
+    
+    if (!roomDisplay || !roomScene) return;
+    
+    // Check for 3D transform support
+    const supportsPreserve3d = 'CSS' in window && CSS.supports('transform-style', 'preserve-3d');
+    if (!supportsPreserve3d) {
+        // Fallback: show static display
+        if (roomScene) {
+            roomScene.style.transform = 'none';
+        }
+        return;
+    }
+    
+    let requestId = null;
+    const movement = {
+        rotateX: 5,
+        rotateY: 10
+    };
+    
+    function getMousePos(e) {
+        return {
+            x: e.pageX || e.clientX,
+            y: e.pageY || e.clientY
+        };
+    }
+    
+    function rotateScene(mousepos) {
+        const bounds = roomDisplay.getBoundingClientRect();
+        const width = bounds.width;
+        const height = bounds.height;
+        
+        const rotX = 2 * movement.rotateX / height * mousepos.y - movement.rotateX;
+        const rotY = 2 * movement.rotateY / width * mousepos.x - movement.rotateY;
+        
+        roomScene.style.transform = `rotate3d(1,0,0,${rotX}deg) rotate3d(0,1,0,${rotY}deg)`;
+    }
+    
+    function onMouseMove(e) {
+        if (requestId) {
+            cancelAnimationFrame(requestId);
+        }
+        
+        requestId = requestAnimationFrame(function() {
+            const mousepos = getMousePos(e);
+            rotateScene(mousepos);
+        });
+    }
+    
+    // Only enable mouse movement on larger screens
+    if (window.innerWidth > 768) {
+        document.addEventListener('mousemove', onMouseMove);
+    }
+    
+    // Disable on window resize if screen becomes small
+    window.addEventListener('resize', function() {
+        if (window.innerWidth <= 768) {
+            document.removeEventListener('mousemove', onMouseMove);
+            if (roomScene) {
+                roomScene.style.transform = 'rotate3d(1,0,0,0deg) rotate3d(0,1,0,0deg)';
+            }
+        } else {
+            document.addEventListener('mousemove', onMouseMove);
+        }
+    });
+})();
