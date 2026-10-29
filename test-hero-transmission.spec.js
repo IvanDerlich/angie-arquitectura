@@ -108,7 +108,7 @@ test.describe('Hero Transmission WebGL - Mobile', () => {
         await expect(heroCard).toBeVisible();
     });
 
-    test('canvas has reduced opacity on mobile for better readability', async ({ page }) => {
+    test('canvas is crisp and full opacity on mobile', async ({ page }) => {
         await page.goto(BASE_URL);
         
         const canvasContainer = page.locator('#hero-canvas-container');
@@ -117,7 +117,13 @@ test.describe('Hero Transmission WebGL - Mobile', () => {
             window.getComputedStyle(el).opacity
         );
         
-        expect(parseFloat(opacity)).toBeLessThanOrEqual(0.6);
+        expect(parseFloat(opacity)).toBe(1);
+        
+        const position = await canvasContainer.evaluate((el) => 
+            window.getComputedStyle(el).position
+        );
+        
+        expect(position).toBe('relative');
     });
 });
 

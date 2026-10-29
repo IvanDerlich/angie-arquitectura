@@ -919,10 +919,6 @@ section {
         font-size: 36px;
     }
 
-    .hero-canvas-container {
-        opacity: 0.8;
-    }
-
     .sobre-mi-grid,
     .precios-grid,
     .contacto-grid {
@@ -972,20 +968,25 @@ section {
     }
 
     .hero {
-        min-height: 80vh;
-        padding-top: 100px;
+        min-height: auto;
+        padding-top: 80px;
+        flex-direction: column;
+        display: block;
     }
 
     .hero-canvas-container {
-        opacity: 0.6;
+        position: relative;
+        height: 45vh;
+        width: 100%;
+        opacity: 1;
     }
 
     .hero-overlay {
-        background: linear-gradient(
-            135deg,
-            rgba(248, 246, 242, 0.9) 0%,
-            rgba(248, 246, 242, 0.85) 100%
-        );
+        display: none;
+    }
+
+    .hero-content {
+        padding: 40px 0 60px;
     }
 
     .hero-tagline {
@@ -1049,12 +1050,8 @@ section {
         font-size: 32px;
     }
 
-    .hero {
-        min-height: 70vh;
-    }
-
     .hero-canvas-container {
-        opacity: 0.5;
+        height: 45vh;
     }
 
     .section-title {
