@@ -213,8 +213,7 @@ test.describe('Obras and Proyectos Sections', () => {
     
     // Check for visible placeholders (description placeholders are in multiple cards)
     expect(body).toContain('[DESCRIPCIÓN DEL PROYECTO — REEMPLAZAR POR TEXTO DE ANGIE]');
-    expect(body).toContain('[BIO — REEMPLAZAR POR TEXTO DE ANGIE]');
-    // Email and Instagram are no longer placeholders
+    // Bio, email and Instagram are no longer placeholders
     
     // Verify Casa Country has location in data attribute (not displayed)
     const casaCountryCard = page.locator('#obras .project-card').nth(1);
