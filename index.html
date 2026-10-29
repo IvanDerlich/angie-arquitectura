@@ -1004,8 +1004,8 @@
     if (isMobile) {
       // Single large card, no animation, NO unwoven effect
       cardHeight = Math.min(CONFIG.cardMaxHeight, viewportHeight * 0.85);
-      cardWidth = viewportWidth * 0.90; // 90% of viewport width
-      pitch = viewportWidth * 2; // Large spacing to keep only one visible
+      cardWidth = viewportWidth * 0.90; // 90% of viewport width (>= 85% requirement)
+      pitch = viewportWidth * 3; // Large spacing to ensure only one card visible
       motion.velocity = 0; // Stop animation on mobile
       shared.uStrength.value = 0; // Disable tearing effect completely
       shared.uZone.value = 0; // No tear zone on mobile
@@ -1022,9 +1022,14 @@
 
     rebuildStrip();
     
-    // On mobile, center the first card with offset=0
+    // On mobile, adjust offset so first card is centered at x=0
     if (isMobile) {
+      // Reset offset to position first card at center
       offset = 0;
+      // Force first card position update immediately
+      if (cards.length > 0) {
+        cards[0].mesh.position.x = 0;
+      }
     }
   }
 
@@ -1039,6 +1044,9 @@
   let lastX = 0, lastTime = 0, dragVelocity = 0;
 
   stage.addEventListener("pointerdown", (event) => {
+    // Disable dragging on mobile
+    if (viewportWidth <= 768) return;
+    
     dragging = true;
     lastX = event.clientX;
     lastTime = performance.now();
@@ -1075,10 +1083,25 @@
     if (!dragging) offset += motion.velocity * (deltaMS / 1000);
     shared.uTime.value = time;
 
-    const half = stripSpan / 2;
-    for (const card of cards) {
-      const x = ((card.baseX - offset) % stripSpan + stripSpan) % stripSpan;
-      card.mesh.position.x = x - half;
+    const isMobile = viewportWidth <= 768;
+    if (isMobile) {
+      // Mobile: show only the first card, centered at x=0
+      for (let i = 0; i < cards.length; i++) {
+        if (i === 0) {
+          cards[i].mesh.position.x = 0;
+          cards[i].mesh.visible = true;
+        } else {
+          cards[i].mesh.visible = false;
+        }
+      }
+    } else {
+      // Desktop: normal scrolling strip
+      const half = stripSpan / 2;
+      for (const card of cards) {
+        card.mesh.visible = true;
+        const x = ((card.baseX - offset) % stripSpan + stripSpan) % stripSpan;
+        card.mesh.position.x = x - half;
+      }
     }
 
     renderer.render(scene, camera);
