@@ -36,6 +36,13 @@
         }
         .hero-bg { display: none; }
         
+        .hero .container {
+            width: 100%;
+            display: flex;
+            justify-content: flex-start;
+            padding-left: 50px;
+        }
+        
         .hero-content { 
             position: relative; 
             z-index: 1;
@@ -45,7 +52,6 @@
             min-width: 440px;
             max-width: 520px;
             width: 42%;
-            margin-left: 5%;
             backdrop-filter: blur(8px);
             box-shadow: 0 8px 32px rgba(47, 74, 99, 0.15);
         }
@@ -63,29 +69,31 @@
                 flex-direction: column;
                 align-items: stretch;
                 padding: 0;
+                display: block;
             }
             
             .hero-canvas-stage {
                 position: relative;
                 height: 50vh;
                 width: 100%;
-                flex-shrink: 0;
+                display: block;
             }
             
             .hero .container {
-                flex: 1;
-                display: flex;
-                align-items: center;
-                padding: 2rem 0;
+                display: block;
+                padding: 0;
+                width: 100%;
             }
             
             .hero-content {
                 width: auto;
                 min-width: auto;
                 max-width: none;
-                margin: 0 1.5rem;
+                margin: 2rem 1.5rem;
                 padding: 2rem 1.5rem;
                 background: rgba(248, 246, 242, 0.98);
+                position: relative;
+                z-index: 1;
             }
         }
     </style>
@@ -670,10 +678,17 @@
     scene.background = fogColor;
     scene.fog = new THREE.Fog(fogColor, 10, 80);
 
-    camera = new THREE.PerspectiveCamera(60, width / height, 0.1, 1000);
-    // Tilt camera down for terrain view - position higher and tilted down
-    camera.position.set(0, 12, 8);
-    camera.lookAt(0, 0, -20);
+    // Mobile needs wider FOV to show more terrain vertically
+    const fov = isMobile ? 70 : 60;
+    camera = new THREE.PerspectiveCamera(fov, width / height, 0.1, 1000);
+    // Camera positioning: desktop tilted down, mobile very low looking slightly up
+    if (isMobile) {
+      camera.position.set(0, 0.8, 0.5);
+      camera.lookAt(0, 2.5, -8);
+    } else {
+      camera.position.set(0, 12, 8);
+      camera.lookAt(0, 0, -20);
+    }
 
     const ambientLight = new THREE.AmbientLight(0xffffff, 0.8);
     scene.add(ambientLight);
@@ -754,7 +769,14 @@
 
     terrain = new THREE.Mesh(geometry, material);
     terrain.rotation.x = -Math.PI / 2;
-    terrain.position.z = -180;
+    // Position terrain closer on mobile, and raise it up
+    if (isMobile) {
+      terrain.position.z = -80;
+      terrain.position.y = 2;
+    } else {
+      terrain.position.z = -180;
+      terrain.position.y = 0;
+    }
     scene.add(terrain);
   }
 
@@ -776,6 +798,20 @@
       camera.aspect = width / height;
       camera.updateProjectionMatrix();
       renderer.setSize(width, height);
+      
+      // Update camera position and FOV for mobile/desktop
+      const isMobileNow = width <= 768;
+      if (isMobileNow) {
+        camera.fov = 70;
+        camera.updateProjectionMatrix();
+        camera.position.set(0, 0.8, 0.5);
+        camera.lookAt(0, 2.5, -8);
+      } else {
+        camera.fov = 60;
+        camera.updateProjectionMatrix();
+        camera.position.set(0, 12, 8);
+        camera.lookAt(0, 0, -20);
+      }
     });
   }
 
@@ -788,13 +824,17 @@
 
     // Animate terrain forward movement
     const time = performance.now() * 0.001;
+    const resetZ = isMobile ? -80 : -180;
     terrain.position.z += 0.5;
-    if (terrain.position.z > 20) terrain.position.z = -180;
+    if (terrain.position.z > 20) terrain.position.z = resetZ;
 
     // Subtle camera movement based on mouse - keep tilted down
+    const baseY = isMobile ? 0.8 : 12;
+    const lookY = isMobile ? 2.5 : 0;
+    const lookZ = isMobile ? -8 : -20;
     camera.position.x = (mouse.xDamped - width / 2) * 0.008;
-    camera.position.y = 12 + (mouse.yDamped - height / 2) * 0.008;
-    camera.lookAt(0, 0, -20);
+    camera.position.y = baseY + (mouse.yDamped - height / 2) * 0.005;
+    camera.lookAt(0, lookY, lookZ);
 
     renderer.render(scene, camera);
   }
