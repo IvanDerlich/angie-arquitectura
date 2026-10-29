@@ -96,4 +96,96 @@ test.describe('Hero Canvas Rendering', () => {
     
     expect(artHeight).toBeGreaterThanOrEqual(844 * 0.40);
   });
+
+  test('desktop layout: no text overflow, no text/art intersection', async ({ page }) => {
+    await page.setViewportSize({ width: 1280, height: 800 });
+    await page.goto(BASE_URL);
+    
+    await page.waitForSelector('canvas', { timeout: 5000 });
+    await page.waitForTimeout(1000);
+    
+    const layoutCheck = await page.evaluate(() => {
+      const heroContent = document.querySelector('.hero-content');
+      const canvas = document.querySelector('canvas');
+      
+      if (!heroContent || !canvas) return { valid: false, reason: 'Elements not found' };
+      
+      const contentRect = heroContent.getBoundingClientRect();
+      const canvasRect = canvas.getBoundingClientRect();
+      
+      // Check for text overflow (scrollWidth > clientWidth indicates overflow)
+      const h1 = heroContent.querySelector('h1');
+      const hasOverflow = h1 && h1.scrollWidth > h1.clientWidth + 2; // +2px tolerance
+      
+      // Check for intersection (canvas should not overlap text panel significantly)
+      const hasIntersection = !(
+        contentRect.right < canvasRect.left || 
+        contentRect.left > canvasRect.right ||
+        contentRect.bottom < canvasRect.top ||
+        contentRect.top > canvasRect.bottom
+      );
+      
+      // Allow minimal edge overlap (within 10px)
+      const overlapX = Math.max(0, Math.min(contentRect.right, canvasRect.right) - Math.max(contentRect.left, canvasRect.left));
+      const significantOverlap = hasIntersection && overlapX > 10;
+      
+      return {
+        valid: !hasOverflow && !significantOverlap,
+        hasOverflow,
+        significantOverlap,
+        contentWidth: contentRect.width,
+        h1ScrollWidth: h1 ? h1.scrollWidth : 0,
+        h1ClientWidth: h1 ? h1.clientWidth : 0
+      };
+    });
+    
+    expect(layoutCheck.hasOverflow).toBe(false);
+    expect(layoutCheck.significantOverlap).toBe(false);
+    expect(layoutCheck.contentWidth).toBeGreaterThanOrEqual(440);
+  });
+
+  test('mobile layout: art fully visible above text', async ({ page }) => {
+    await page.setViewportSize({ width: 390, height: 844 });
+    await page.goto(BASE_URL);
+    
+    await page.waitForSelector('canvas', { timeout: 5000 });
+    await page.waitForTimeout(1000);
+    
+    const layoutCheck = await page.evaluate(() => {
+      const heroContent = document.querySelector('.hero-content');
+      const canvasStage = document.querySelector('.hero-canvas-stage');
+      const canvas = document.querySelector('canvas');
+      
+      if (!heroContent || !canvasStage || !canvas) return { valid: false };
+      
+      const contentRect = heroContent.getBoundingClientRect();
+      const stageRect = canvasStage.getBoundingClientRect();
+      const canvasRect = canvas.getBoundingClientRect();
+      
+      // Check that art is above text (stage.bottom <= content.top + small tolerance)
+      const artAboveText = stageRect.bottom <= contentRect.top + 5;
+      
+      // Check art has meaningful height (at least 40vh = 337px)
+      const artHeight = stageRect.height;
+      const hasHeight = artHeight >= 337;
+      
+      // Check no significant overlap
+      const overlap = Math.max(0, Math.min(stageRect.bottom, contentRect.bottom) - Math.max(stageRect.top, contentRect.top));
+      const noOverlap = overlap < 10;
+      
+      return {
+        valid: artAboveText && hasHeight && noOverlap,
+        artAboveText,
+        hasHeight,
+        noOverlap,
+        artHeight,
+        stageBottom: stageRect.bottom,
+        contentTop: contentRect.top
+      };
+    });
+    
+    expect(layoutCheck.artAboveText).toBe(true);
+    expect(layoutCheck.hasHeight).toBe(true);
+    expect(layoutCheck.noOverlap).toBe(true);
+  });
 });

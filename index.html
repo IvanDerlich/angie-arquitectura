@@ -21,7 +21,10 @@
         /* Hero canvas stage - Unwoven effect by Clément Grellier (MIT License) */
         .hero-canvas-stage {
             position: absolute;
-            inset: 0;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            left: 600px;
             z-index: 0;
             cursor: grab;
             touch-action: none;
@@ -82,6 +85,7 @@
                 height: 50vh;
                 min-height: 400px;
                 width: 100%;
+                left: 0;
                 flex-shrink: 0;
                 cursor: grab;
                 touch-action: pan-y;
