@@ -1020,12 +1020,22 @@ section {
     .hero-gallery-container {
         position: relative;
         height: 50vh;
+        perspective: 700px;
+    }
+    
+    .hero-gallery-scroller {
+        transform: translateX(0) scale(2.5) translateZ(250px);
     }
     
     .hero-gallery-room__img {
-        max-width: 70vw;
-        max-height: 30vh;
-        margin: 0 2%;
+        max-width: 95vw;
+        max-height: 45vh;
+        margin: 0 3%;
+    }
+    
+    .hero-gallery-room__side--back .hero-gallery-room__img {
+        max-width: 110vw;
+        max-height: 55vh;
     }
     
     .hero-content {

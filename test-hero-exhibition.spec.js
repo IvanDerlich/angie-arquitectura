@@ -127,4 +127,28 @@ test.describe('Hero Exhibition Gallery', () => {
             }
         }
     });
+
+    test('mobile frames should be clearly visible with largest frame >= 170px at 390x844', async ({ page }) => {
+        await page.setViewportSize({ width: 390, height: 844 });
+        await page.goto('http://localhost:8000');
+        
+        // Wait for images to be visible
+        await page.waitForSelector('.hero-gallery-room__img', { state: 'visible', timeout: 5000 });
+        await page.waitForTimeout(1000);
+        
+        // Get all visible image bounding boxes
+        const images = page.locator('.hero-gallery-room__img');
+        const imageCount = await images.count();
+        
+        let maxWidth = 0;
+        for (let i = 0; i < imageCount; i++) {
+            const imageBox = await images.nth(i).boundingBox();
+            if (imageBox && imageBox.width > maxWidth) {
+                maxWidth = imageBox.width;
+            }
+        }
+        
+        // Assert largest visible frame is at least 170px wide
+        expect(maxWidth).toBeGreaterThanOrEqual(170);
+    });
 });
