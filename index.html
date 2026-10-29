@@ -999,12 +999,14 @@
     camera.bottom = -viewportHeight / 2;
     camera.updateProjectionMatrix();
 
-    // On mobile (<=768px), make cards much wider to fill viewport
+    // On mobile (<=768px), show ONE centered card filling viewport
     const isMobile = viewportWidth <= 768;
     if (isMobile) {
-      cardHeight = Math.min(CONFIG.cardMaxHeight, viewportHeight * 0.75);
-      cardWidth = viewportWidth * 0.85; // 85% of viewport width
-      pitch = cardWidth + Math.max(12, cardWidth * 0.05); // Minimal gap
+      // Single large card, no animation
+      cardHeight = Math.min(CONFIG.cardMaxHeight, viewportHeight * 0.85);
+      cardWidth = viewportWidth * 0.90; // 90% of viewport width
+      pitch = viewportWidth * 2; // Large spacing to keep only one visible
+      motion.velocity = 0; // Stop animation on mobile
     } else {
       cardHeight = Math.min(CONFIG.cardMaxHeight, viewportHeight * 0.62);
       cardWidth = cardHeight * CONFIG.cardAspect;
@@ -1016,6 +1018,11 @@
     shared.uCardSize.value.set(cardWidth, cardHeight);
 
     rebuildStrip();
+    
+    // On mobile, center the first card
+    if (isMobile) {
+      offset = 0;
+    }
   }
 
   const baseSpeed = reduceMotion ? 0 : CONFIG.scrollSpeed;
