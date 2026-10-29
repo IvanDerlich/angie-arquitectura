@@ -7,12 +7,12 @@
     'use strict';
 
     // Check if we're on a page with the hero exhibition
-    const heroScroller = document.querySelector('.hero-scroller');
+    const heroScroller = document.querySelector('.hero-gallery-scroller');
     if (!heroScroller) return;
 
     const DOM = {
         scroller: heroScroller,
-        rooms: [].slice.call(heroScroller.querySelectorAll('.hero-room'))
+        rooms: [].slice.call(heroScroller.querySelectorAll('.hero-gallery-room'))
     };
 
     const initTransform = { 

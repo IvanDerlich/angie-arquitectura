@@ -5,29 +5,29 @@ test.describe('Hero Exhibition Gallery', () => {
         await page.goto('http://localhost:8000');
         
         // Wait for hero section to be visible
-        await page.waitForSelector('.hero-container', { state: 'visible', timeout: 10000 });
+        await page.waitForSelector('.hero-gallery-container', { state: 'visible', timeout: 10000 });
         
         // Wait for images to load
         await page.waitForLoadState('networkidle');
         await page.waitForTimeout(1000);
         
         // Check that the 3D room structure exists
-        const heroContainer = await page.locator('.hero-container');
+        const heroContainer = await page.locator('.hero-gallery-container');
         await expect(heroContainer).toBeVisible();
         
-        const heroScroller = await page.locator('.hero-scroller');
+        const heroScroller = await page.locator('.hero-gallery-scroller');
         await expect(heroScroller).toBeVisible();
         
         // Check that at least one room is visible
-        const currentRoom = await page.locator('.hero-room--current');
+        const currentRoom = await page.locator('.hero-gallery-room--current');
         await expect(currentRoom).toBeVisible();
         
         // Check that images are loaded and visible
-        const images = await page.locator('.hero-room__img').all();
+        const images = await page.locator('.hero-gallery-room__img').all();
         expect(images.length).toBeGreaterThan(0);
         
         // Verify first image is loaded and non-blank
-        const firstImage = await page.locator('.hero-room__img').first();
+        const firstImage = await page.locator('.hero-gallery-room__img').first();
         await expect(firstImage).toBeVisible();
         
         // Check that image has natural dimensions (is actually loaded)
@@ -51,8 +51,8 @@ test.describe('Hero Exhibition Gallery', () => {
     test('should display content overlay with readable headline', async ({ page }) => {
         await page.goto('http://localhost:8000');
         
-        // Wait for content overlay
-        await page.waitForSelector('.hero-content-overlay', { state: 'visible' });
+        // Wait for content
+        await page.waitForSelector('.hero-content', { state: 'visible' });
         
         // Check headline is visible and readable
         const title = await page.locator('.hero-title');
@@ -91,7 +91,7 @@ test.describe('Hero Exhibition Gallery', () => {
         expect(titleText.length).toBeGreaterThan(0);
         
         // Verify images are visible on mobile
-        const visibleImages = await page.locator('.hero-room__img:visible');
+        const visibleImages = await page.locator('.hero-gallery-room__img:visible');
         const count = await visibleImages.count();
         expect(count).toBeGreaterThan(0);
     });
