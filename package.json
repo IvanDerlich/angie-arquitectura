@@ -19,5 +19,8 @@
   "homepage": "https://github.com/IvanDerlich/angie-arquitectura#readme",
   "devDependencies": {
     "@playwright/test": "^1.64.1"
+  },
+  "dependencies": {
+    "canvas": "^3.2.3"
   }
 }
