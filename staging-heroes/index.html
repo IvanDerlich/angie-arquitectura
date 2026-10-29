@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hero Variants - Ángeles Arquitectura</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: #F8F6F2;
+            color: #2F4A63;
+            padding: 2rem;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            color: #2F4A63;
+        }
+        .subtitle {
+            font-size: 1.125rem;
+            color: #7FA7C9;
+            margin-bottom: 3rem;
+        }
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+        .card {
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 2px 12px rgba(47, 74, 99, 0.1);
+            transition: transform 0.2s, box-shadow 0.2s;
+            text-decoration: none;
+            color: inherit;
+            display: block;
+        }
+        .card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 24px rgba(127, 167, 201, 0.2);
+        }
+        .card-image {
+            width: 100%;
+            height: 200px;
+            background: linear-gradient(135deg, #7FA7C9, #C9A98C);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            color: white;
+        }
+        .card-content {
+            padding: 1.5rem;
+        }
+        .card-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: #2F4A63;
+        }
+        .card-description {
+            font-size: 0.9375rem;
+            color: #666;
+            line-height: 1.6;
+        }
+        .card-tech {
+            margin-top: 1rem;
+            font-size: 0.8125rem;
+            color: #7FA7C9;
+        }
+        .back-link {
+            display: inline-block;
+            color: #7FA7C9;
+            text-decoration: none;
+            margin-bottom: 2rem;
+            font-weight: 500;
+        }
+        .back-link:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="../index.html" class="back-link">← Volver al sitio principal</a>
+        <h1>Hero Section Variants</h1>
+        <p class="subtitle">ARQ. ANGIE SERRANO SQUADRITO · Espacios para habitar con calma</p>
+        <p>Estas son 4 propuestas de hero section basadas en demos open-source de alta calidad. Cada una mantiene la estructura completa del sitio y solo modifica la sección hero.</p>
+        
+        <div class="grid">
+            <a href="unwoven/" class="card">
+                <div class="card-image">🧵</div>
+                <div class="card-content">
+                    <h2 class="card-title">Unwoven</h2>
+                    <p class="card-description">Tiras infinitas de imágenes que se entretejen y desentrañan al acercarse a los bordes de la pantalla. Efecto WebGL/Three.js interactivo y fluido.</p>
+                    <p class="card-tech">By Clément Grellier • WebGL + Three.js</p>
+                </div>
+            </a>
+
+            <a href="landscape/" class="card">
+                <div class="card-image">🏔️</div>
+                <div class="card-content">
+                    <h2 class="card-title">Interactive Landscape</h2>
+                    <p class="card-description">Paisaje 3D animado con Perlin noise que responde al movimiento del mouse. Suave, orgánico y atmosférico.</p>
+                    <p class="card-tech">By Codrops • WebGL + Custom Shaders</p>
+                </div>
+            </a>
+
+            <a href="exhibition/" class="card">
+                <div class="card-image">🖼️</div>
+                <div class="card-content">
+                    <h2 class="card-title">Exhibition</h2>
+                    <p class="card-description">Sala de galería 3D con proyectos de arquitectura exhibidos en las paredes. Navegación inmersiva a través de espacios virtuales.</p>
+                    <p class="card-tech">By Codrops • CSS 3D Transforms</p>
+                </div>
+            </a>
+
+            <a href="room/" class="card">
+                <div class="card-image">🏠</div>
+                <div class="card-content">
+                    <h2 class="card-title">Room Display</h2>
+                    <p class="card-description">Display interactivo de habitaciones con vistas rotatorias y elementos destacados. Perspectiva arquitectónica inmersiva.</p>
+                    <p class="card-tech">By Codrops • CSS 3D + JavaScript</p>
+                </div>
+            </a>
+        </div>
+
+        <p style="margin-top: 3rem; padding: 1.5rem; background: white; border-radius: 8px; border-left: 4px solid #7FA7C9;">
+            <strong>Nota técnica:</strong> Todos los efectos mantienen la estructura completa del sitio (nav, obras, proyectos, actividades, sobre mí, servicios, precios, contacto) y solo reemplazan el hero section. Las imágenes utilizadas son los proyectos reales de Angie, y los colores están adaptados a su paleta (#7FA7C9, #E8DCCB, #C9A98C, #F8F6F2, #2F4A63). Cada demo incluye créditos del autor original y se ha verificado la licencia MIT de todos los efectos.
+        </p>
+    </div>
+</body>
+</html>
