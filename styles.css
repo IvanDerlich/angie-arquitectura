@@ -214,7 +214,7 @@ a {
 .room-view--rotate-left {
     margin-left: -1px;
     transform-origin: 0% 50%;
-    transform: rotate3d(0, 1, 0, -90deg);
+    transform: rotate3d(0, 1, 0, -75deg);
 }
 
 .room-view--rotate-right {
@@ -1659,7 +1659,7 @@ section {
     }
     
     .hero-text-section {
-        padding: 20px 0;
+        padding: 20px 0 10px;
     }
     
     .hero-title {
@@ -1677,6 +1677,7 @@ section {
     .hero-buttons {
         flex-direction: column;
         align-items: center;
+        margin-bottom: 16px;
     }
     
     .hero-buttons .btn {
@@ -1687,33 +1688,43 @@ section {
     /* Mobile: Disable 3D transforms and show flat gallery */
     .room-slideshow {
         perspective: none;
-        min-height: 400px;
-        padding: 20px 0;
+        min-height: auto;
+        padding: 0;
+        margin-top: 10px;
+    }
+    
+    .room-slide {
+        position: relative;
     }
     
     .room-scene {
         transform: none !important;
         height: auto;
         width: 100%;
+        max-width: 100%;
     }
     
     .room-views {
         display: block;
         transform: none !important;
         width: 100%;
+        max-width: 100%;
     }
     
     .room-view {
-        width: 100%;
+        width: 100% !important;
+        max-width: 100% !important;
         height: auto;
         transform: none !important;
-        margin: 0 0 20px 0 !important;
+        margin: 0 0 15px 0 !important;
     }
     
     .room-view__img {
-        width: 100%;
+        width: 100% !important;
+        max-width: 100% !important;
         max-height: 250px;
         object-fit: cover;
+        display: block;
     }
     
     /* Mobile: Show items as a flat gallery */
@@ -1721,21 +1732,25 @@ section {
         position: relative !important;
         top: auto !important;
         left: auto !important;
-        margin: 20px auto;
+        margin: 15px auto;
         display: block;
         text-align: center;
+        width: 100%;
+        max-width: 100%;
     }
     
     .room-item__img {
         max-height: 200px !important;
-        width: auto;
+        max-width: 90% !important;
+        width: auto !important;
         height: auto !important;
+        margin: 0 auto;
     }
     
     .room-titles {
         position: relative;
         bottom: auto;
-        margin: 20px 0;
+        margin: 15px 0;
     }
     
     .room-title {
@@ -1745,7 +1760,12 @@ section {
     }
     
     .hero-card-wrapper {
-        padding: 20px 0 30px;
+        padding: 15px 0 30px;
+    }
+    
+    /* Ensure container doesn't restrict width */
+    .hero .container {
+        padding: 0 16px;
     }
 }
 
