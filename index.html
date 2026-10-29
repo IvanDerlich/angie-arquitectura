@@ -17,6 +17,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script>document.documentElement.className = document.documentElement.className.replace('no-js', 'js');</script>
 </head>
 <body>
     <!-- Header -->
@@ -48,10 +49,30 @@
         </div>
     </header>
 
-    <!-- Hero Section -->
+    <!-- Hero Section - Exhibition Gallery -->
     <section class="hero" id="hero">
-        <div class="hero-bg"></div>
-        <div class="container">
+        <div class="hero-container">
+            <div class="hero-scroller">
+                <div class="hero-room hero-room--current">
+                    <div class="hero-room__side hero-room__side--back">
+                        <img class="hero-room__img" src="assets/obras/fachada1.jpg" alt="Diseño de fachada" loading="eager">
+                        <img class="hero-room__img" src="assets/obras/fachada2.jpg" alt="Diseño de fachada" loading="eager">
+                    </div>
+                    <div class="hero-room__side hero-room__side--left">
+                        <img class="hero-room__img" src="assets/obras/cocina-2.jpg" alt="Amoblamiento de cocina" loading="eager">
+                        <img class="hero-room__img" src="assets/obras/bano-foto-1.jpg" alt="Transformación de baño" loading="eager">
+                        <img class="hero-room__img" src="assets/obras/dormitorio-1.jpg" alt="Diseño de dormitorios" loading="eager">
+                    </div>
+                    <div class="hero-room__side hero-room__side--right">
+                        <img class="hero-room__img" src="assets/obras/fachada3-b.jpg" alt="Diseño de fachada" loading="eager">
+                        <img class="hero-room__img" src="assets/obras/cocina-3.jpg" alt="Amoblamiento de cocina" loading="eager">
+                        <img class="hero-room__img" src="assets/obras/bano-foto-2.jpg" alt="Transformación de baño" loading="eager">
+                    </div>
+                    <div class="hero-room__side hero-room__side--bottom"></div>
+                </div>
+            </div>
+        </div>
+        <div class="hero-content-overlay">
             <div class="hero-content">
                 <p class="hero-subtitle">ARQ. ANGIE SERRANO SQUADRITO</p>
                 <h1 class="hero-title">Espacios para habitar con calma.</h1>
@@ -66,6 +87,7 @@
                     </a>
                 </div>
                 <div class="hero-card">
+                    <img src="assets/angie-foto.png" alt="Angie Serrano Squadrito" class="hero-card-img">
                     <div class="hero-card-content">
                         <p class="hero-card-text"><strong>Hola, soy Angie.</strong></p>
                         <p class="hero-card-text-small">Diseño y acompaño cada obra de manera personal.</p>
@@ -552,6 +574,9 @@
         <p class="lightbox-caption"></p>
     </div>
 
+    <script src="anime.min.js"></script>
+    <script src="imagesloaded.pkgd.min.js"></script>
+    <script src="hero-exhibition.js"></script>
     <script src="script.js"></script>
 </body>
 </html>

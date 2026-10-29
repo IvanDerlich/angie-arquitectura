@@ -1,0 +1,19 @@
+# Third-Party Licenses
+
+## Codrops Exhibition Demo
+
+**Source:** https://github.com/codrops/Exhibition  
+**Demo:** https://tympanus.net/Development/Exhibition/  
+**Article:** https://tympanus.net/codrops/2017/03/30/experimental-3d-room-exhibition-layout/
+
+**License:**
+This resource can be used freely if integrated or build upon in personal or commercial projects such as websites, web apps and web templates intended for sale. It is not allowed to take the resource "as-is" and sell it, redistribute, re-publish it, or sell "pluginized" versions of it. Free plugins built using this resource should have a visible mention and link to the original work. Always consider the licenses of all included libraries, scripts and images used.
+
+**Dependencies:**
+- anime.js by Julian Garnier (MIT License)
+- imagesLoaded by David DeSandro (MIT License)
+
+**Adaptation:**
+The 3D Room Exhibition layout has been adapted for the hero section of this website. Images have been replaced with Angie's portfolio images, colors adjusted to match the site's palette, and mobile responsiveness enhanced.
+
+---
