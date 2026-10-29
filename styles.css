@@ -1693,10 +1693,15 @@ section {
         min-height: auto;
         padding: 0;
         margin-top: 10px;
+        display: block !important;
+        justify-content: flex-start !important;
+        align-items: flex-start !important;
     }
     
     .room-slide {
-        position: relative;
+        position: relative !important;
+        width: 100% !important;
+        max-width: 100% !important;
     }
     
     .room-scene {
@@ -1708,18 +1713,23 @@ section {
     }
     
     .room-views {
-        display: block;
+        display: block !important;
         transform: none !important;
-        width: 100%;
-        max-width: 100%;
+        width: 100% !important;
+        max-width: 100% !important;
     }
     
     .room-view {
+        display: block !important;
         width: 100% !important;
         max-width: 100% !important;
-        height: auto;
+        height: auto !important;
+        float: none !important;
+        flex: none !important;
         transform: none !important;
-        margin: 0 0 15px 0 !important;
+        margin: 0 0 20px 0 !important;
+        margin-left: 0 !important;
+        margin-right: 0 !important;
     }
     
     .room-view__img {
@@ -1751,15 +1761,21 @@ section {
     }
     
     .room-titles {
-        position: relative;
-        bottom: auto;
-        margin: 15px 0;
+        position: relative !important;
+        bottom: auto !important;
+        margin: 15px 0 !important;
+        order: 10 !important;
     }
     
     .room-title {
         font-size: 1.5em;
-        position: relative;
+        position: relative !important;
         padding: 0.5em 1em;
+    }
+    
+    .room-slide {
+        display: flex !important;
+        flex-direction: column !important;
     }
     
     .hero-card-wrapper {
