@@ -673,12 +673,11 @@
   };
 
   const IMAGE_URLS = [
-    "assets/obras/dormitorio-1.jpg",
+    "assets/obras/bano-foto-1.jpg",
     "assets/obras/cocina-1.jpg",
+    "assets/obras/bano-3.jpg",
+    "assets/obras/cocina-3.jpg",
     "assets/obras/bano-1.jpg",
-    "assets/obras/fachada1.jpg",
-    "assets/obras/fachada2.jpg",
-    "assets/obras/fachada3-b.jpg",
   ];
 
   const stage = document.getElementById("unwoven-stage");
@@ -1000,9 +999,17 @@
     camera.bottom = -viewportHeight / 2;
     camera.updateProjectionMatrix();
 
-    cardHeight = Math.min(CONFIG.cardMaxHeight, viewportHeight * 0.62);
-    cardWidth = cardHeight * CONFIG.cardAspect;
-    pitch = cardWidth + Math.max(24, cardWidth * CONFIG.cardGapRatio);
+    // On mobile (<=768px), make cards much wider to fill viewport
+    const isMobile = viewportWidth <= 768;
+    if (isMobile) {
+      cardHeight = Math.min(CONFIG.cardMaxHeight, viewportHeight * 0.75);
+      cardWidth = viewportWidth * 0.85; // 85% of viewport width
+      pitch = cardWidth + Math.max(12, cardWidth * 0.05); // Minimal gap
+    } else {
+      cardHeight = Math.min(CONFIG.cardMaxHeight, viewportHeight * 0.62);
+      cardWidth = cardHeight * CONFIG.cardAspect;
+      pitch = cardWidth + Math.max(24, cardWidth * CONFIG.cardGapRatio);
+    }
 
     shared.uHalfWidth.value = viewportWidth / 2;
     shared.uZone.value = Math.min(viewportWidth * CONFIG.tearZoneRatio, CONFIG.tearZoneMax);
