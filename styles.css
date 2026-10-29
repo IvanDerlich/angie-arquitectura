@@ -396,6 +396,53 @@ section {
     opacity: 0.8;
 }
 
+.project-category {
+    font-size: 14px;
+    color: #7FA7C9;
+    margin-bottom: 8px;
+    font-weight: 500;
+}
+
+.project-activities {
+    font-size: 13px;
+    color: #2F4A63;
+    margin-bottom: 12px;
+    line-height: 1.6;
+    opacity: 0.7;
+}
+
+.project-status {
+    font-size: 14px;
+    color: #C9A98C;
+    margin-bottom: 8px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.project-card-en-obra .project-image-wrapper {
+    background: linear-gradient(135deg, #E8DCCB 0%, #C9A98C 50%);
+}
+
+.project-placeholder {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.placeholder-content {
+    text-align: center;
+}
+
+.placeholder-text {
+    font-size: 18px;
+    font-weight: 600;
+    color: #2F4A63;
+    opacity: 0.5;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
 /* Actividades Section */
 .actividades {
     background-color: #F8F6F2;
@@ -960,6 +1007,17 @@ section {
 
     .projects-grid {
         grid-template-columns: 1fr;
+    }
+
+    .project-image-wrapper {
+        width: 100%;
+        min-width: 340px;
+    }
+
+    .project-image-wrapper img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
     }
 
     .servicios-grid {

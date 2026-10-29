@@ -23,7 +23,7 @@ test.describe('Obras and Proyectos Sections', () => {
     expect(obrasIndex).toBeLessThan(proyectosIndex);
   });
 
-  test('should have Obras section with Baño only', async ({ page }) => {
+  test('should have Obras section with Baño and Casa Country', async ({ page }) => {
     await page.goto(BASE_URL);
     
     await page.locator('#obras').scrollIntoViewIfNeeded();
@@ -31,12 +31,16 @@ test.describe('Obras and Proyectos Sections', () => {
     // Check section exists
     await expect(page.locator('#obras')).toBeVisible();
     
-    // Count cards in Obras (should be 1: Baño)
+    // Count cards in Obras (should be 2: Baño + Casa Country)
     const obrasCards = page.locator('#obras .project-card');
-    await expect(obrasCards).toHaveCount(1);
+    await expect(obrasCards).toHaveCount(2);
     
-    // Verify Baño is present
-    await expect(obrasCards.first()).toContainText('Transformación de baño');
+    // Verify Baño is present (featured first)
+    await expect(obrasCards.first()).toContainText('Remodelación de baño');
+    
+    // Verify Casa Country is present (marked as En obra)
+    await expect(obrasCards.nth(1)).toContainText('Casa Country');
+    await expect(obrasCards.nth(1)).toContainText('En obra');
   });
 
   test('should have Proyectos section with 5 projects', async ({ page }) => {
@@ -70,7 +74,7 @@ test.describe('Obras and Proyectos Sections', () => {
     await expect(quickView).toBeVisible();
     
     // Check content
-    await expect(quickView.locator('.quick-view-title')).toContainText('Transformación de baño');
+    await expect(quickView.locator('.quick-view-title')).toContainText('Remodelación de baño');
     await expect(quickView.locator('.quick-view-category')).toContainText('Remodelación');
     
     // Close modal
@@ -97,7 +101,7 @@ test.describe('Obras and Proyectos Sections', () => {
     
     // Project view should be visible
     await expect(page.locator('#project-view')).toBeVisible();
-    await expect(page.locator('.project-page-title')).toContainText('Transformación de baño');
+    await expect(page.locator('.project-page-title')).toContainText('Remodelación de baño');
   });
 
   test('should navigate to Proyecto detail page from quick-view', async ({ page }) => {
@@ -257,7 +261,7 @@ test.describe('Obras and Proyectos Sections', () => {
     
     // Should show project view directly
     await expect(page.locator('#project-view')).toBeVisible();
-    await expect(page.locator('.project-page-title')).toContainText('Transformación de baño');
+    await expect(page.locator('.project-page-title')).toContainText('Remodelación de baño');
   });
 
   test('deep link to proyecto should work', async ({ page }) => {
@@ -286,5 +290,75 @@ test.describe('Obras and Proyectos Sections', () => {
     
     // Should be back on main site
     await expect(page.locator('#obras')).toBeVisible();
+  });
+
+  test('should not use captioned image filenames in Obras section', async ({ page }) => {
+    await page.goto(BASE_URL);
+    
+    // Get all image src attributes in Obras section
+    const imageSrcs = await page.locator('#obras img').evaluateAll(imgs => 
+      imgs.map(img => img.getAttribute('src') || '')
+    );
+    
+    // Check that no image filename matches the caption pattern
+    const captionPattern = /fachada|antes|despues/i;
+    const captionedImages = imageSrcs.filter(src => {
+      const filename = src.split('/').pop() || '';
+      return captionPattern.test(filename);
+    });
+    
+    expect(captionedImages).toHaveLength(0);
+  });
+
+  test('should show bathroom activities', async ({ page }) => {
+    await page.goto(BASE_URL);
+    
+    await page.locator('#obras').scrollIntoViewIfNeeded();
+    
+    const banoCard = page.locator('#obras .project-card').first();
+    
+    // Check for activities text
+    const activitiesText = await banoCard.locator('.project-activities').textContent();
+    
+    expect(activitiesText).toContain('Reorganización del espacio');
+    expect(activitiesText).toContain('Diseño de mobiliario');
+    expect(activitiesText).toContain('Dirección de obra');
+    expect(activitiesText).toContain('Cómputo de materiales');
+  });
+
+  test('should not show location for bathroom obra', async ({ page }) => {
+    await page.goto(BASE_URL);
+    
+    await page.locator('#obras').scrollIntoViewIfNeeded();
+    
+    const banoCard = page.locator('#obras .project-card').first();
+    
+    // Check that there's no project-location element
+    const locationElements = await banoCard.locator('.project-location').count();
+    expect(locationElements).toBe(0);
+    
+    // Also check that location text doesn't appear in the card content
+    const cardText = await banoCard.textContent();
+    expect(cardText).not.toContain('UBICACIÓN');
+  });
+
+  test('mobile: images should be full-width and crisp at 390x844', async ({ page }) => {
+    await page.setViewportSize({ width: 390, height: 844 });
+    await page.goto(BASE_URL);
+    
+    await page.locator('#obras').scrollIntoViewIfNeeded();
+    
+    // Check bathroom image wrapper width
+    const banoImageWrapper = page.locator('#obras .project-card').first().locator('.project-image-wrapper');
+    const imageWrapperWidth = await banoImageWrapper.evaluate(el => el.offsetWidth);
+    
+    // Should be at least 340px wide
+    expect(imageWrapperWidth).toBeGreaterThanOrEqual(340);
+    
+    // Check that image fills the wrapper
+    const banoImage = banoImageWrapper.locator('img');
+    const imageWidth = await banoImage.evaluate(el => el.offsetWidth);
+    
+    expect(imageWidth).toBeGreaterThanOrEqual(340);
   });
 });

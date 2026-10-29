@@ -146,7 +146,9 @@ const workActivities = [
 // Initialize project data from cards
 document.querySelectorAll('.project-card').forEach(card => {
     const slug = card.dataset.slug;
-    const coverImg = card.querySelector('.project-image-wrapper img').src;
+    const coverImgEl = card.querySelector('.project-image-wrapper img');
+    const coverImg = coverImgEl ? coverImgEl.src : '';
+    
     projectsData[slug] = {
         slug,
         type: card.dataset.type || 'proyecto', // 'obra' or 'proyecto'
@@ -157,7 +159,8 @@ document.querySelectorAll('.project-card').forEach(card => {
         gallery: JSON.parse(card.dataset.gallery || '[]'),
         design: card.dataset.design ? JSON.parse(card.dataset.design) : null,
         real: card.dataset.real ? JSON.parse(card.dataset.real) : null,
-        coverImage: coverImg
+        coverImage: coverImg,
+        isPlaceholder: card.classList.contains('project-card-en-obra')
     };
 });
 
@@ -249,12 +252,22 @@ document.querySelectorAll('.project-card').forEach(card => {
         const project = projectsData[slug];
         if (!project) return;
         
+        // Don't open quick view for placeholder projects
+        if (project.isPlaceholder) return;
+        
         currentSlug = slug;
         currentType = project.type;
         qvImage.src = project.coverImage;
         qvImage.alt = project.title;
         qvTitle.textContent = project.title;
-        qvCategory.textContent = `${project.category} · ${project.location}`;
+        
+        // Show category with location only if location exists
+        if (project.location && !project.location.includes('A CONFIRMAR')) {
+            qvCategory.textContent = `${project.category} · ${project.location}`;
+        } else {
+            qvCategory.textContent = project.category;
+        }
+        
         qvDescription.textContent = project.description;
         
         quickView.hidden = false;
@@ -530,7 +543,7 @@ document.querySelectorAll('.project-card').forEach(card => {
             </div>
             <div class="project-info">
                 <h1 class="project-page-title">${project.title}</h1>
-                <p class="project-page-category">${project.category} · ${project.location}</p>
+                <p class="project-page-category">${project.category}${project.location && !project.location.includes('A CONFIRMAR') ? ' · ' + project.location : ''}</p>
                 <div class="project-page-description">
                     <p>${project.description}</p>
                 </div>
