@@ -128,27 +128,29 @@ test.describe('Hero Exhibition Gallery', () => {
         }
     });
 
-    test('mobile frames should be clearly visible with largest frame >= 170px at 390x844', async ({ page }) => {
+    test('mobile should show frontal frame >= 280px with rotation < 15deg at 390x844', async ({ page }) => {
         await page.setViewportSize({ width: 390, height: 844 });
         await page.goto('http://localhost:8000');
         
-        // Wait for images to be visible
-        await page.waitForSelector('.hero-gallery-room__img', { state: 'visible', timeout: 5000 });
-        await page.waitForTimeout(1000);
+        // Wait for mobile slideshow to initialize
+        await page.waitForSelector('.mobile-active', { state: 'visible', timeout: 5000 });
+        await page.waitForTimeout(500);
         
-        // Get all visible image bounding boxes
-        const images = page.locator('.hero-gallery-room__img');
-        const imageCount = await images.count();
+        // Find the active (frontal) frame
+        const activeImage = page.locator('.mobile-active .hero-gallery-room__img').first();
+        await expect(activeImage).toBeVisible();
         
-        let maxWidth = 0;
-        for (let i = 0; i < imageCount; i++) {
-            const imageBox = await images.nth(i).boundingBox();
-            if (imageBox && imageBox.width > maxWidth) {
-                maxWidth = imageBox.width;
-            }
-        }
+        // Get the image bounding box
+        const imageBox = await activeImage.boundingBox();
+        expect(imageBox).not.toBeNull();
+        expect(imageBox.width).toBeGreaterThanOrEqual(280);
         
-        // Assert largest visible frame is at least 170px wide
-        expect(maxWidth).toBeGreaterThanOrEqual(170);
+        // Check rotation is nearly frontal (transform should be none or minimal)
+        const transform = await page.locator('.mobile-active').evaluate(el => 
+            window.getComputedStyle(el).transform
+        );
+        
+        // On mobile with flat layout, transform should be 'none' or identity matrix
+        expect(transform === 'none' || transform.includes('matrix(1, 0, 0, 1')).toBeTruthy();
     });
 });

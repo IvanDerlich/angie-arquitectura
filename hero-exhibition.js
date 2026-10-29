@@ -15,6 +15,13 @@
         rooms: [].slice.call(heroScroller.querySelectorAll('.hero-gallery-room'))
     };
 
+    // Mobile slideshow mode
+    const isMobile = window.innerWidth <= 768;
+    if (isMobile) {
+        initMobileSlideshow();
+        return;
+    }
+
     const initTransform = { 
         translateX: 0, 
         translateY: 0, 
@@ -160,6 +167,60 @@
             timeout = setTimeout(later, wait);
             if (callNow) func.apply(context, args);
         };
+    }
+
+    function initMobileSlideshow() {
+        const room = DOM.rooms[0];
+        if (!room) return;
+
+        const sides = [].slice.call(room.querySelectorAll('.hero-gallery-room__side'));
+        const imageSides = sides.filter(side => {
+            const imgs = side.querySelectorAll('.hero-gallery-room__img');
+            return imgs.length > 0;
+        });
+
+        if (imageSides.length === 0) return;
+
+        let currentIndex = 0;
+
+        function showSlide(index) {
+            imageSides.forEach((side, i) => {
+                if (i === index) {
+                    side.classList.add('mobile-active');
+                } else {
+                    side.classList.remove('mobile-active');
+                }
+            });
+        }
+
+        function nextSlide() {
+            currentIndex = (currentIndex + 1) % imageSides.length;
+            showSlide(currentIndex);
+        }
+
+        // Show first slide
+        showSlide(0);
+
+        // Auto-advance every 4 seconds
+        setInterval(nextSlide, 4000);
+
+        // Touch/swipe support
+        let touchStartX = 0;
+        let touchEndX = 0;
+
+        room.addEventListener('touchstart', function(e) {
+            touchStartX = e.changedTouches[0].screenX;
+        }, { passive: true });
+
+        room.addEventListener('touchend', function(e) {
+            touchEndX = e.changedTouches[0].screenX;
+            if (Math.abs(touchEndX - touchStartX) > 50) {
+                nextSlide();
+            }
+        }, { passive: true });
+
+        // Click to advance
+        room.addEventListener('click', nextSlide);
     }
 
     // Preload images then initialize
