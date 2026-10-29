@@ -50,19 +50,7 @@
 
     <!-- Hero Section with 3D Room Display -->
     <section class="hero" id="hero">
-        <div id="room-display" class="room-display">
-            <div class="room-scene">
-                <div class="room-views">
-                    <div class="room-view">
-                        <img class="room-view__img" src="assets/obras/bano-foto-1.jpg" alt="Arquitectura Interior" />
-                    </div>
-                    <div class="room-view room-view--rotate room-view--rotate-left">
-                        <img class="room-view__img" src="assets/obras/cocina-2.jpg" alt="Diseño de Espacios" />
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="hero-overlay">
+        <div class="hero-text-section">
             <div class="container">
                 <div class="hero-content">
                     <p class="hero-subtitle">ARQ. ANGIE SERRANO SQUADRITO</p>
@@ -77,12 +65,45 @@
                             Escribime por WhatsApp
                         </a>
                     </div>
-                    <div class="hero-card">
-                        <div class="hero-card-content">
-                            <p class="hero-card-text"><strong>Hola, soy Angie.</strong></p>
-                            <p class="hero-card-text-small">Diseño y acompaño cada obra de manera personal.</p>
-                            <a href="#sobre-mi" class="hero-card-link">Conoceme →</a>
+                </div>
+            </div>
+        </div>
+        
+        <div id="room-slideshow" class="room-slideshow">
+            <div class="room-slide room-slide--current">
+                <div class="room-scene">
+                    <div class="room-views">
+                        <div class="room-view">
+                            <img class="room-view__img" src="assets/obras/cocina-2.jpg" alt="Diseño de cocina" />
+                            <div class="room-item room-item--art1">
+                                <img class="room-item__img" src="assets/obras/fachada1.jpg" alt="Proyecto de fachada" data-transform-z="60" />
+                            </div>
                         </div>
+                        <div class="room-view room-view--rotate room-view--rotate-left">
+                            <img class="room-view__img" src="assets/obras/bano-foto-1.jpg" alt="Diseño de baño" />
+                            <div class="room-item room-item--art2">
+                                <img class="room-item__img" src="assets/obras/dormitorio-2.jpg" alt="Diseño de dormitorio" data-transform-z="80" />
+                            </div>
+                            <div class="room-item room-item--art3">
+                                <img class="room-item__img" src="assets/obras/fachada3-b.jpg" alt="Fachada" data-transform-z="70" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="room-titles">
+                <h2 class="room-title room-title--current">Portfolio <span class="room-title__sub">Proyectos de arquitectura</span></h2>
+            </div>
+        </div>
+        
+        <div class="hero-card-wrapper">
+            <div class="container">
+                <div class="hero-card">
+                    <div class="hero-card-content">
+                        <p class="hero-card-text"><strong>Hola, soy Angie.</strong></p>
+                        <p class="hero-card-text-small">Diseño y acompaño cada obra de manera personal.</p>
+                        <a href="#sobre-mi" class="hero-card-link">Conoceme →</a>
                     </div>
                 </div>
             </div>

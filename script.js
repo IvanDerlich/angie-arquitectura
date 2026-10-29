@@ -653,10 +653,10 @@ document.querySelectorAll('.project-card').forEach(card => {
 
 // 3D Room Display with Mouse Tilt
 (function() {
-    const roomDisplay = document.getElementById('room-display');
+    const roomSlideshow = document.getElementById('room-slideshow');
     const roomScene = document.querySelector('.room-scene');
     
-    if (!roomDisplay || !roomScene) return;
+    if (!roomSlideshow || !roomScene) return;
     
     // Check for 3D transform support
     const supportsPreserve3d = 'CSS' in window && CSS.supports('transform-style', 'preserve-3d');
@@ -667,6 +667,13 @@ document.querySelectorAll('.project-card').forEach(card => {
         }
         return;
     }
+    
+    // Initialize item transforms
+    const items = document.querySelectorAll('.room-item__img');
+    items.forEach(function(item) {
+        const transformZ = item.getAttribute('data-transform-z') || '0';
+        item.style.transform = `translate3d(0, 0, ${transformZ}px)`;
+    });
     
     let requestId = null;
     const movement = {
@@ -682,7 +689,7 @@ document.querySelectorAll('.project-card').forEach(card => {
     }
     
     function rotateScene(mousepos) {
-        const bounds = roomDisplay.getBoundingClientRect();
+        const bounds = roomSlideshow.getBoundingClientRect();
         const width = bounds.width;
         const height = bounds.height;
         
