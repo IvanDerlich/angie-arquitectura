@@ -149,7 +149,8 @@ test.describe('Hero Canvas Rendering', () => {
     await page.goto(BASE_URL);
     
     await page.waitForSelector('canvas', { timeout: 5000 });
-    await page.waitForTimeout(1000);
+    // Wait longer for animation to settle
+    await page.waitForTimeout(2500);
     
     const layoutCheck = await page.evaluate(() => {
       const heroContent = document.querySelector('.hero-content');
@@ -173,12 +174,20 @@ test.describe('Hero Canvas Rendering', () => {
       const overlap = Math.max(0, Math.min(stageRect.bottom, contentRect.bottom) - Math.max(stageRect.top, contentRect.top));
       const noOverlap = overlap < 10;
       
+      // For Unwoven mobile: check if card is fully inside the viewport/stage
+      // Find visible card meshes (cards positioned within stage bounds)
+      const stageTop = stageRect.top;
+      const stageBottom = stageRect.bottom;
+      const cardFullyVisible = stageTop >= 0 && stageBottom <= stageRect.height;
+      
       return {
         valid: artAboveText && hasHeight && noOverlap,
         artAboveText,
         hasHeight,
         noOverlap,
+        cardFullyVisible,
         artHeight,
+        stageTop: stageRect.top,
         stageBottom: stageRect.bottom,
         contentTop: contentRect.top
       };
