@@ -188,4 +188,40 @@ test.describe('Hero Canvas Rendering', () => {
     expect(layoutCheck.hasHeight).toBe(true);
     expect(layoutCheck.noOverlap).toBe(true);
   });
+
+  test('hero images must not contain forbidden text', async ({ page }) => {
+    await page.goto(BASE_URL);
+    
+    const forbiddenImages = await page.evaluate(() => {
+      const imageUrls = [];
+      // Check script content for IMAGE_URLS array
+      const scripts = Array.from(document.querySelectorAll('script'));
+      for (const script of scripts) {
+        if (!script.src && script.textContent.includes('IMAGE_URLS')) {
+          const urlsMatch = script.textContent.match(/IMAGE_URLS\s*=\s*\[([\s\S]*?)\];/);
+          if (urlsMatch) {
+            const urlsText = urlsMatch[1];
+            const urls = urlsText.match(/"([^"]+\.jpg)"/g) || [];
+            imageUrls.push(...urls.map(u => u.replace(/"/g, '')));
+          }
+        }
+      }
+      
+      // Filter for forbidden patterns
+      const forbidden = imageUrls.filter(url => 
+        /fachada|antes|despues/i.test(url)
+      );
+      
+      return {
+        allUrls: imageUrls,
+        forbidden: forbidden
+      };
+    });
+    
+    if (forbiddenImages.allUrls.length === 0) {
+      throw new Error('No IMAGE_URLS found in page scripts');
+    }
+    
+    expect(forbiddenImages.forbidden).toEqual([]);
+  });
 });
