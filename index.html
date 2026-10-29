@@ -675,18 +675,18 @@
 
   function setupScene() {
     scene = new THREE.Scene();
-    // Use matching background color - sandy/blue for mobile, light for desktop
-    const fogColor = isMobile ? new THREE.Color(0.82, 0.87, 0.92) : new THREE.Color(0.97, 0.96, 0.95);
+    // Background color - only matters on desktop now
+    const fogColor = new THREE.Color(0.97, 0.96, 0.95);
     scene.background = fogColor;
     scene.fog = isMobile ? null : new THREE.Fog(fogColor, 10, 80);
 
-    // Mobile needs very wide FOV to show more terrain vertically
+    // Mobile needs very wide FOV and camera close to terrain looking down steeply
     const fov = isMobile ? 95 : 60;
     camera = new THREE.PerspectiveCamera(fov, width / height, 0.1, 1000);
-    // Camera positioning: desktop tilted down, mobile extremely close looking up
+    // Camera positioning: desktop tilted down, mobile very low and close looking down
     if (isMobile) {
-      camera.position.set(0, 0.05, 0.1);
-      camera.lookAt(0, 6, -1);
+      camera.position.set(0, 3, 1.5);
+      camera.lookAt(0, 0, -30);
     } else {
       camera.position.set(0, 12, 8);
       camera.lookAt(0, 0, -20);
@@ -771,10 +771,10 @@
 
     terrain = new THREE.Mesh(geometry, material);
     terrain.rotation.x = -Math.PI / 2;
-    // Position terrain closer on mobile, and raise it very high to fill entire frame
+    // Position terrain: closer and centered on mobile for downward view
     if (isMobile) {
-      terrain.position.z = -70;
-      terrain.position.y = 7;
+      terrain.position.z = -60;
+      terrain.position.y = 0;
     } else {
       terrain.position.z = -180;
       terrain.position.y = 0;
@@ -806,8 +806,8 @@
       if (isMobileNow) {
         camera.fov = 95;
         camera.updateProjectionMatrix();
-        camera.position.set(0, 0.05, 0.1);
-        camera.lookAt(0, 6, -1);
+        camera.position.set(0, 3, 1.5);
+        camera.lookAt(0, 0, -30);
       } else {
         camera.fov = 60;
         camera.updateProjectionMatrix();
@@ -826,16 +826,16 @@
 
     // Animate terrain forward movement
     const time = performance.now() * 0.001;
-    const resetZ = isMobile ? -70 : -180;
+    const resetZ = isMobile ? -60 : -180;
     terrain.position.z += 0.5;
     if (terrain.position.z > 20) terrain.position.z = resetZ;
 
     // Subtle camera movement based on mouse - keep tilted down
-    const baseY = isMobile ? 0.05 : 12;
-    const lookY = isMobile ? 6 : 0;
-    const lookZ = isMobile ? -1 : -20;
-    camera.position.x = (mouse.xDamped - width / 2) * 0.002;
-    camera.position.y = baseY + (mouse.yDamped - height / 2) * 0.001;
+    const baseY = isMobile ? 3 : 12;
+    const lookY = isMobile ? 0 : 0;
+    const lookZ = isMobile ? -30 : -20;
+    camera.position.x = (mouse.xDamped - width / 2) * 0.005;
+    camera.position.y = baseY + (mouse.yDamped - height / 2) * 0.004;
     camera.lookAt(0, lookY, lookZ);
 
     renderer.render(scene, camera);
