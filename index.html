@@ -17,6 +17,14 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script type="importmap">
+    {
+        "imports": {
+            "three": "https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js",
+            "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/"
+        }
+    }
+    </script>
 </head>
 <body>
     <!-- Header -->
@@ -50,7 +58,6 @@
 
     <!-- Hero Section -->
     <section class="hero" id="hero">
-        <div class="hero-bg"></div>
         <div class="container">
             <div class="hero-content">
                 <p class="hero-subtitle">ARQ. ANGIE SERRANO SQUADRITO</p>
@@ -74,6 +81,7 @@
                 </div>
             </div>
         </div>
+        <div id="hero-canvas-container" class="hero-canvas-container"></div>
     </section>
 
     <!-- Obras Section (Built Projects) -->
@@ -553,5 +561,6 @@
     </div>
 
     <script src="script.js"></script>
+    <script type="module" src="hero-physical-transmission.js"></script>
 </body>
 </html>
