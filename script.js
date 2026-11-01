@@ -114,15 +114,30 @@ const projectsData = {};
 
 // Activities data store
 const activitiesData = {
-    'proyecto': {
-        slug: 'proyecto',
-        name: 'Proyecto',
-        intro: '[REEMPLAZAR: intro de Proyecto]'
+    'reorganizacion-espacio': {
+        slug: 'reorganizacion-espacio',
+        name: 'Reorganización del espacio',
+        intro: 'Analizo y redistribuyo los espacios existentes para optimizar su funcionalidad y adaptarlos a nuevas necesidades.'
+    },
+    'diseno-mobiliario': {
+        slug: 'diseno-mobiliario',
+        name: 'Diseño de mobiliario',
+        intro: 'Diseño muebles y amoblamientos a medida que se integran perfectamente con el espacio y su materialidad.'
     },
     'direccion-de-obra': {
         slug: 'direccion-de-obra',
         name: 'Dirección de obra',
-        intro: '[REEMPLAZAR: intro de Dirección de obra]'
+        intro: '[DIRECCIÓN DE OBRA — TEXTO DE ANGIE PENDIENTE]'
+    },
+    'computo-materiales': {
+        slug: 'computo-materiales',
+        name: 'Cómputo de materiales',
+        intro: '[CÓMPUTO DE MATERIALES — TEXTO DE ANGIE PENDIENTE]'
+    },
+    'proyecto': {
+        slug: 'proyecto',
+        name: 'Proyecto',
+        intro: '[REEMPLAZAR: intro de Proyecto]'
     },
     'remodelaciones': {
         slug: 'remodelaciones',
@@ -139,8 +154,26 @@ const activitiesData = {
 // Work-Activities join table (many-to-many relationship)
 // Each entry describes what she did in that activity for that work
 const workActivities = [
-    // Example: { workSlug: 'bano', activitySlug: 'actividad-1', text: 'Diseñé la distribución...' }
-    // [REEMPLAZAR: agregar entradas reales]
+    { 
+        workSlug: 'bano', 
+        activitySlug: 'reorganizacion-espacio', 
+        text: 'Zonificación del espacio: de unificado tradicional a sectorizado por diferentes usos. Ideal para adaptarlo a un grupo familiar y hacer un uso más dinámico.' 
+    },
+    { 
+        workSlug: 'bano', 
+        activitySlug: 'diseno-mobiliario', 
+        text: 'Diseño compositivo y materialidad a usar: entre puertas, mesada, espejo, revestimientos, elección de grifería y adaptación de la antigua.' 
+    },
+    { 
+        workSlug: 'bano', 
+        activitySlug: 'direccion-de-obra', 
+        text: '[DIRECCIÓN DE OBRA — TEXTO DE ANGIE PENDIENTE]' 
+    },
+    { 
+        workSlug: 'bano', 
+        activitySlug: 'computo-materiales', 
+        text: '[CÓMPUTO DE MATERIALES — TEXTO DE ANGIE PENDIENTE]' 
+    }
 ];
 
 // Initialize project data from cards
