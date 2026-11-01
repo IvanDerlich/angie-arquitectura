@@ -132,6 +132,21 @@ a {
     overflow: hidden;
 }
 
+.hero-canvas-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+}
+
+.hero-canvas-container canvas {
+    display: block;
+    width: 100%;
+    height: 100%;
+}
+
 .hero-bg {
     position: absolute;
     top: 0;
@@ -942,6 +957,10 @@ section {
         display: flex;
     }
 
+    .hero-canvas-container {
+        height: 45vh;
+    }
+
     .hero-title {
         font-size: 36px;
     }
@@ -997,6 +1016,10 @@ section {
 @media (max-width: 480px) {
     .container {
         padding: 0 16px;
+    }
+
+    .hero-canvas-container {
+        height: 45vh;
     }
 
     .hero-title {
