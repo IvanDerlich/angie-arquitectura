@@ -39,7 +39,7 @@ class WallGalleryHero {
         this.scene.background = new THREE.Color(0xF8F6F2);
 
         this.camera = new THREE.PerspectiveCamera(50, width / height, 0.1, 1000);
-        this.camera.position.set(0, 0, 15);
+        this.camera.position.set(-3, 0, 15);
 
         this.renderer = new THREE.WebGLRenderer({ 
             antialias: true,
