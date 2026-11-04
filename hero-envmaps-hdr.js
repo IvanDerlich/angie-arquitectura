@@ -61,13 +61,10 @@ class EnvmapsHero {
   }
 
   setupScene() {
-    const width = this.container.offsetWidth;
-    const height = this.container.offsetHeight;
-    
     // Camera
-    const aspect = width / height;
+    const aspect = window.innerWidth / window.innerHeight;
     this.camera = new THREE.PerspectiveCamera(40, aspect, 1, 1000);
-    this.camera.position.set(5, 0, 100);
+    this.camera.position.set(0, 0, 100);
 
     // Scene
     this.scene = new THREE.Scene();
@@ -79,7 +76,7 @@ class EnvmapsHero {
       alpha: true 
     });
     this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-    this.renderer.setSize(width, height);
+    this.renderer.setSize(window.innerWidth, window.innerHeight);
     this.renderer.toneMapping = THREE.ACESFilmicToneMapping;
     this.renderer.toneMappingExposure = 0.9;
     this.container.appendChild(this.renderer.domElement);
@@ -96,7 +93,7 @@ class EnvmapsHero {
     this.scene.add(keyLight);
 
     // Fill light with warm beige tint
-    const fillLight = new THREE.DirectionalLight(COLORS.nude, 0.3);
+    const fillLight = new THREE.DirectionalLight(COLORS.deepBeige, 0.3);
     fillLight.position.set(-3, 0, -3);
     this.scene.add(fillLight);
   }
@@ -136,7 +133,7 @@ class EnvmapsHero {
     envLight1.position.set(50, 50, 50);
     envScene.add(envLight1);
 
-    const envLight2 = new THREE.PointLight(COLORS.nude, 0.5);
+    const envLight2 = new THREE.PointLight(COLORS.deepBeige, 0.5);
     envLight2.position.set(-50, -50, -50);
     envScene.add(envLight2);
 
@@ -153,8 +150,8 @@ class EnvmapsHero {
   }
 
   onResize() {
-    const width = this.container.offsetWidth;
-    const height = this.container.offsetHeight;
+    const width = window.innerWidth;
+    const height = window.innerHeight;
 
     this.camera.aspect = width / height;
     this.camera.updateProjectionMatrix();
