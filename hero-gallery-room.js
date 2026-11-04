@@ -40,7 +40,7 @@ class GalleryRoomHero {
         this.scene.fog = new THREE.Fog(0xE8DCCB, 10, 30);
 
         this.camera = new THREE.PerspectiveCamera(60, width / height, 0.1, 1000);
-        this.camera.position.set(0, 1.6, 5);
+        this.camera.position.set(2, 1.6, 4);
 
         this.renderer = new THREE.WebGLRenderer({ 
             antialias: true,
@@ -63,7 +63,7 @@ class GalleryRoomHero {
         this.controls.autoRotateSpeed = 0.5;
         this.controls.minPolarAngle = Math.PI / 2.5;
         this.controls.maxPolarAngle = Math.PI / 1.7;
-        this.controls.target.set(0, 1.3, 0);
+        this.controls.target.set(0, 1.3, -2);
 
         window.addEventListener('resize', () => this.onWindowResize());
 
