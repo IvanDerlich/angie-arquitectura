@@ -23,10 +23,14 @@ function init() {
         return;
     }
 
+    // Get container dimensions for proper grid layout
+    const width = container.offsetWidth;
+    const height = container.offsetHeight;
+
     // Camera
     camera = new THREE.PerspectiveCamera(
         60,
-        window.innerWidth / window.innerHeight,
+        width / height,
         1,
         10000
     );
@@ -66,7 +70,7 @@ function init() {
         alpha: true 
     });
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.setSize(width, height);
     container.appendChild(renderer.domElement);
 
     // Resize handler
@@ -81,11 +85,14 @@ function init() {
 }
 
 function onWindowResize() {
-    if (!camera || !renderer) return;
+    if (!camera || !renderer || !container) return;
     
-    camera.aspect = window.innerWidth / window.innerHeight;
+    const width = container.offsetWidth;
+    const height = container.offsetHeight;
+    
+    camera.aspect = width / height;
     camera.updateProjectionMatrix();
-    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.setSize(width, height);
 }
 
 function generateHeight(width, height) {
