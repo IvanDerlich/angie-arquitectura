@@ -10,8 +10,8 @@ const COLORS = {
   deepBlue: 0x4F7FA8,
   beige: 0xF8F6F2,
   deepBeige: 0xE8DCCB,
-  nude: 0xC9A98C,
-  darkText: 0x2F4A63
+  navy: 0x2F4A63,
+  white: 0xFFFFFF
 };
 
 // Check prefers-reduced-motion
@@ -62,16 +62,19 @@ class SpotlightHero {
   }
 
   setupScene() {
+    // Get container dimensions
+    const width = this.container.offsetWidth;
+    const height = this.container.offsetHeight;
+    
     // Camera
     const aspect = width / height;
     this.camera = new THREE.PerspectiveCamera(40, aspect, 0.1, 100);
-    this.camera.position.set(7, 4, 1);
+    this.camera.position.set(0, 3, 10);
     this.camera.lookAt(0, 1, 0);
 
     // Scene
     this.scene = new THREE.Scene();
-    this.scene.background = new THREE.Color(COLORS.darkText);
-    this.scene.fog = new THREE.Fog(COLORS.darkText, 8, 20);
+    this.scene.background = new THREE.Color(COLORS.beige);
 
     // Renderer
     this.renderer = new THREE.WebGLRenderer({ 
@@ -83,7 +86,7 @@ class SpotlightHero {
     this.renderer.shadowMap.enabled = true;
     this.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
     this.renderer.toneMapping = THREE.NeutralToneMapping;
-    this.renderer.toneMappingExposure = 1;
+    this.renderer.toneMappingExposure = 1.5;
     this.container.appendChild(this.renderer.domElement);
   }
 
@@ -92,8 +95,8 @@ class SpotlightHero {
     const ambient = new THREE.HemisphereLight(COLORS.softBlue, COLORS.deepBeige, 0.15);
     this.scene.add(ambient);
 
-    // Main spotlight with warm color
-    this.spotlight = new THREE.SpotLight(COLORS.nude, 100);
+    // Main spotlight with brand color
+    this.spotlight = new THREE.SpotLight(COLORS.softBlue, 150);
     this.spotlight.position.set(2.5, 5, 2.5);
     this.spotlight.angle = Math.PI / 6;
     this.spotlight.penumbra = 0.8;
@@ -163,7 +166,7 @@ class SpotlightHero {
     // Small sphere accent
     const smallSphereGeometry = new THREE.SphereGeometry(0.25, 32, 32);
     const smallSphereMaterial = new THREE.MeshLambertMaterial({ 
-      color: COLORS.nude
+      color: COLORS.deepBlue
     });
     const smallSphere = new THREE.Mesh(smallSphereGeometry, smallSphereMaterial);
     smallSphere.position.set(-1.2, 0.25, -0.8);
@@ -178,8 +181,8 @@ class SpotlightHero {
   }
 
   onResize() {
-    const width = width;
-    const height = height;
+    const width = this.container.offsetWidth;
+    const height = this.container.offsetHeight;
 
     this.camera.aspect = width / height;
     this.camera.updateProjectionMatrix();
