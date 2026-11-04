@@ -64,7 +64,7 @@ class RectAreaLightHero {
 
   setupScene() {
     // Camera
-    const aspect = window.innerWidth / window.innerHeight;
+    const aspect = width / height;
     this.camera = new THREE.PerspectiveCamera(45, aspect, 1, 1000);
     this.camera.position.set(0, 8, -20);
     this.camera.lookAt(0, 5, 0);
@@ -80,7 +80,7 @@ class RectAreaLightHero {
       alpha: true 
     });
     this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-    this.renderer.setSize(window.innerWidth, window.innerHeight);
+    this.renderer.setSize(width, height);
     this.container.appendChild(this.renderer.domElement);
   }
 
@@ -165,8 +165,8 @@ class RectAreaLightHero {
   }
 
   onResize() {
-    const width = window.innerWidth;
-    const height = window.innerHeight;
+    const width = width;
+    const height = height;
 
     this.camera.aspect = width / height;
     this.camera.updateProjectionMatrix();
