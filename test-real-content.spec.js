@@ -90,7 +90,7 @@ test.describe('Real Content Verification', () => {
         
         // Check that "Cómputo de materiales" has real content
         await expect(activitiesSection).toContainText('Cómputo de materiales');
-        await expect(activitiesSection).toContainText('M2 cerámicos, bocas, tomas, puntos. Litros de pintura. Mezcla para revoque fino.');
+        await expect(activitiesSection).toContainText('M2 cerámicos, bocas, tomas, puntos. Litros de pintura. M³ de mezcla para revoque texturado.');
     });
 
     test('Casa Country project is marked as "en obra"', async ({ page }) => {

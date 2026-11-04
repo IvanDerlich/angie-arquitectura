@@ -172,7 +172,7 @@ const workActivities = [
     { 
         workSlug: 'bano', 
         activitySlug: 'computo-materiales', 
-        text: 'M2 cerámicos, bocas, tomas, puntos. Litros de pintura. Mezcla para revoque fino.' 
+        text: 'M2 cerámicos, bocas, tomas, puntos. Litros de pintura. M³ de mezcla para revoque texturado.' 
     }
 ];
 
