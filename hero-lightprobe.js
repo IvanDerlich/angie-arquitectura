@@ -21,13 +21,16 @@ function init() {
         return;
     }
 
+    const width = container.offsetWidth;
+    const height = container.offsetHeight;
+
     // Renderer
     renderer = new THREE.WebGLRenderer({ 
         antialias: true,
         alpha: true 
     });
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.setSize(width, height);
     renderer.toneMapping = THREE.ACESFilmicToneMapping;
     renderer.toneMappingExposure = 0.8;
     container.appendChild(renderer.domElement);
@@ -39,11 +42,11 @@ function init() {
     // Camera
     camera = new THREE.PerspectiveCamera(
         40,
-        window.innerWidth / window.innerHeight,
+        width / height,
         1,
         1000
     );
-    camera.position.set(0, 0, 30);
+    camera.position.set(3, 0, 30);
 
     // Create procedural environment cube texture
     const cubeTexture = createProceduralEnvironment();
@@ -152,9 +155,15 @@ function generateLightProbe(cubeTexture) {
 function onWindowResize() {
     if (!camera || !renderer) return;
     
-    camera.aspect = window.innerWidth / window.innerHeight;
+    const container = document.getElementById('hero-canvas-container');
+    if (!container) return;
+    
+    const width = container.offsetWidth;
+    const height = container.offsetHeight;
+    
+    camera.aspect = width / height;
     camera.updateProjectionMatrix();
-    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.setSize(width, height);
     
     render();
 }
