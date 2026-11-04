@@ -21,10 +21,13 @@ function init() {
         return;
     }
 
+    const width = container.offsetWidth;
+    const height = container.offsetHeight;
+
     // Camera
     camera = new THREE.PerspectiveCamera(
         60,
-        window.innerWidth / window.innerHeight,
+        width / height,
         100,
         2000000
     );
@@ -40,9 +43,9 @@ function init() {
         alpha: true 
     });
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.setSize(width, height);
     renderer.toneMapping = THREE.ACESFilmicToneMapping;
-    renderer.toneMappingExposure = 0.2; // Soft, calm exposure
+    renderer.toneMappingExposure = 0.15; // Very soft exposure for text readability
     container.appendChild(renderer.domElement);
 
     // Sky - Configured for Angie's brand palette
@@ -87,9 +90,15 @@ function init() {
 function onWindowResize() {
     if (!camera || !renderer) return;
     
-    camera.aspect = window.innerWidth / window.innerHeight;
+    const container = document.getElementById('hero-canvas-container');
+    if (!container) return;
+    
+    const width = container.offsetWidth;
+    const height = container.offsetHeight;
+    
+    camera.aspect = width / height;
     camera.updateProjectionMatrix();
-    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.setSize(width, height);
 }
 
 function animate() {
