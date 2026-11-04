@@ -36,6 +36,7 @@ function init() {
 
     // Scene
     scene = new THREE.Scene();
+    scene.background = new THREE.Color(0x7FA7C9); // Soft blue from brand palette
 
     // Renderer
     renderer = new THREE.WebGLRenderer({ 
@@ -45,7 +46,7 @@ function init() {
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
     renderer.setSize(width, height);
     renderer.toneMapping = THREE.ACESFilmicToneMapping;
-    renderer.toneMappingExposure = 0.15; // Very soft exposure for text readability
+    renderer.toneMappingExposure = 1.0; // Full exposure for visibility
     container.appendChild(renderer.domElement);
 
     // Sky - Configured for Angie's brand palette
@@ -58,18 +59,14 @@ function init() {
     const skyUniforms = sky.material.uniforms;
     
     // Calm, architectural sky parameters matching brand palette
-    skyUniforms['turbidity'].value = 8;
-    skyUniforms['rayleigh'].value = 2; // Soft blue atmospheric scattering
-    skyUniforms['mieCoefficient'].value = 0.005;
-    skyUniforms['mieDirectionalG'].value = 0.7;
-    skyUniforms['cloudCoverage'].value = 0.3; // Light clouds
-    skyUniforms['cloudDensity'].value = 0.4;
-    skyUniforms['cloudElevation'].value = 0.5;
-    skyUniforms['showSunDisc'].value = true;
+    skyUniforms['turbidity'].value = 3; // Clearer sky
+    skyUniforms['rayleigh'].value = 1; // Visible blue atmospheric scattering
+    skyUniforms['mieCoefficient'].value = 0.01;
+    skyUniforms['mieDirectionalG'].value = 0.8;
 
-    // Low sun position for warm, calm light matching Angie's palette
-    const elevation = 20; // Low sun angle
-    const azimuth = 0;
+    // Sun position for calm, warm light matching Angie's palette
+    const elevation = 10; // Low sun for warm tones
+    const azimuth = 180;
     
     const phi = THREE.MathUtils.degToRad(90 - elevation);
     const theta = THREE.MathUtils.degToRad(azimuth);
