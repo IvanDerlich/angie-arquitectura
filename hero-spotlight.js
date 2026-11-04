@@ -63,7 +63,7 @@ class SpotlightHero {
 
   setupScene() {
     // Camera
-    const aspect = window.innerWidth / window.innerHeight;
+    const aspect = width / height;
     this.camera = new THREE.PerspectiveCamera(40, aspect, 0.1, 100);
     this.camera.position.set(7, 4, 1);
     this.camera.lookAt(0, 1, 0);
@@ -79,7 +79,7 @@ class SpotlightHero {
       alpha: true 
     });
     this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-    this.renderer.setSize(window.innerWidth, window.innerHeight);
+    this.renderer.setSize(width, height);
     this.renderer.shadowMap.enabled = true;
     this.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
     this.renderer.toneMapping = THREE.NeutralToneMapping;
@@ -178,8 +178,8 @@ class SpotlightHero {
   }
 
   onResize() {
-    const width = window.innerWidth;
-    const height = window.innerHeight;
+    const width = width;
+    const height = height;
 
     this.camera.aspect = width / height;
     this.camera.updateProjectionMatrix();
