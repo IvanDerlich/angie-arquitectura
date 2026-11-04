@@ -5,14 +5,14 @@
 import * as THREE from 'three';
 import { RectAreaLightUniformsLib } from 'three/addons/lights/RectAreaLightUniformsLib.js';
 
-// Brand colors
+// Brand colors - no brown
 const COLORS = {
   softBlue: 0x7FA7C9,
   deepBlue: 0x4F7FA8,
   beige: 0xF8F6F2,
   deepBeige: 0xE8DCCB,
-  nude: 0xC9A98C,
-  darkText: 0x2F4A63
+  navy: 0x2F4A63,
+  white: 0xFFFFFF
 };
 
 // Check prefers-reduced-motion
@@ -63,16 +63,19 @@ class RectAreaLightHero {
   }
 
   setupScene() {
-    // Camera
+    // Get container dimensions
+    const width = this.container.offsetWidth;
+    const height = this.container.offsetHeight;
+    
+    // Camera - positioned to see sphere centered
     const aspect = width / height;
     this.camera = new THREE.PerspectiveCamera(45, aspect, 1, 1000);
-    this.camera.position.set(0, 8, -20);
+    this.camera.position.set(0, 5, 15);
     this.camera.lookAt(0, 5, 0);
 
     // Scene
     this.scene = new THREE.Scene();
     this.scene.background = new THREE.Color(COLORS.beige);
-    this.scene.fog = new THREE.Fog(COLORS.beige, 20, 80);
 
     // Renderer
     this.renderer = new THREE.WebGLRenderer({ 
@@ -81,6 +84,7 @@ class RectAreaLightHero {
     });
     this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
     this.renderer.setSize(width, height);
+    this.renderer.toneMappingExposure = 1.2;
     this.container.appendChild(this.renderer.domElement);
   }
 
@@ -107,8 +111,8 @@ class RectAreaLightHero {
     this.scene.add(rectLight2);
     this.lights.push(rectLight2);
 
-    // Right light - nude/warm
-    const rectLight3 = new THREE.RectAreaLight(COLORS.nude, 3, 6, 12);
+    // Right light - deep beige/warm
+    const rectLight3 = new THREE.RectAreaLight(COLORS.deepBeige, 3, 6, 12);
     rectLight3.position.set(8, 7, 3);
     rectLight3.lookAt(0, 5, 0);
     this.scene.add(rectLight3);
@@ -138,26 +142,18 @@ class RectAreaLightHero {
     wall.position.set(0, 12, 15);
     this.scene.add(wall);
 
-    // Center sphere (architectural element)
+    // Center sphere - well lit and centered
     const sphereGeometry = new THREE.SphereGeometry(2.5, 64, 64);
     const sphereMaterial = new THREE.MeshStandardMaterial({
-      color: 0xffffff,
-      roughness: 0.2,
-      metalness: 0.8
+      color: COLORS.softBlue,
+      roughness: 0.3,
+      metalness: 0.4,
+      emissive: COLORS.softBlue,
+      emissiveIntensity: 0.15
     });
     this.centerPiece = new THREE.Mesh(sphereGeometry, sphereMaterial);
     this.centerPiece.position.set(0, 5.5, 0);
     this.scene.add(this.centerPiece);
-
-    // Add subtle pedestal
-    const pedestalGeometry = new THREE.CylinderGeometry(1.2, 1.5, 1.5, 32);
-    const pedestalMaterial = new THREE.MeshStandardMaterial({
-      color: COLORS.deepBeige,
-      roughness: 0.7
-    });
-    const pedestal = new THREE.Mesh(pedestalGeometry, pedestalMaterial);
-    pedestal.position.set(0, 0.75, 0);
-    this.scene.add(pedestal);
   }
 
   setupEventListeners() {
@@ -165,8 +161,8 @@ class RectAreaLightHero {
   }
 
   onResize() {
-    const width = width;
-    const height = height;
+    const width = this.container.offsetWidth;
+    const height = this.container.offsetHeight;
 
     this.camera.aspect = width / height;
     this.camera.updateProjectionMatrix();
