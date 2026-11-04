@@ -20,14 +20,17 @@ function init() {
         return;
     }
 
+    const width = container.offsetWidth;
+    const height = container.offsetHeight;
+
     // Camera
     camera = new THREE.PerspectiveCamera(
         45,
-        window.innerWidth / window.innerHeight,
+        width / height,
         1,
         1000
     );
-    camera.position.set(0, 10, 40);
+    camera.position.set(5, 10, 40);
 
     // Scene
     scene = new THREE.Scene();
@@ -63,7 +66,7 @@ function init() {
         alpha: true 
     });
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.setSize(width, height);
     renderer.shadowMap.enabled = true;
     renderer.shadowMap.type = THREE.PCFSoftShadowMap;
     container.appendChild(renderer.domElement);
@@ -136,9 +139,15 @@ function generateGlowTexture() {
 function onWindowResize() {
     if (!camera || !renderer) return;
     
-    camera.aspect = window.innerWidth / window.innerHeight;
+    const container = document.getElementById('hero-canvas-container');
+    if (!container) return;
+    
+    const width = container.offsetWidth;
+    const height = container.offsetHeight;
+    
+    camera.aspect = width / height;
     camera.updateProjectionMatrix();
-    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.setSize(width, height);
 }
 
 function animate() {
