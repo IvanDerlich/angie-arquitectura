@@ -127,12 +127,12 @@ const activitiesData = {
     'direccion-de-obra': {
         slug: 'direccion-de-obra',
         name: 'Dirección de obra',
-        intro: '[DIRECCIÓN DE OBRA — TEXTO DE ANGIE PENDIENTE]'
+        intro: 'Supervisé la correcta colocación de los artefactos y cerámicos. Y división de los espacios.'
     },
     'computo-materiales': {
         slug: 'computo-materiales',
         name: 'Cómputo de materiales',
-        intro: '[CÓMPUTO DE MATERIALES — TEXTO DE ANGIE PENDIENTE]'
+        intro: 'M2 cerámicos, bocas, tomas, puntos. Litros de pintura. Mezcla para revoque fino.'
     },
     'proyecto': {
         slug: 'proyecto',
@@ -167,12 +167,12 @@ const workActivities = [
     { 
         workSlug: 'bano', 
         activitySlug: 'direccion-de-obra', 
-        text: '[DIRECCIÓN DE OBRA — TEXTO DE ANGIE PENDIENTE]' 
+        text: 'Supervisé la correcta colocación de los artefactos y cerámicos. Y división de los espacios.' 
     },
     { 
         workSlug: 'bano', 
         activitySlug: 'computo-materiales', 
-        text: '[CÓMPUTO DE MATERIALES — TEXTO DE ANGIE PENDIENTE]' 
+        text: 'M2 cerámicos, bocas, tomas, puntos. Litros de pintura. Mezcla para revoque fino.' 
     }
 ];
 

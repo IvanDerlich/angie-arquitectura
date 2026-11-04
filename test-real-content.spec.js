@@ -84,13 +84,13 @@ test.describe('Real Content Verification', () => {
         await expect(activitiesSection).toContainText('Diseño compositivo y materialidad a usar');
         await expect(activitiesSection).toContainText('grifería');
         
-        // Check that "Dirección de obra" placeholder is visible
+        // Check that "Dirección de obra" has real content
         await expect(activitiesSection).toContainText('Dirección de obra');
-        await expect(activitiesSection).toContainText('[DIRECCIÓN DE OBRA — TEXTO DE ANGIE PENDIENTE]');
+        await expect(activitiesSection).toContainText('Supervisé la correcta colocación de los artefactos y cerámicos. Y división de los espacios.');
         
-        // Check that "Cómputo de materiales" placeholder is visible
+        // Check that "Cómputo de materiales" has real content
         await expect(activitiesSection).toContainText('Cómputo de materiales');
-        await expect(activitiesSection).toContainText('[CÓMPUTO DE MATERIALES — TEXTO DE ANGIE PENDIENTE]');
+        await expect(activitiesSection).toContainText('M2 cerámicos, bocas, tomas, puntos. Litros de pintura. Mezcla para revoque fino.');
     });
 
     test('Casa Country project is marked as "en obra"', async ({ page }) => {
