@@ -29,7 +29,7 @@ class PhysicalTransmissionHero {
         this.scene = new THREE.Scene();
 
         this.camera = new THREE.PerspectiveCamera(40, width / height, 1, 2000);
-        this.camera.position.set(0, 0, 120);
+        this.camera.position.set(0, 0, 70);
 
         this.renderer = new THREE.WebGLRenderer({ 
             antialias: true,
@@ -83,7 +83,7 @@ class PhysicalTransmissionHero {
     }
 
     createGlassGeometry(envTexture) {
-        const geometry = new THREE.SphereGeometry(20, 64, 32);
+        const geometry = new THREE.SphereGeometry(12, 64, 32);
         
         const texture = this.generateTexture();
         const canvasTexture = new THREE.CanvasTexture(texture);
@@ -138,7 +138,7 @@ class PhysicalTransmissionHero {
         const bgColor = new THREE.Color(0xF8F6F2);
         this.scene.background = bgColor;
         
-        const geometry = new THREE.SphereGeometry(20, 64, 32);
+        const geometry = new THREE.SphereGeometry(12, 64, 32);
         const material = new THREE.MeshStandardMaterial({
             color: 0x7FA7C9,
             metalness: 0.3,
