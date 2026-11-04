@@ -114,4 +114,39 @@ test.describe('Hero Overlap Prevention @ 1440x900', () => {
     // Check that hero content doesn't extend too far right (should leave room for canvas)
     expect(heroContentBox.right, 'Hero content should leave space for canvas on right').toBeLessThan(900);
   });
+
+  test('right half has canvas that is rendering', async ({ page }) => {
+    await page.goto(BASE_URL);
+    
+    await page.waitForLoadState('networkidle');
+    await page.waitForTimeout(3000); // Wait for 3D to render
+    
+    // Verify canvas exists and is properly sized/visible
+    const canvasInfo = await page.evaluate(() => {
+      const canvas = document.querySelector('.hero-canvas-container canvas') || 
+                    document.querySelector('.hero canvas') ||
+                    document.querySelector('canvas');
+      
+      if (!canvas) return { found: false };
+      
+      const rect = canvas.getBoundingClientRect();
+      const computed = window.getComputedStyle(canvas);
+      
+      return {
+        found: true,
+        width: canvas.width,
+        height: canvas.height,
+        displayWidth: rect.width,
+        displayHeight: rect.height,
+        visible: computed.display !== 'none' && computed.visibility !== 'hidden' && computed.opacity !== '0',
+        positioned: rect.x > 500 // Should be in right half
+      };
+    });
+    
+    expect(canvasInfo.found, 'Canvas element must exist').toBe(true);
+    expect(canvasInfo.width, 'Canvas must have width > 0').toBeGreaterThan(0);
+    expect(canvasInfo.height, 'Canvas must have height > 0').toBeGreaterThan(0);
+    expect(canvasInfo.visible, 'Canvas must be visible').toBe(true);
+    expect(canvasInfo.positioned, 'Canvas should be in right half of viewport').toBe(true);
+  });
 });
