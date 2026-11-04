@@ -61,10 +61,13 @@ class EnvmapsHero {
   }
 
   setupScene() {
+    const width = this.container.offsetWidth;
+    const height = this.container.offsetHeight;
+    
     // Camera
-    const aspect = window.innerWidth / window.innerHeight;
+    const aspect = width / height;
     this.camera = new THREE.PerspectiveCamera(40, aspect, 1, 1000);
-    this.camera.position.set(0, 0, 100);
+    this.camera.position.set(5, 0, 100);
 
     // Scene
     this.scene = new THREE.Scene();
@@ -76,7 +79,7 @@ class EnvmapsHero {
       alpha: true 
     });
     this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-    this.renderer.setSize(window.innerWidth, window.innerHeight);
+    this.renderer.setSize(width, height);
     this.renderer.toneMapping = THREE.ACESFilmicToneMapping;
     this.renderer.toneMappingExposure = 0.9;
     this.container.appendChild(this.renderer.domElement);
@@ -150,8 +153,8 @@ class EnvmapsHero {
   }
 
   onResize() {
-    const width = window.innerWidth;
-    const height = window.innerHeight;
+    const width = this.container.offsetWidth;
+    const height = this.container.offsetHeight;
 
     this.camera.aspect = width / height;
     this.camera.updateProjectionMatrix();
