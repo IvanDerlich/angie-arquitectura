@@ -93,10 +93,10 @@ function createProceduralEnvironment() {
     const size = 512;
     const data = new Uint8Array(size * size * 4 * 6);
 
-    // Brand colors
+    // Brand colors - no brown
     const topColor = { r: 127, g: 167, b: 201 }; // #7FA7C9 soft blue
     const bottomColor = { r: 232, g: 220, b: 203 }; // #E8DCCB beige
-    const sideColor = { r: 201, g: 169, b: 140 }; // #C9A98C mid-tone
+    const sideColor = { r: 248, g: 246, b: 242 }; // #F8F6F2 white
 
     // Helper to fill a face
     function fillFace(faceIndex, colors) {
