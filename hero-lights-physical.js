@@ -4,14 +4,14 @@
 
 import * as THREE from 'three';
 
-// Brand colors
+// Brand colors - no brown
 const COLORS = {
   softBlue: 0x7FA7C9,
   deepBlue: 0x4F7FA8,
   beige: 0xF8F6F2,
   deepBeige: 0xE8DCCB,
-  nude: 0xC9A98C,
-  darkText: 0x2F4A63
+  navy: 0x2F4A63,
+  white: 0xFFFFFF
 };
 
 // Check prefers-reduced-motion
@@ -62,16 +62,19 @@ class PhysicalLightsHero {
   }
 
   setupScene() {
+    // Get container dimensions
+    const width = this.container.offsetWidth;
+    const height = this.container.offsetHeight;
+    
     // Camera
     const aspect = width / height;
     this.camera = new THREE.PerspectiveCamera(50, aspect, 0.1, 100);
-    this.camera.position.set(-4, 2, 4);
+    this.camera.position.set(0, 2, 8);
     this.camera.lookAt(0, 1, 0);
 
     // Scene
     this.scene = new THREE.Scene();
     this.scene.background = new THREE.Color(COLORS.beige);
-    this.scene.fog = new THREE.Fog(COLORS.beige, 8, 20);
 
     // Renderer
     this.renderer = new THREE.WebGLRenderer({ 
@@ -83,22 +86,22 @@ class PhysicalLightsHero {
     this.renderer.shadowMap.enabled = true;
     this.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
     this.renderer.toneMapping = THREE.ReinhardToneMapping;
-    this.renderer.toneMappingExposure = Math.pow(0.68, 5.0);
+    this.renderer.toneMappingExposure = 1.5;
     this.container.appendChild(this.renderer.domElement);
   }
 
   setupLighting() {
-    // Physically accurate point light (like a bulb)
-    const bulbGeometry = new THREE.SphereGeometry(0.05, 16, 8);
-    this.bulbLight = new THREE.PointLight(COLORS.nude, 400, 100, 2); // Warm light
+    // Physically accurate point light with brand colors
+    const bulbGeometry = new THREE.SphereGeometry(0.15, 16, 8);
+    this.bulbLight = new THREE.PointLight(COLORS.softBlue, 300, 50, 2);
     
     const bulbMat = new THREE.MeshStandardMaterial({
-      emissive: COLORS.nude,
-      emissiveIntensity: 2,
-      color: 0x000000
+      emissive: COLORS.softBlue,
+      emissiveIntensity: 3,
+      color: COLORS.softBlue
     });
     this.bulbLight.add(new THREE.Mesh(bulbGeometry, bulbMat));
-    this.bulbLight.position.set(0, 2, 0);
+    this.bulbLight.position.set(0, 3, 0);
     this.bulbLight.castShadow = true;
     this.bulbLight.shadow.camera.near = 0.1;
     this.bulbLight.shadow.camera.far = 10;
@@ -180,8 +183,8 @@ class PhysicalLightsHero {
   }
 
   onResize() {
-    const width = width;
-    const height = height;
+    const width = this.container.offsetWidth;
+    const height = this.container.offsetHeight;
 
     this.camera.aspect = width / height;
     this.camera.updateProjectionMatrix();
