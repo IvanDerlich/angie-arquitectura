@@ -1481,3 +1481,45 @@ section {
         grid-template-columns: 1fr;
     }
 }
+
+/* Mobile hero stacking - text first, canvas below */
+@media (max-width: 768px) {
+    .hero {
+        display: flex !important;
+        flex-direction: column;
+        grid-template-columns: unset !important;
+        min-height: auto;
+        padding-top: 80px;
+    }
+    
+    .hero .container {
+        width: 100%;
+        order: 1;
+    }
+    
+    .hero-canvas-container {
+        width: 100% !important;
+        height: 55vh !important;
+        order: 2;
+        position: relative !important;
+    }
+    
+    .hero-canvas-container canvas {
+        width: 100% !important;
+        height: 100% !important;
+    }
+    
+    .hero-content {
+        max-width: 100%;
+        padding: 40px 0 32px;
+    }
+    
+    .hero-title {
+        font-size: 36px;
+        line-height: 1.2;
+    }
+    
+    .hero-card {
+        max-width: 100%;
+    }
+}
