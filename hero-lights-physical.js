@@ -63,7 +63,7 @@ class PhysicalLightsHero {
 
   setupScene() {
     // Camera
-    const aspect = window.innerWidth / window.innerHeight;
+    const aspect = width / height;
     this.camera = new THREE.PerspectiveCamera(50, aspect, 0.1, 100);
     this.camera.position.set(-4, 2, 4);
     this.camera.lookAt(0, 1, 0);
@@ -79,7 +79,7 @@ class PhysicalLightsHero {
       alpha: true 
     });
     this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-    this.renderer.setSize(window.innerWidth, window.innerHeight);
+    this.renderer.setSize(width, height);
     this.renderer.shadowMap.enabled = true;
     this.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
     this.renderer.toneMapping = THREE.ReinhardToneMapping;
@@ -180,8 +180,8 @@ class PhysicalLightsHero {
   }
 
   onResize() {
-    const width = window.innerWidth;
-    const height = window.innerHeight;
+    const width = width;
+    const height = height;
 
     this.camera.aspect = width / height;
     this.camera.updateProjectionMatrix();
